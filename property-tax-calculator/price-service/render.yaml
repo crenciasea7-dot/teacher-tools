@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: property-tax-price-service
+    runtime: node
+    plan: free
+    rootDir: price-service
+    buildCommand: npm ci --ignore-scripts || npm install --ignore-scripts
+    startCommand: npm start
+    envVars:
+      - key: VWORLD_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGIN
+        value: https://official-price-finder.vercel.app
