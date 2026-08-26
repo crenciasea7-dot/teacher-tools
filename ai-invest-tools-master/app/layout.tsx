@@ -1,0 +1,3 @@
+import type { Metadata } from "next"; import "./globals.css";
+export const metadata: Metadata = { title:"AI 투자 도구 MASTER", description:"투자 판단을 위한 개인 AI 도구 모음" };
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ko"><body><aside style={{maxWidth: "1170px", margin: "16px auto 0", padding: "11px 14px", border: "1px solid #cce5dc", borderRadius: "10px", background: "#eaf5f0", color: "#46655d", fontSize: "11px", lineHeight: 1.65}}><b>🔒 프라이버시 안내</b><br />이 대시보드는 별도 서버나 데이터베이스에 정보를 저장하지 않습니다. 각 도구에서 입력하는 정보의 저장 방식은 해당 도구의 안내를 확인하세요.</aside>{children}</body></html>}
