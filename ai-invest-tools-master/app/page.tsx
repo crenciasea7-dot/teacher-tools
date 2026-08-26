@@ -13,7 +13,7 @@ type Tool = {
 
 const tools: Tool[] = [
   { icon: "◈", name: "moyo 자산 대시보드", description: "로그인한 계정에서 부동산·금융자산·현금을 안전하게 관리", url: "https://moyo-private-asset-dashboard.crenciasea7.chatgpt.site/", group: "자산 관리", accent: "orange" },
-  { icon: "▣", name: "보유세 계산기", description: "재산세·종부세를 기준별로 점검", group: "자산 관리", accent: "orange" },
+  { icon: "▣", name: "보유세 계산기", description: "세무통과 다른 보유세 계산기를 한곳에서 열기", url: "https://moyo-property-tax-hub.crenciasea7.chatgpt.site/", group: "자산 관리", accent: "orange" },
   { icon: "↗", name: "아파트 매도 분석", description: "내 호가와 최근 거래·시장 반응을 비교해 매도 전략을 점검", url: "/apartment-sales-analysis", group: "자산 관리", accent: "orange" },
   { icon: "⌁", name: "집장금 계산기", description: "입주 잔금과 대출 가능 범위를 계산", url: "https://jip-jangeum-calculator.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
   { icon: "◉", name: "투자거울", description: "투자 판단의 근거·리스크를 비춰보기", url: "https://ai-investment-mirror.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
