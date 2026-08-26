@@ -24,7 +24,7 @@ const tools: Tool[] = [
   { icon: "R", name: "inga-radar", description: "서울 재개발·재건축 인허가 신호 추적", url: "https://inga-radar-seoul.vercel.app/", group: "정비사업", accent: "green" },
   { icon: "R", name: "rone-weekly", description: "주간 자본 흐름과 다음 투자 우선순위", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
-  { icon: "+", name: "알바비 관리", description: "수입·지출·목표를 가볍게 관리", group: "생활 관리", accent: "pink" },
+  { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
 ];
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
