@@ -1,0 +1,3 @@
+import { SiteHeader } from "../components/site-header";
+import Link from "next/link";
+export default function MirrorPage(){return <main><SiteHeader/><section className="page-intro mirror"><span className="eyebrow">AI MIRROR</span><h1>내 판단을 비추는 AI 거울</h1><p>AI가 결정을 대신하지 않습니다. 내가 놓친 가정·반대 근거·확인 질문을 드러냅니다.</p><div className="mirror-grid"><article><span>01</span><h2>내 결론</h2><p>현재 생각하는 매수·매도 결론을 적습니다.</p></article><article><span>02</span><h2>반대 근거</h2><p>결론이 틀릴 수 있는 조건을 세 가지 찾습니다.</p></article><article><span>03</span><h2>확인 행동</h2><p>중개사·조합·구청·현장에서 확인할 일을 정합니다.</p></article></div><Link className="primary-link" href="/">홈 작업실에서 시작하기 →</Link></section></main>}
