@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 
+const masterDashboardUrl =
+  process.env.NEXT_PUBLIC_MASTER_URL ?? "https://teacher-tools-snowy.vercel.app/";
+
 type AssetKind = "부동산" | "금융자산" | "현금";
 
 type Asset = {
@@ -47,13 +50,21 @@ export default function DashboardPage() {
     <main>
       <section className="hero">
         <div>
+          <a className="master-back-link" href={masterDashboardUrl}>
+            <span aria-hidden="true">←</span> AI 투자 도구 MASTER로 돌아가기
+          </a>
           <p className="eyebrow">MOYO ASSET DASHBOARD</p>
           <h1>내 자산을, 내 속도로.</h1>
           <p className="hero-copy">부동산 · 금융자산 · 현금을 한 화면에서 보고 다음 선택을 정리합니다.</p>
         </div>
-        <button className="privacy-button" onClick={() => setPrivacyMode((value) => !value)}>
-          {privacyMode ? "금액 보기" : "금액 가리기"}
-        </button>
+        <div className="hero-actions">
+          <a className="master-back-button" href={masterDashboardUrl}>
+            <span aria-hidden="true">←</span> MASTER
+          </a>
+          <button className="privacy-button" onClick={() => setPrivacyMode((value) => !value)}>
+            {privacyMode ? "금액 보기" : "금액 가리기"}
+          </button>
+        </div>
       </section>
 
       <section className="summary-grid" aria-label="자산 요약">
