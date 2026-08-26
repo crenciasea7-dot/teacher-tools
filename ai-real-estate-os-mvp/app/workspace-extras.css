@@ -1,0 +1,26 @@
+.single-feature{grid-template-columns:1fr}
+.single-feature button{min-height:140px;background:linear-gradient(125deg,#17201d,#244638);color:white;border:0}
+.single-feature button strong{font-size:22px;color:var(--lime)}
+.single-feature button span{max-width:620px;color:#d7e1db;font-size:13px;line-height:1.6}
+.single-feature button em{display:block;margin-top:20px;color:white;font-style:normal;font-size:12px;font-weight:800}
+.redevelopment-starters{grid-template-columns:1.2fr .8fr}
+.showroom{max-width:1240px;margin:0 auto 90px;padding:70px 30px;border-top:1px solid var(--line)}
+.showroom-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}
+.showroom-heading h2{font-size:42px;letter-spacing:-.045em;margin:10px 0}
+.showroom-heading p{color:var(--muted);margin:0;max-width:680px;line-height:1.65}
+.showroom-heading>a{border-bottom:1px solid var(--ink);padding-bottom:5px;font-size:12px;white-space:nowrap}
+.showroom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.showroom-grid article{min-height:285px;display:flex;flex-direction:column;padding:23px;background:#fff;border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden}
+.showroom-grid article.featured{background:#f1f5e0;border-color:#d2dc9a}
+.showroom-grid article.featured:after{content:"강의 대표";position:absolute;right:-30px;top:16px;transform:rotate(40deg);background:var(--lime);padding:4px 34px;font-size:9px;font-weight:900}
+.tool-top{display:flex;justify-content:space-between;align-items:start}
+.tool-number{font:700 11px monospace;color:#8d9892}
+.tool-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:var(--ink);color:var(--lime);font-weight:900;font-size:18px}
+.tool-status{display:flex;gap:6px;margin-top:28px}
+.tool-status span{font-size:9px;font-weight:800;padding:5px 8px;border-radius:10px}
+.tool-status .public{background:#e2f5e9;color:#08734a}.tool-status .login{background:#eee8ff;color:#6542a5}.tool-status .verify{background:#fff1d9;color:#8b5900}
+.showroom-grid h3{font-size:19px;letter-spacing:-.03em;margin:13px 0 7px}
+.showroom-grid p{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 20px}
+.showroom-grid article>a{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:13px;color:var(--green);font-size:12px;font-weight:800}
+@media(max-width:900px){.showroom-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.redevelopment-starters,.showroom-grid{grid-template-columns:1fr}.showroom{padding:50px 16px}.showroom-heading{display:block}.showroom-heading h2{font-size:34px}.showroom-heading>a{display:inline-block;margin-top:20px}}
