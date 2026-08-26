@@ -2,7 +2,7 @@
 import { useState } from "react";
 type Tool={icon:string;name:string;description:string;url?:string;group:string;accent:string};
 const tools:Tool[]=[
-{icon:"◈",name:"moyo 자산 대시보드",description:"부동산·금융자산·현금을 한 화면에서 관리",url:"https://moyo-asset-dashboard.crenciasea7.chatgpt.site/",group:"자산 관리",accent:"orange"},
+{icon:"◈",name:"moyo 자산 대시보드",description:"로그인한 계정에서 부동산·금융자산·현금을 안전하게 관리",url:"https://moyo-private-asset-dashboard.crenciasea7.chatgpt.site/",group:"자산 관리",accent:"orange"},
 {icon:"▣",name:"보유세 계산기",description:"재산세·종부세를 기준별로 점검",group:"자산 관리",accent:"orange"},
 {icon:"↗",name:"아파트 매도 분석",description:"매도 가격과 보유·매도 선택을 비교",group:"자산 관리",accent:"orange"},
 {icon:"⌁",name:"집장금 계산기",description:"입주 잔금과 대출 가능 범위를 계산",url:"https://jip-jangeum-calculator.crenciasea7.chatgpt.site/",group:"매수 판단",accent:"blue"},
