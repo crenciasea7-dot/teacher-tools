@@ -1,0 +1,3 @@
+import { ConversationWorkspace } from "../components/conversation-workspace";
+import { SiteHeader } from "../components/site-header";
+export default function CapturePage(){return <main><SiteHeader/><section className="page-intro capture"><span className="eyebrow">CAPTURE COMPARE</span><h1>매물 캡처 비교</h1><p>캡처 1~5장을 올리기 전에 매물명·가격·층·향·입주조건이 보이도록 준비하세요.</p><div className="capture-guide"><span>1</span><p><strong>개인정보 가리기</strong>전화번호·채팅명·주소 상세를 가려주세요.</p><span>2</span><p><strong>광고 한 장씩</strong>가격과 핵심 조건이 함께 보이게 캡처하세요.</p><span>3</span><p><strong>AI 추출값 확인</strong>OCR은 오독할 수 있어 확인 후 계산합니다.</p></div></section><ConversationWorkspace initialIntent="redevelopment-listing" kind="capture"/></main>}
