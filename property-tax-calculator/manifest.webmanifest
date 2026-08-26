@@ -1,0 +1,9 @@
+{
+  "name": "2026 보유세 계산기",
+  "short_name": "보유세 계산기",
+  "lang": "ko",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2e63e8"
+}
