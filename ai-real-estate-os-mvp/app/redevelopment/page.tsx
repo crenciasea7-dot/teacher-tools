@@ -1,0 +1,3 @@
+import { ConversationWorkspace } from "../components/conversation-workspace";
+import { SiteHeader } from "../components/site-header";
+export default function RedevelopmentPage(){return <main><SiteHeader/><section className="page-intro redevelopment"><span className="eyebrow">REDEVELOPMENT LISTING</span><h1>재개발 매물 대화 분석</h1><p>중개사에게 받은 설명이나 사용자가 직접 보유한 캡처를 넣으세요. 화면에서 확인되는 값만 구조화하고, 비어 있는 권리·대출 조건은 질문으로 남깁니다.</p><div className="source-guide"><strong>분석 원칙</strong><span>잠긴 외부 데이터는 가져오지 않습니다 · 확인된 승계 가능액만 계산합니다 · 출처와 확인일을 남깁니다</span></div></section><ConversationWorkspace initialIntent="redevelopment-listing" kind="redevelopment"/></main>}
