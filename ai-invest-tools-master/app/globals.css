@@ -261,6 +261,8 @@ footer > div:last-child { text-align: right; }
 .market-alert-badge { align-self: flex-start; margin-top: 8px; padding: 5px 7px; border-radius: 999px; background: #d9433b; color: #fff; font-size: 9px; font-weight: 800; }
 .market-alert .market-detail-link-row { border-top-color: #f1c8c4; }
 .market-alert .market-detail-link-row a { color: #a92f29; }
+.market-card-clickable { cursor: pointer; }
+.market-card-clickable:focus-visible { position: relative; z-index: 3; outline: 3px solid #59b99e; outline-offset: -3px; }
 * {
   box-sizing: border-box;
 }

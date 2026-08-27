@@ -54,7 +54,7 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
   ] },
   { name: "3. 금", instruments: [
     { id: "gold", name: "금", symbol: "GC=F", url: "https://finance.yahoo.com/quote/GC%3DF/" },
-    { id: "kospi-night", name: "코스피 야간선물", symbol: "KOSPI 200 FUTURES", url: "https://data.krx.co.kr/contents/MDC/MAIN/main/index.cmd", statusNote: "정확한 실시간 제공처 연결 필요" },
+    { id: "kospi-night", name: "코스피 야간선물", symbol: "KOSPI 200 FUTURES", url: "https://finance.naver.com/", statusNote: "네이버 금융에서 실시간 확인" },
   ] },
   { name: "4. 채권 & 금리", instruments: [
     { id: "us10y", name: "미국 10년물", symbol: "^TNX", url: "https://finance.yahoo.com/quote/%5ETNX/" },
@@ -136,8 +136,10 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
   const quoteTime = quote
     ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(quote.measuredAt))
     : null;
+  const cardIsLinked = instrument.id === "kospi-night";
+  const openCardLink = () => { if (cardIsLinked) window.open(instrument.url, "_blank", "noopener,noreferrer"); };
   return (
-    <article className={`market-link-card ${alert ? "market-alert" : ""}`} aria-label={`${instrument.name} 현재가와 등락률`}>
+    <article className={`market-link-card ${alert ? "market-alert" : ""} ${cardIsLinked ? "market-card-clickable" : ""}`} aria-label={`${instrument.name} 현재가와 등락률`} role={cardIsLinked ? "link" : undefined} tabIndex={cardIsLinked ? 0 : undefined} onClick={openCardLink} onKeyDown={(event) => { if (cardIsLinked && (event.key === "Enter" || event.key === " ")) openCardLink(); }}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
@@ -148,7 +150,7 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
         <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
       </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</div>}
       <div className="market-detail-link-row">
-        <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer">{quote?.source ?? "원본 사이트"}에서 상세 보기 ↗</a>
+        <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>{quote?.source ?? (cardIsLinked ? "네이버 금융" : "원본 사이트")}에서 상세 보기 ↗</a>
       </div>
     </article>
   );
