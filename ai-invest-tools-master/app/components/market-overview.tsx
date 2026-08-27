@@ -40,6 +40,7 @@ type InvestingInstrument = {
   name: string;
   symbol: string;
   url: string;
+  statusNote?: string;
 };
 
 const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[] }> = [
@@ -50,25 +51,31 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
   { name: "2. 지수", instruments: [
     { id: "sp500", name: "S&P 500", symbol: "^GSPC", url: "https://finance.yahoo.com/quote/%5EGSPC/" },
     { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", url: "https://finance.yahoo.com/quote/%5EIXIC/" },
-    { id: "kospi", name: "코스피", symbol: "KOSPI", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSPI" },
-    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ" },
   ] },
-  { name: "3. 암호화폐", instruments: [
-    { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.coingecko.com/en/coins/bitcoin" },
-    { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.coingecko.com/en/coins/xrp" },
-  ] },
-  { name: "4. 상품", instruments: [
+  { name: "3. 금", instruments: [
     { id: "gold", name: "금", symbol: "GC=F", url: "https://finance.yahoo.com/quote/GC%3DF/" },
-    { id: "oil", name: "WTI 유가", symbol: "CL=F", url: "https://finance.yahoo.com/quote/CL%3DF/" },
+    { id: "kospi-night", name: "코스피 야간선물", symbol: "KOSPI 200 FUTURES", url: "https://data.krx.co.kr/contents/MDC/MAIN/main/index.cmd", statusNote: "정확한 실시간 제공처 연결 필요" },
   ] },
-  { name: "5. 채권", instruments: [
+  { name: "4. 채권 & 금리", instruments: [
     { id: "us10y", name: "미국 10년물", symbol: "^TNX", url: "https://finance.yahoo.com/quote/%5ETNX/" },
     { id: "us30y", name: "미국 30년물", symbol: "^TYX", url: "https://finance.yahoo.com/quote/%5ETYX/" },
   ] },
-  { name: "6. 환율", instruments: [
+  { name: "5. 상품 & 환율", instruments: [
+    { id: "oil", name: "WTI 유가", symbol: "CL=F", url: "https://finance.yahoo.com/quote/CL%3DF/" },
     { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", url: "https://finance.yahoo.com/quote/KRW%3DX/" },
   ] },
+  { name: "6. 암호화폐", instruments: [
+    { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.coingecko.com/en/coins/bitcoin" },
+    { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.coingecko.com/en/coins/xrp" },
+  ] },
 ];
+
+const ALERT_RULES: Record<string, { threshold: number; label: string }> = {
+  us10y: { threshold: 4.5, label: "4.5% 이상" },
+  us30y: { threshold: 5.3, label: "5.3% 이상" },
+  oil: { threshold: 90, label: "$90 이상" },
+  "usd-krw": { threshold: 1400, label: "1,400원 이상" },
+};
 
 function formatQuoteValue(value: number, quote: QuoteItem, change = false) {
   const sign = change ? (value > 0 ? "+" : value < 0 ? "−" : "") : "";
@@ -124,19 +131,22 @@ function SentimentCard({ item }: { item: SentimentItem }) {
 
 function MarketLinkCard({ instrument, group, quote, loading }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem; loading: boolean }) {
   const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
+  const alertRule = ALERT_RULES[instrument.id];
+  const alert = Boolean(quote && alertRule && quote.price >= alertRule.threshold);
   const quoteTime = quote
     ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(quote.measuredAt))
     : null;
   return (
-    <article className="market-link-card" aria-label={`${instrument.name} 현재가와 등락률`}>
+    <article className={`market-link-card ${alert ? "market-alert" : ""}`} aria-label={`${instrument.name} 현재가와 등락률`}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
+      {alert ? <div className="market-alert-badge">🔴 위험 기준 {alertRule.label}</div> : null}
       {quote ? <div className="market-api-quote">
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
         <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
-      </div> : <div className={`market-api-state ${loading ? "loading" : "unavailable"}`}>{loading ? "시세 불러오는 중…" : "시세 일시 확인 불가"}</div>}
+      </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</div>}
       <div className="market-detail-link-row">
         <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer">{quote?.source ?? "원본 사이트"}에서 상세 보기 ↗</a>
       </div>
