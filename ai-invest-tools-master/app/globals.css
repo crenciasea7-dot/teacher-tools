@@ -217,6 +217,14 @@ header {
   border: 1px solid #ffffff16;
   border-radius: 15px;
   background: linear-gradient(180deg, #ffffff0c, #ffffff05);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.sentiment-card:hover {
+  transform: translateY(-3px);
+  border-color: #ffffff35;
+  background: linear-gradient(180deg, #ffffff13, #ffffff08);
 }
 .sentiment-card::before {
   position: absolute;
@@ -300,9 +308,10 @@ header {
   color: #829b94;
   font-size: 8px;
 }
-.sentiment-foot a {
+.sentiment-foot b {
   color: #8fb6aa;
   font-size: 8px;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
 }
