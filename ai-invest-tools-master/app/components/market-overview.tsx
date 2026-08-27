@@ -1,7 +1,6 @@
 "use client";
 
-import Script from "next/script";
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
@@ -57,7 +56,7 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
     { id: "xrp", name: "리플", symbol: "XRP/USD", widgetSymbol: "BITSTAMP:XRPUSD", url: "https://www.tradingview.com/symbols/XRPUSD/" },
   ] },
   { name: "4. 상품", instruments: [
-    { id: "gold", name: "금", symbol: "XAU/USD", widgetSymbol: "OANDA:XAUUSD", url: "https://www.tradingview.com/symbols/XAUUSD/" },
+    { id: "gold", name: "금", symbol: "GOLD", widgetSymbol: "TVC:GOLD", url: "https://www.tradingview.com/symbols/TVC-GOLD/" },
     { id: "oil", name: "WTI 유가", symbol: "CL1!", widgetSymbol: "NYMEX:CL1!", url: "https://www.tradingview.com/symbols/NYMEX-CL1!/" },
   ] },
   { name: "5. 채권", instruments: [
@@ -68,6 +67,41 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
     { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", widgetSymbol: "FX_IDC:USDKRW", url: "https://www.tradingview.com/symbols/USDKRW/" },
   ] },
 ];
+
+function TradingViewSingleQuote({ instrument }: { instrument: InvestingInstrument }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.replaceChildren();
+
+    const widget = document.createElement("div");
+    widget.className = "tradingview-widget-container__widget";
+
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
+    script.async = true;
+    script.textContent = JSON.stringify({
+      symbol: instrument.widgetSymbol,
+      width: "100%",
+      colorTheme: "light",
+      isTransparent: true,
+      locale: "kr",
+    });
+
+    container.append(widget, script);
+    return () => container.replaceChildren();
+  }, [instrument.widgetSymbol]);
+
+  return (
+    <div className="market-single-ticker">
+      <div className="tradingview-widget-container" ref={containerRef} aria-label={`${instrument.name} TradingView 현재가`} />
+    </div>
+  );
+}
 
 function SentimentCard({ item }: { item: SentimentItem }) {
   const score = item.score ?? 0;
@@ -118,10 +152,10 @@ function MarketLinkCard({ instrument, group, quote }: { instrument: InvestingIns
       {quote ? <div className="market-api-quote">
         <div><strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: quote.currency, maximumFractionDigits: quote.price < 10 ? 4 : 0 }).format(quote.price)}</strong><em className={direction}>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</em></div>
         <a href={quote.sourceUrl} target="_blank" rel="noreferrer">CoinGecko · 24시간 등락 ↗</a>
-      </div> : <div className="market-single-ticker">
-        {createElement("tv-single-ticker", { symbol: instrument.widgetSymbol, locale: "kr", theme: "light", transparent: true, "symbol-url": instrument.url }, <span>시세 확인 중…</span>)}
-      </div>}
-      <a href={instrument.url} target="_blank" rel="noreferrer">TradingView에서 상세 보기 ↗</a>
+      </div> : <TradingViewSingleQuote instrument={instrument} />}
+      <div className="market-detail-link-row">
+        <a href={instrument.url} target="_blank" rel="noreferrer">TradingView에서 상세 보기 ↗</a>
+      </div>
     </article>
   );
 }
@@ -155,7 +189,6 @@ export default function MarketOverview() {
 
   return (
     <section className="market-overview" id="macro" aria-labelledby="market-overview-title">
-      <Script id="tradingview-single-ticker-widget" type="module" src="https://widgets.tradingview-widget.com/w/en/tv-single-ticker.js" strategy="afterInteractive" />
       <div className="sentiment-section">
         <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
