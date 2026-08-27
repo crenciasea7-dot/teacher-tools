@@ -182,12 +182,20 @@ export default function MarketOverview() {
       </div>
       {error && <p className="market-error">일부 시세를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p>}
       <div className="market-groups">
-        {CATEGORY_ORDER.map((category) => {
+        {CATEGORY_ORDER.map((category, categoryIndex) => {
           const items = data?.items.filter((item) => item.category === category) ?? [];
           return (
             <div className="market-group" key={category}>
               <h3>{category}</h3>
               <div className="market-grid">
+                {categoryIndex === 0 ? (
+                  <a className="market-tile bitcoin-board-tile" href="/bitcoin-indicators" aria-label="비트코인 참고 지표 판단 보드 열기">
+                    <div className="market-name"><b>비트코인 참고 지표</b><span>BTC DECISION BOARD</span></div>
+                    <div className="bitcoin-board-mark">₿</div>
+                    <p>공포탐욕·레인보우·도미넌스·온체인을 순서대로 확인</p>
+                    <span className="market-detail">판단 보드 열기 →</span>
+                  </a>
+                ) : null}
                 {items.length > 0
                   ? items.map((item) => <MarketTile item={item} key={item.id} />)
                   : Array.from({ length: category === "주식" ? 6 : 2 }, (_, index) => <div className="market-skeleton" key={index} />)}

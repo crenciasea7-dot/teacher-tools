@@ -32,6 +32,7 @@ const tools: Tool[] = [
   { icon: "R", name: "주간 아파트 가격동향", description: "공식 주간 통계와 6단계 AI 시장 국면 분석", url: "/weekly-apartment-analysis", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
+  { icon: "₿", name: "비트코인 참고 지표", description: "공포탐욕·레인보우·도미넌스·온체인 지표를 한곳에서 확인", url: "/bitcoin-indicators", cta: "판단 보드 열기 →", group: "암호화폐 판단", accent: "purple" },
 ];
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
