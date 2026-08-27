@@ -160,7 +160,6 @@ export default function MarketOverview() {
         )))}
       </div>
       <div className="market-board-links">
-        <a className="bitcoin-indicator-entry" href="/bitcoin-indicators"><span>₿</span><div><b>비트코인 참고 지표</b><small>공탐·레인보우·도미넌스 보기</small></div><em>→</em></a>
         <a className="tradingview-all-markets" href="https://www.tradingview.com/markets/" target="_blank" rel="noreferrer">TradingView 전체 시장 보기 ↗</a>
       </div>
       <p className="market-note">모든 카드는 TradingView 공식 시세 위젯입니다. · {data?.delayedNotice ?? "거래소 정책에 따라 일부 시세가 지연될 수 있습니다."}</p>

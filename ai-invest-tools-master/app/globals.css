@@ -491,9 +491,8 @@ header {
   font-size: 9px;
 }
 .market-board-links {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 9px;
+  display: flex;
+  justify-content: flex-end;
   margin-top: 9px;
 }
 .tradingview-all-markets {
@@ -1716,7 +1715,7 @@ footer b {
   .investing-official-chart header { align-items: flex-start; flex-direction: column; }
   .investing-official-chart iframe { height: 440px; }
   .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .market-board-links { grid-template-columns: 1fr; }
+  .market-board-links { display: grid; }
   .tradingview-all-markets { min-width: 0; }
   .market-tile {
     min-height: 98px;
