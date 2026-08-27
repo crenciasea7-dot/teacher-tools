@@ -85,7 +85,7 @@ function FearGreedPanel({ data }: { data: BitcoinReferenceResponse | null }) {
   );
 }
 
-function EmbeddedChart({ step, title, source, description, src }: { step: string; title: string; source: string; description: string; src: string }) {
+function EmbeddedChart({ step, title, source, description, src, externalUrl }: { step: string; title: string; source: string; description: string; src: string; externalUrl?: string }) {
   return (
     <article className="bitcoin-live-panel embedded-chart-panel">
       <div className="bitcoin-panel-heading">
@@ -95,6 +95,7 @@ function EmbeddedChart({ step, title, source, description, src }: { step: string
       <div className="bitcoin-embed-frame">
         <iframe src={src} title={`${title} 임베드 차트`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
       </div>
+      {externalUrl ? <a className="bitcoin-source-link" href={externalUrl} target="_blank" rel="noreferrer">레인보우 차트 원문 사이트에서 보기 ↗</a> : null}
     </article>
   );
 }
@@ -149,7 +150,7 @@ export default function BitcoinDashboard() {
     <section className="bitcoin-live-dashboard" aria-label="비트코인 실시간 참고 지표">
       {error ? <p className="bitcoin-data-error">실시간 숫자를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</p> : null}
       <FearGreedPanel data={data} />
-      <EmbeddedChart step="02 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" />
+      <EmbeddedChart step="02 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalUrl="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" />
       <div className="dominance-grid">
         <EmbeddedChart step="03 · CAPITAL FLOW" title="비트코인 도미넌스" source="TradingView" description="BTC로 자금이 집중되는지 확인합니다." src={tradingViewUrl("BTC.D")} />
         <EmbeddedChart step="04 · WAITING CAPITAL" title="테더 도미넌스" source="TradingView" description="스테이블코인 대기자금과 위험 회피 흐름을 확인합니다." src={tradingViewUrl("USDT.D")} />

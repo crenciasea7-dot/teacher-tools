@@ -348,6 +348,110 @@ header {
   background-size: 200% 100%;
   animation: market-pulse 1.4s linear infinite;
 }
+.investing-market-layout {
+  display: grid;
+  grid-template-columns: minmax(225px, 0.7fr) minmax(0, 1.8fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+.investing-instrument-groups,
+.investing-official-chart {
+  border: 1px solid #ffffff16;
+  border-radius: 15px;
+  background: #ffffff0a;
+}
+.investing-instrument-groups {
+  display: grid;
+  gap: 13px;
+  align-content: start;
+  padding: 15px;
+}
+.investing-instrument-group h3 {
+  margin: 0 0 7px;
+  color: #8fa79f;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.investing-instrument-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.investing-instrument-buttons button {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  padding: 9px 10px;
+  border: 1px solid #ffffff12;
+  border-radius: 9px;
+  background: #ffffff08;
+  color: #dce7e3;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.investing-instrument-buttons button:hover,
+.investing-instrument-buttons button.active {
+  border-color: #68d1ae88;
+  background: #68d1ae18;
+}
+.investing-instrument-buttons button b {
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.investing-instrument-buttons button span {
+  color: #78958d;
+  font: 8px "DM Mono", monospace;
+}
+.bitcoin-indicator-entry {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 9px;
+  align-items: center;
+  padding: 11px;
+  border: 1px solid #f4b74055;
+  border-radius: 10px;
+  background: #f4b74012;
+  color: inherit;
+  text-decoration: none;
+}
+.bitcoin-indicator-entry > span { color: #f4b740; font: 700 19px "DM Mono", monospace; }
+.bitcoin-indicator-entry div { display: grid; gap: 2px; }
+.bitcoin-indicator-entry b { font-size: 10px; }
+.bitcoin-indicator-entry small { color: #91a9a1; font-size: 8px; }
+.bitcoin-indicator-entry em { color: #f4b740; font-style: normal; }
+.investing-official-chart { overflow: hidden; }
+.investing-official-chart header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #ffffff12;
+}
+.investing-official-chart header span {
+  color: #62c9a7;
+  font: 8px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+}
+.investing-official-chart header h3 { margin: 3px 0 0; font-size: 16px; }
+.investing-official-chart header h3 small { color: #77938b; font: 9px "DM Mono", monospace; }
+.investing-official-chart header a {
+  color: #9fd7c5;
+  font-size: 9px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.investing-official-chart iframe {
+  display: block;
+  width: 100%;
+  height: 480px;
+  border: 0;
+  background: #fff;
+}
 .market-groups {
   display: grid;
   gap: 17px;
@@ -1124,6 +1228,20 @@ footer b {
   background: #111c27;
 }
 .bitcoin-embed-frame iframe { width: 100%; height: 100%; border: 0; }
+.bitcoin-source-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 11px 14px;
+  border: 1px solid #d8deda;
+  border-radius: 10px;
+  background: #f5f6f2;
+  color: #33433e;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.bitcoin-source-link:hover { border-color: #b17b17; color: #8b6114; }
 .dominance-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1450,6 +1568,8 @@ footer b {
   .market-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  .investing-market-layout { grid-template-columns: 1fr; }
+  .investing-instrument-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .research-impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
@@ -1534,6 +1654,9 @@ footer b {
   .market-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .investing-instrument-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .investing-official-chart header { align-items: flex-start; flex-direction: column; }
+  .investing-official-chart iframe { height: 440px; }
   .market-tile {
     min-height: 98px;
     padding: 11px;
