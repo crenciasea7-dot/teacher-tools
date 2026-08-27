@@ -39,6 +39,7 @@ export default function WeeklyApartmentAnalysis() {
     {!data && !error && <div className="weekly-analysis-loading">한국부동산원 자료를 분석하고 있습니다…</div>}
     {data && <>
       <section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section>
+      <WeeklyRateChart rows={data.summary}/>
       <section className="weekly-analysis-card">
         <div className="weekly-section-title"><span>01</span><div><h2>데이터 표 정리</h2><p>매매·전세 주간 변동률</p></div></div>
         <div className="weekly-table-wrap"><table className="weekly-summary-table"><thead><tr><th>조사일</th><th>지역</th><th>매매</th><th>전주</th><th>전세</th></tr></thead><tbody>{data.summary.map((row) => <tr key={row.area}><td>{data.latestDate.slice(5).replace("-", ".")}</td><td><b>{row.area}</b></td><td className={tone(row.saleRate)}>{rate(row.saleRate)}</td><td>{rate(row.previousSaleRate)}</td><td className={tone(row.jeonseRate)}>{rate(row.jeonseRate)}</td></tr>)}</tbody></table></div>
@@ -65,4 +66,16 @@ function DistrictGroup({ title, districts }: { title: string; districts: Distric
 
 function AnalysisStep({ number, title, lines }: { number: string; title: string; lines: string[] }) {
   return <article className="weekly-analysis-card compact"><div className="weekly-section-title"><span>{number}</span><div><h2>{title}</h2></div></div>{lines.map((line) => <p key={line}>{line}</p>)}</article>;
+}
+
+function WeeklyRateChart({ rows }: { rows: AnalysisData["summary"] }) {
+  const ceiling = Math.max(0.01, ...rows.flatMap((row) => [Math.abs(row.saleRate), Math.abs(row.jeonseRate)]));
+  return <section className="weekly-rate-chart" aria-label="지역별 매매와 전세 변동률 그래프">
+    <div><span>RELATED GRAPH</span><h2>분석에 사용한 주간 변동률</h2><p>공식 표의 매매·전세 수치를 그대로 시각화했습니다.</p></div>
+    <div className="weekly-rate-rows">{rows.map((row) => <article key={row.area}>
+      <h3>{row.area}</h3>
+      <div><span>매매</span><i className={tone(row.saleRate)} style={{ width: `${Math.max(5, Math.abs(row.saleRate) / ceiling * 100)}%` }}/><b className={tone(row.saleRate)}>{rate(row.saleRate)}</b></div>
+      <div><span>전세</span><i className={tone(row.jeonseRate)} style={{ width: `${Math.max(5, Math.abs(row.jeonseRate) / ceiling * 100)}%` }}/><b className={tone(row.jeonseRate)}>{rate(row.jeonseRate)}</b></div>
+    </article>)}</div>
+  </section>;
 }

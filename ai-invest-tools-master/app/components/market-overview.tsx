@@ -92,7 +92,7 @@ function SentimentCard({ item }: { item: SentimentItem }) {
         {item.available ? <><line className="gauge-needle" x1={centerX} y1={centerY} x2={needle.x} y2={needle.y} /><circle className="gauge-hub" cx={centerX} cy={centerY} r="8" /></> : null}
         <text className="gauge-score" x={centerX} y="137">{item.score ?? "—"}</text>
       </svg>
-      <div className="sentiment-foot"><span>{item.note}</span><b>실시간 지수</b></div>
+      <div className="sentiment-foot"><span>{item.note}</span><a href={item.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${title} 원본 자료 확인`}>원본 자료 확인 ↗</a></div>
     </article>
   );
 }

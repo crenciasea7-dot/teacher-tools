@@ -333,13 +333,18 @@ header {
   color: #829b94;
   font-size: 8px;
 }
-.sentiment-foot b {
-  color: #8fb6aa;
-  font-size: 8px;
-  font-weight: 600;
+.sentiment-foot a {
+  padding: 6px 8px;
+  border: 1px solid #7fb8a733;
+  border-radius: 7px;
+  background: #7fb8a712;
+  color: #a8d8c9;
+  font-size: 9px;
+  font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
 }
+.sentiment-foot a:hover { border-color: #83cdb6; color: #d7f5eb; }
 .sentiment-card.unavailable { opacity: 0.55; }
 .sentiment-skeleton {
   height: 246px;
@@ -702,12 +707,12 @@ nav button.on {
   font-style: normal;
 }
 .card span {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 .card h2 {
   margin: 5px 0 7px;
-  font-size: 15px;
+  font-size: 17px;
   letter-spacing: -0.05em;
 }
 .vendor-badge {
@@ -726,8 +731,8 @@ nav button.on {
 .card p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.62;
 }
 .card > b {
   position: absolute;
@@ -832,8 +837,31 @@ nav button.on {
   align-self: center;
   margin: 0;
   color: #c9d4d0;
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.6;
 }
+.weekly-rate-chart {
+  margin-top: 14px;
+  padding: 22px;
+  border: 1px solid #dfe5e1;
+  border-radius: 17px;
+  background: #fffefa;
+}
+.weekly-rate-chart > div:first-child > span {
+  color: #76539c;
+  font: 600 9px "DM Mono", monospace;
+  letter-spacing: .12em;
+}
+.weekly-rate-chart h2 { margin: 6px 0 4px; font-size: 20px; letter-spacing: -.04em; }
+.weekly-rate-chart > div:first-child > p { margin: 0 0 18px; color: #74817e; font-size: 12px; }
+.weekly-rate-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.weekly-rate-rows article { padding: 14px; border-radius: 13px; background: #f6f7f4; }
+.weekly-rate-rows h3 { margin: 0 0 10px; font-size: 14px; }
+.weekly-rate-rows article > div { display: grid; grid-template-columns: 30px minmax(0,1fr) 52px; align-items: center; gap: 8px; margin-top: 8px; font-size: 10px; }
+.weekly-rate-rows i { display: block; max-width: 100%; height: 7px; border-radius: 99px; background: #aab5b1; }
+.weekly-rate-rows i.up { background: #e28652; }
+.weekly-rate-rows i.down { background: #4f83b5; }
+.weekly-rate-rows b { text-align: right; font-size: 10px; }
 .weekly-analysis-card {
   margin-top: 14px;
   padding: 22px;
@@ -859,12 +887,12 @@ nav button.on {
 }
 .weekly-section-title h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
 }
 .weekly-section-title p {
   margin: 4px 0 0;
   color: #74817e;
-  font-size: 10px;
+  font-size: 12px;
 }
 .weekly-table-wrap {
   overflow-x: auto;
@@ -943,7 +971,7 @@ nav button.on {
 .weekly-analysis-card.compact p {
   margin: 8px 0 0;
   color: #5f6e6a;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.65;
 }
 .weekly-analysis-footer {
@@ -1522,8 +1550,8 @@ footer b {
 .home-intelligence a:hover { transform: translateY(-3px); box-shadow: 0 16px 40px #17332a12; }
 .home-intelligence span { color: #1b7666; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
 .home-intelligence h2 { margin: 20px 0 9px; font-size: 22px; letter-spacing: -.04em; }
-.home-intelligence p { min-height: 48px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
-.home-intelligence b { display: block; margin-top: 23px; color: #166857; font-size: 10px; }
+.home-intelligence p { min-height: 48px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.home-intelligence b { display: block; margin-top: 23px; color: #166857; font-size: 11px; }
 .section-page { max-width: 1170px; padding-bottom: 90px; }
 .section-hero { padding: 74px 0 48px; }
 .section-hero > span { color: #1b7666; font: 500 9px "DM Mono", monospace; letter-spacing: .13em; }
@@ -1535,8 +1563,8 @@ footer b {
 .flow-questions button { min-height: 154px; border: 1px solid #dce3df; border-radius: 16px; padding: 16px; background: #fffefa; color: var(--ink); text-align: left; cursor: pointer; transition: .16s; }
 .flow-questions button.active { border-color: #1b7666; background: #e8f3ee; transform: translateY(-3px); }
 .flow-questions i { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 8px; background: #e9eeeb; color: #5b6d68; font: 500 10px "DM Mono", monospace; font-style: normal; }
-.flow-questions b { display: block; margin: 17px 0 8px; font-size: 14px; }
-.flow-questions span { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.flow-questions b { display: block; margin: 17px 0 8px; font-size: 16px; }
+.flow-questions span { color: var(--muted); font-size: 11px; line-height: 1.5; }
 .flow-scenario { display: grid; grid-template-columns: 1.2fr repeat(3, .8fr); gap: 10px; align-items: end; padding: 20px; border-radius: 18px; background: #162b2b; color: #fff; }
 .flow-scenario > div span { color: #76b7a6; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
 .flow-scenario h2 { margin: 6px 0 0; font-size: 19px; }
@@ -1637,7 +1665,7 @@ footer b {
   .floating-actions { right: 14px; bottom: 14px; }
   .section-page { padding: 0 16px 58px; }
   .section-hero { padding: 48px 0 35px; }
-  .section-hero h1 { font-size: 49px; }
+  .section-hero h1 { font-size: clamp(38px, 12vw, 49px); line-height: .98; }
   .home-intelligence { grid-template-columns: 1fr; }
   .flow-questions { display: flex; overflow-x: auto; padding-bottom: 6px; }
   .flow-questions button { flex: 0 0 180px; min-height: 142px; }
@@ -1668,7 +1696,9 @@ footer b {
     padding: 45px 0 29px;
   }
   .hero h1 {
-    font-size: 48px;
+    font-size: clamp(39px, 12vw, 48px);
+    line-height: .98;
+    letter-spacing: -.065em;
   }
   .ai-shortcuts {
     grid-template-columns: repeat(3, 1fr);
@@ -1687,15 +1717,20 @@ footer b {
     border-radius: 17px;
   }
   .market-heading {
+    display: grid;
     align-items: flex-start;
+    gap: 10px;
   }
   .market-heading h2 {
     font-size: 23px;
   }
   .market-heading p {
-    display: none;
+    display: block;
+    font-size: 11px;
+    line-height: 1.5;
   }
   .market-heading button {
+    justify-self: start;
     white-space: nowrap;
   }
   .sentiment-heading {
@@ -1708,13 +1743,18 @@ footer b {
   .sentiment-card {
     min-height: 232px;
   }
+  .sentiment-foot { align-items: flex-start; gap: 8px; }
+  .sentiment-foot span { line-height: 1.45; }
   .market-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .investing-instrument-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .investing-official-chart header { align-items: flex-start; flex-direction: column; }
   .investing-official-chart iframe { height: 440px; }
-  .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
+  .tradingview-mini-card { min-height: 148px; }
+  .tradingview-mini-widget,
+  .tradingview-mini-widget tv-mini-chart { height: 148px; }
   .market-board-links { display: grid; }
   .tradingview-all-markets { min-width: 0; }
   .market-tile {
@@ -1756,22 +1796,25 @@ footer b {
   .research-hero h1 { font-size: 47px; }
   .research-form-grid { grid-template-columns: 1fr; }
   .research-dropzone { min-height: 190px; }
-  .research-section-heading { align-items: start; }
-  .research-section-heading > p { max-width: 160px; text-align: right; line-height: 1.5; }
+  .research-section-heading { display: grid; align-items: start; gap: 8px; }
+  .research-section-heading > p { max-width: none; text-align: left; font-size: 11px; line-height: 1.55; }
   .research-impact-grid { grid-template-columns: 1fr 1fr; }
   .research-action-wrap { grid-template-columns: 1fr; }
   .research-tool-links { grid-column: auto; grid-template-columns: 1fr; }
   .weekly-analysis-page { padding: 0 16px 42px; }
   .weekly-analysis-hero { padding-top: 26px; }
+  .weekly-analysis-hero h1 { font-size: clamp(38px, 12vw, 52px); line-height: .98; }
   .weekly-analysis-hero > a { margin-bottom: 36px; }
   .weekly-ai-conclusion,
   .seoul-split,
   .weekly-analysis-grid { grid-template-columns: 1fr; }
   .weekly-ai-conclusion { gap: 8px; }
+  .weekly-rate-rows { grid-template-columns: 1fr; }
   .weekly-analysis-card { padding: 16px; }
   .weekly-analysis-footer { display: grid; }
   .card {
-    min-height: 142px;
+    min-height: 164px;
+    padding-bottom: 42px;
   }
   footer {
     display: grid;
