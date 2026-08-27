@@ -500,7 +500,7 @@ header {
   display: block;
   width: 100%;
   max-width: 250px;
-  height: 154px;
+  height: 166px;
   margin: 4px auto 0;
   overflow: visible;
 }
@@ -528,7 +528,7 @@ header {
 }
 .sentiment-gauge .gauge-score {
   fill: #eff7f3;
-  font: 700 24px Pretendard, Arial, sans-serif;
+  font: 700 22px Pretendard, Arial, sans-serif;
 }
 .sentiment-foot {
   display: flex;

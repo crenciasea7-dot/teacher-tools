@@ -99,7 +99,7 @@ function SentimentCard({ item }: { item: SentimentItem }) {
     const to = polar(end);
     return `M ${from.x} ${from.y} A ${radius} ${radius} 0 0 1 ${to.x} ${to.y}`;
   };
-  const needle = polar(180 - score * 1.8, 66);
+  const needle = polar(180 - score * 1.8, 51);
   const segments = [
     { start: 180, end: 145, color: "#ff5470" },
     { start: 143, end: 109, color: "#f08a65" },
@@ -111,11 +111,11 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   return (
     <article className={`sentiment-card ${tone} ${item.available ? "" : "unavailable"}`}>
       <div className="sentiment-title"><div><b>{title}</b><span>{item.detail}</span></div><em>{item.label}</em></div>
-      <svg className="sentiment-gauge" viewBox="0 0 240 145" role="meter" aria-label={`${title} ${item.score ?? "확인 중"}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
+      <svg className="sentiment-gauge" viewBox="0 0 240 160" role="meter" aria-label={`${title} ${item.score ?? "확인 중"}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
         {segments.map((segment) => <path d={arc(segment.start, segment.end)} stroke={segment.color} key={segment.start} />)}
         <text x="31" y="130">0</text><text x="116" y="24">50</text><text x="204" y="130">100</text>
-        {item.available ? <><line className="gauge-needle" x1={centerX} y1={centerY} x2={needle.x} y2={needle.y} /><circle className="gauge-hub" cx={centerX} cy={centerY} r="8" /></> : null}
-        <text className="gauge-score" x={centerX} y="137">{item.score ?? "—"}</text>
+        {item.available ? <><line className="gauge-needle" x1={centerX} y1={centerY} x2={needle.x} y2={needle.y} /><circle className="gauge-hub" cx={centerX} cy={centerY} r="7" /></> : null}
+        <text className="gauge-score" x={centerX} y="154">{item.score ?? "—"}</text>
       </svg>
       <div className="sentiment-foot"><span>{item.note}</span><a href={item.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${title} 원본 자료 확인`}>원본 자료 확인 ↗</a></div>
     </article>
