@@ -1572,14 +1572,15 @@ footer b {
 .flow-result { display: grid; grid-template-columns: .7fr 1.3fr; gap: 24px; padding: 26px; border: 1px solid #dce3df; border-radius: 22px; background: #fffefa; }
 .flow-result header span { color: #1b7666; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
 .flow-result header h2 { margin: 11px 0 9px; font-size: 28px; letter-spacing: -.05em; }
-.flow-result header p { color: var(--muted); font-size: 10px; line-height: 1.6; }
+.flow-result header p { color: var(--muted); font-size: 12px; line-height: 1.65; }
 .flow-result ol { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
 .flow-result li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 11px; border-radius: 12px; background: #f3f5f2; }
 .flow-result li > i { color: #1b7666; font: 500 9px "DM Mono", monospace; font-style: normal; }
 .flow-result li > div { display: grid; gap: 4px; }
-.flow-result li b { font-size: 10px; }
-.flow-result li span { color: var(--muted); font-size: 8px; }
-.flow-result li a { border-radius: 8px; padding: 8px 9px; background: #fff; color: #176654; font-size: 8px; font-weight: 700; text-decoration: none; }
+.flow-result li b { font-size: 13px; }
+.flow-result li span { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.flow-result li a { border-radius: 8px; padding: 8px 9px; background: #fff; color: #176654; font-size: 10px; font-weight: 700; text-decoration: none; }
+.flow-soon { border-radius: 8px; padding: 8px 9px; background: #e7ebe8; color: #7c8985; font-size: 10px; font-style: normal; font-weight: 700; white-space: nowrap; }
 .flow-external-checks { grid-column: 1 / -1; display: flex; gap: 7px; border-top: 1px solid #e2e7e4; padding-top: 14px; }
 .flow-external-checks a { border: 1px solid #e1e5e2; border-radius: 9px; padding: 9px 11px; color: #56635f; font-size: 9px; text-decoration: none; }
 .flow-external-checks small { color: #a1725e; }
@@ -1829,6 +1830,7 @@ footer b {
   .home-intelligence a { min-height: 180px; padding: 19px; }
   .flow-result li { grid-template-columns: auto 1fr; }
   .flow-result li a { grid-column: 2; justify-self: start; }
+  .flow-result li .flow-soon { grid-column: 2; justify-self: start; }
   .flow-external-checks { flex-direction: column; }
   .market-grid {
     grid-template-columns: 1fr 1fr;
