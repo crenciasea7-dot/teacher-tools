@@ -94,6 +94,39 @@ header {
   color: var(--muted);
   font-size: 11px;
 }
+.ai-shortcuts {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fffefa;
+}
+.ai-shortcuts > div,
+.ai-shortcuts > a {
+  display: grid;
+  align-content: center;
+  min-height: 64px;
+  padding: 11px 14px;
+  border-radius: 11px;
+}
+.ai-shortcuts > div span {
+  color: #1b7666;
+  font: 500 8px "DM Mono", monospace;
+  letter-spacing: .1em;
+}
+.ai-shortcuts > div b { margin-top: 5px; font-size: 13px; }
+.ai-shortcuts > a {
+  border: 1px solid #e4e8e5;
+  background: #f7f8f5;
+  color: var(--ink);
+  text-decoration: none;
+  transition: .18s;
+}
+.ai-shortcuts > a:hover { transform: translateY(-2px); border-color: #b9c9c3; }
+.ai-shortcuts > a strong { font-size: 13px; }
+.ai-shortcuts > a small { margin-top: 5px; color: var(--muted); font-size: 8px; }
 .hero {
   padding: 60px 0 39px;
 }
@@ -781,6 +814,17 @@ footer b {
   }
   .hero h1 {
     font-size: 48px;
+  }
+  .ai-shortcuts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ai-shortcuts > div {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
+  .ai-shortcuts > a {
+    min-height: 58px;
+    padding: 9px;
   }
   .market-overview {
     margin: 4px 0 22px;
