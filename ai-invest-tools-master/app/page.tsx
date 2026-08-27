@@ -55,7 +55,8 @@ export default function Page() {
         <a href="/weekly-apartment-analysis"><span>07 · WEEKLY HOUSING</span><h2>주간 아파트 가격 동향</h2><p>공식 데이터표 → 서울 세분화 → 추세 → 정성판단 → 국면진단 → 한 문장 결론</p><b>6단계 분석 보기 →</b></a>
         <a href="/research-insights"><span>08 · POLICY IMPACT</span><h2>정부정책 분석</h2><p>정책 원문을 넣고 매매가·대출·세금·심리 영향을 균형 있게 정리합니다.</p><b>정책 자료 분석하기 →</b></a>
       </section>
-      <nav>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
+      <div className="tools-section-heading"><div><span>MY INVESTMENT TOOLKIT</span><h2>필요한 도구를 바로 꺼내세요.</h2></div><p>목적별로 골라 쓰고, 판단 과정은 하나의 흐름으로 이어갑니다.</p></div>
+      <nav className="tool-filters" aria-label="도구 분류">{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
       <section className="tools" id="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
