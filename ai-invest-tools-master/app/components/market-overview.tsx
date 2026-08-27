@@ -48,23 +48,27 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
     { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", url: "https://finance.naver.com/item/main.naver?code=000660" },
     { id: "samsung", name: "삼성전자", symbol: "005930", url: "https://finance.naver.com/item/main.naver?code=005930" },
   ] },
-  { name: "2. 지수", instruments: [
+  { name: "2. 국내 지수", instruments: [
+    { id: "kospi", name: "코스피", symbol: "KOSPI", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSPI" },
+    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ" },
+  ] },
+  { name: "3. 미국 지수", instruments: [
     { id: "sp500", name: "S&P 500", symbol: "^GSPC", url: "https://finance.yahoo.com/quote/%5EGSPC/" },
     { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", url: "https://finance.yahoo.com/quote/%5EIXIC/" },
   ] },
-  { name: "3. 금", instruments: [
+  { name: "4. 금 & 야간시장", instruments: [
     { id: "gold", name: "금", symbol: "GC=F", url: "https://finance.yahoo.com/quote/GC%3DF/" },
     { id: "kospi-night", name: "코스피 야간선물", symbol: "KOSPI 200 FUTURES", url: "https://finance.naver.com/", statusNote: "네이버 금융에서 실시간 확인" },
   ] },
-  { name: "4. 채권 & 금리", instruments: [
+  { name: "5. 채권 & 금리", instruments: [
     { id: "us10y", name: "미국 10년물", symbol: "^TNX", url: "https://finance.yahoo.com/quote/%5ETNX/" },
     { id: "us30y", name: "미국 30년물", symbol: "^TYX", url: "https://finance.yahoo.com/quote/%5ETYX/" },
   ] },
-  { name: "5. 상품 & 환율", instruments: [
+  { name: "6. 상품 & 환율", instruments: [
     { id: "oil", name: "WTI 유가", symbol: "CL=F", url: "https://finance.yahoo.com/quote/CL%3DF/" },
     { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", url: "https://finance.yahoo.com/quote/KRW%3DX/" },
   ] },
-  { name: "6. 암호화폐", instruments: [
+  { name: "7. 암호화폐", instruments: [
     { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.coingecko.com/en/coins/bitcoin" },
     { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.coingecko.com/en/coins/xrp" },
   ] },

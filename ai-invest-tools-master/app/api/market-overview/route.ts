@@ -189,6 +189,8 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
   const definitions = [
     { id: "sk-hynix" as const, kind: "stock", code: "000660", format: "krw" as const, precision: 0, sourceUrl: "https://finance.naver.com/item/main.naver?code=000660" },
     { id: "samsung" as const, kind: "stock", code: "005930", format: "krw" as const, precision: 0, sourceUrl: "https://finance.naver.com/item/main.naver?code=005930" },
+    { id: "kospi" as const, kind: "index", code: "KOSPI", format: "number" as const, precision: 2, sourceUrl: "https://finance.naver.com/sise/sise_index.naver?code=KOSPI" },
+    { id: "kosdaq" as const, kind: "index", code: "KOSDAQ", format: "number" as const, precision: 2, sourceUrl: "https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ" },
   ];
 
   const quotes = await Promise.all(definitions.map(async (definition): Promise<QuoteItem | null> => {
