@@ -30,6 +30,7 @@ type QuoteItem = {
   format: "krw" | "usd" | "number" | "percent";
   precision: number;
   measuredAt: string;
+  session: "정규장" | "시간외" | "24시간" | "해외시장";
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
 };
@@ -123,6 +124,9 @@ function SentimentCard({ item }: { item: SentimentItem }) {
 
 function MarketLinkCard({ instrument, group, quote, loading }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem; loading: boolean }) {
   const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
+  const quoteTime = quote
+    ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(quote.measuredAt))
+    : null;
   return (
     <article className="market-link-card" aria-label={`${instrument.name} 현재가와 등락률`}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
@@ -131,7 +135,7 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
       {quote ? <div className="market-api-quote">
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
-        <small>{quote.source} · {quote.id === "btc" || quote.id === "xrp" ? "24시간 등락" : "전일 대비"}</small>
+        <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
       </div> : <div className={`market-api-state ${loading ? "loading" : "unavailable"}`}>{loading ? "시세 불러오는 중…" : "시세 일시 확인 불가"}</div>}
       <div className="market-detail-link-row">
         <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer">{quote?.source ?? "원본 사이트"}에서 상세 보기 ↗</a>

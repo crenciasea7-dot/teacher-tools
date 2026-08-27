@@ -21,6 +21,7 @@ type QuoteItem = {
   format: QuoteFormat;
   precision: number;
   measuredAt: string;
+  session: "정규장" | "시간외" | "24시간" | "해외시장";
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
 };
@@ -177,6 +178,7 @@ async function fetchCryptoQuotes(): Promise<QuoteItem[]> {
       format: "usd" as const,
       precision: item.usd < 10 ? 4 : 0,
       measuredAt: new Date((item.last_updated_at ?? Math.floor(Date.now() / 1_000)) * 1_000).toISOString(),
+      session: "24시간" as const,
       source: "CoinGecko" as const,
       sourceUrl: definition.sourceUrl,
     }];
@@ -194,7 +196,11 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
   const quotes = await Promise.all(definitions.map(async (definition): Promise<QuoteItem | null> => {
     try {
       const response = await fetch(`https://polling.finance.naver.com/api/realtime/domestic/${definition.kind}/${definition.code}`, {
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
+        headers: {
+          Referer: "https://finance.naver.com/",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          Accept: "application/json",
+        },
         next: { revalidate: 30 },
         signal: AbortSignal.timeout(8_000),
       });
@@ -218,10 +224,16 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
         format: definition.format,
         precision: definition.precision,
         measuredAt: new Date(afterMarket?.localTradedAt ?? item.localTradedAt ?? Date.now()).toISOString(),
+        session: afterMarket ? "시간외" : "정규장",
         source: "네이버 금융",
         sourceUrl: definition.sourceUrl,
       };
-    } catch {
+    } catch (error) {
+      console.error("[market-overview][naver] quote failed", {
+        id: definition.id,
+        code: definition.code,
+        error: error instanceof Error ? error.message : String(error),
+      });
       return null;
     }
   }));
@@ -269,10 +281,16 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
         format: definition.format,
         precision: definition.precision,
         measuredAt: new Date((meta?.regularMarketTime ?? Math.floor(Date.now() / 1_000)) * 1_000).toISOString(),
+        session: "해외시장",
         source: "Yahoo Finance",
         sourceUrl: `https://finance.yahoo.com/quote/${ticker}/`,
       };
-    } catch {
+    } catch (error) {
+      console.error("[market-overview][yahoo] quote failed", {
+        id: definition.id,
+        ticker: definition.ticker,
+        error: error instanceof Error ? error.message : String(error),
+      });
       return null;
     }
   }));
