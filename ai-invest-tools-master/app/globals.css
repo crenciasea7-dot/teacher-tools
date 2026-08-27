@@ -483,9 +483,9 @@ header {
 .market-link-card > small { margin-top: 4px; color: #83938e; font: 9px "DM Mono", monospace; }
 .market-api-quote { display: grid; min-height: 84px; align-content: center; gap: 5px; margin-top: 5px; }
 .market-api-quote > strong { font-size: 18px; letter-spacing: -.04em; }
-.market-api-quote > div { display: flex; align-items: baseline; gap: 6px; }
+.market-api-quote > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
 .market-api-quote em,
-.market-api-quote b { font-size: 9px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.market-api-quote b { font-size: 14px; line-height: 1.25; font-style: normal; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
 .market-api-quote > div.up { color: #d7453d; }
 .market-api-quote > div.down { color: #2479bd; }
 .market-api-quote > div.flat { color: #6f807a; }
@@ -1761,6 +1761,8 @@ footer b {
   .market-link-card { min-height: 178px; padding: 13px; }
   .market-link-card > strong { font-size: 14px; }
   .market-api-quote > strong { font-size: 16px; }
+  .market-api-quote em,
+  .market-api-quote b { font-size: 13px; }
   .market-board-links { display: grid; }
   .market-source-link { min-width: 0; }
   .market-tile {
