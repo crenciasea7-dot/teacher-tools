@@ -97,14 +97,16 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   );
 }
 
-function TradingViewQuoteCard({ instrument, category }: { instrument: InvestingInstrument; category: string }) {
+function TradingViewQuoteCard({ instrument }: { instrument: InvestingInstrument }) {
   return (
-    <article className="tradingview-quote-card">
-      <header><span>{category}</span><div><b>{instrument.name}</b><small>{instrument.symbol}</small></div></header>
-      <div className="tradingview-single-ticker">
-        {createElement("tv-single-ticker", { symbol: instrument.widgetSymbol, locale: "kr" }, <span>현재가 불러오는 중…</span>)}
+    <article className="tradingview-mini-card" aria-label={`${instrument.name} 현재가와 미니차트`}>
+      <div className="tradingview-mini-widget">
+        {createElement(
+          "tv-mini-chart",
+          { symbol: instrument.widgetSymbol, locale: "kr", theme: "light", transparent: true, "symbol-url": instrument.url },
+          <span>현재가와 차트 불러오는 중…</span>,
+        )}
       </div>
-      <a href={instrument.url} target="_blank" rel="noreferrer">TradingView 차트 보기 ↗</a>
     </article>
   );
 }
@@ -138,7 +140,7 @@ export default function MarketOverview() {
 
   return (
     <section className="market-overview" id="macro" aria-labelledby="market-overview-title">
-      <Script id="tradingview-single-ticker-widget" type="module" src="https://widgets.tradingview-widget.com/w/en/tv-single-ticker.js" strategy="afterInteractive" />
+      <Script id="tradingview-mini-chart-widget" type="module" src="https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js" strategy="afterInteractive" />
       <div className="sentiment-section">
         <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
@@ -154,7 +156,7 @@ export default function MarketOverview() {
 
       <div className="tradingview-market-board" aria-label="핵심 시장 현재가 전체 보기">
         {INVESTING_GROUPS.flatMap((group) => group.instruments.map((instrument) => (
-          <TradingViewQuoteCard instrument={instrument} category={group.name.replace(/^\d+\.\s*/, "")} key={instrument.id} />
+          <TradingViewQuoteCard instrument={instrument} key={instrument.id} />
         )))}
       </div>
       <div className="market-board-links">

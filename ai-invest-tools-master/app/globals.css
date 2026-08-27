@@ -454,68 +454,41 @@ header {
 }
 .tradingview-market-board {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 9px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
   margin-top: 18px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #dfe5e2;
+  color-scheme: light;
 }
-.tradingview-quote-card {
+.tradingview-mini-card {
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #ffffff18;
-  border-radius: 13px;
-  background: #ffffff0a;
+  min-height: 164px;
+  background: #fff;
+  --tv-widget-background-color: #fff;
+  --tv-widget-text-color: #1d2730;
+  --tv-widget-price-text-color: #1d2730;
+  --tv-widget-positive-color: #e0312b;
+  --tv-widget-positive-area-top-color: rgba(224, 49, 43, 0.16);
+  --tv-widget-positive-area-bottom-color: rgba(224, 49, 43, 0.03);
+  --tv-widget-negative-color: #1684d6;
+  --tv-widget-negative-area-top-color: rgba(22, 132, 214, 0.16);
+  --tv-widget-negative-area-bottom-color: rgba(22, 132, 214, 0.03);
 }
-.tradingview-quote-card > header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 10px 11px 7px;
-}
-.tradingview-quote-card > header > span {
-  color: #69c7aa;
-  font-size: 8px;
-  font-weight: 700;
-}
-.tradingview-quote-card > header > div {
-  display: grid;
-  min-width: 0;
-  justify-items: end;
-}
-.tradingview-quote-card > header b {
-  overflow: hidden;
-  max-width: 100%;
-  font-size: 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.tradingview-quote-card > header small {
-  color: #718b83;
-  font: 8px "DM Mono", monospace;
-}
-.tradingview-single-ticker {
-  min-height: 86px;
-  padding: 0 5px;
-}
-.tradingview-single-ticker tv-single-ticker {
+.tradingview-mini-widget,
+.tradingview-mini-widget tv-mini-chart {
   display: block;
   width: 100%;
-  min-height: 82px;
+  height: 164px;
 }
-.tradingview-single-ticker tv-single-ticker > span {
+.tradingview-mini-widget tv-mini-chart > span {
   display: grid;
-  min-height: 82px;
+  height: 164px;
   place-items: center;
-  color: #7d958e;
+  color: #60726c;
   font-size: 9px;
-}
-.tradingview-quote-card > a {
-  display: block;
-  padding: 8px 11px 10px;
-  color: #9fd7c5;
-  font-size: 8px;
-  text-align: right;
-  text-decoration: none;
 }
 .market-board-links {
   display: grid;
@@ -1654,7 +1627,7 @@ footer b {
   }
   .investing-market-layout { grid-template-columns: 1fr; }
   .investing-instrument-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .tradingview-market-board { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tradingview-market-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .research-impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
