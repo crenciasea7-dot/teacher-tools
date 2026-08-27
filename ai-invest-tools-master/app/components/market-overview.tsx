@@ -17,9 +17,22 @@ type MarketItem = {
 
 type MarketResponse = {
   items: MarketItem[];
+  sentiment: SentimentItem[];
   asOf: string;
   refreshSeconds: number;
   delayedNotice: string;
+};
+
+type SentimentItem = {
+  id: "us" | "kr" | "crypto";
+  market: string;
+  detail: string;
+  score: number | null;
+  label: string;
+  source: string;
+  sourceUrl: string;
+  note: string;
+  available: boolean;
 };
 
 const CATEGORY_ORDER: MarketItem["category"][] = ["암호화폐", "주식", "상품", "채권", "환율"];
@@ -76,6 +89,22 @@ function MarketTile({ item }: { item: MarketItem }) {
   );
 }
 
+function SentimentCard({ item }: { item: SentimentItem }) {
+  const score = item.score ?? 0;
+  const tone = score < 25 ? "extreme-fear" : score < 45 ? "fear" : score < 56 ? "neutral" : score < 75 ? "greed" : "extreme-greed";
+
+  return (
+    <article className={`sentiment-card ${tone} ${item.available ? "" : "unavailable"}`}>
+      <div className="sentiment-top"><div><b>{item.market}</b><span>{item.detail}</span></div><strong>{item.score ?? "—"}</strong></div>
+      <div className="sentiment-status"><em>{item.label}</em><span>{item.note}</span></div>
+      <div className="sentiment-meter" role="meter" aria-label={`${item.market} 공포탐욕지수`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
+        <i style={{ left: `${score}%` }} />
+      </div>
+      <a href={item.sourceUrl} target="_blank" rel="noreferrer">출처: {item.source} ↗</a>
+    </article>
+  );
+}
+
 export default function MarketOverview() {
   const [data, setData] = useState<MarketResponse | null>(null);
   const [error, setError] = useState(false);
@@ -119,6 +148,14 @@ export default function MarketOverview() {
         <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 데이터 새로고침">↻ {updatedAt ? `${updatedAt} 기준` : "불러오는 중"}</button>
       </div>
       {error && <p className="market-error">일부 시세를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p>}
+      <div className="sentiment-section">
+        <div className="sentiment-heading"><h3>공포·탐욕지수</h3><p>미국 주식·한국 주식·암호화폐는 기준이 달라 각각 따로 봅니다.</p></div>
+        <div className="sentiment-grid">
+          {data?.sentiment?.length
+            ? data.sentiment.map((item) => <SentimentCard item={item} key={item.id} />)
+            : Array.from({ length: 3 }, (_, index) => <div className="sentiment-skeleton" key={index} />)}
+        </div>
+      </div>
       <div className="market-groups">
         {CATEGORY_ORDER.map((category) => {
           const items = data?.items.filter((item) => item.category === category) ?? [];
