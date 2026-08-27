@@ -63,7 +63,7 @@ export default function Page() {
           return <a className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`} href={tool.url ?? "#"} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={tool.name} onClick={(event) => { if (!tool.url) event.preventDefault(); }}><i>{tool.icon}</i><div><span>{tool.group}</span><h2>{tool.name}{tool.externalVendor && <small className="vendor-badge">외부 업체</small>}</h2><p>{tool.description}</p></div><b>{tool.url ? (tool.cta ?? "바로가기 ↗") : "준비 중"}</b></a>;
         })}
       </section>
-      <footer><b>AI INVESTMENT MASTER</b><span>도구는 늘어나고, 판단은 더 선명해집니다.</span></footer>
+      <footer><div><b>AI INVESTMENT MASTER · v1.0</b><span>도구는 늘어나고, 판단은 더 선명해집니다.</span></div><div><b>DEVELOPED BY racha</b><span>학생 입력값은 서버에 저장하지 않습니다.</span></div></footer>
     </main>
   );
 }
