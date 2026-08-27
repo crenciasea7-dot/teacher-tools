@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dailyBriefs from "../data/daily-briefs.json";
 
 type MarketItem = {
   id: string;
@@ -87,6 +88,17 @@ function MarketTile({ item }: { item: MarketItem }) {
       <div className="market-price"><strong>{formatPrice(item)}</strong><em className={direction}>{change}</em></div>
       <Sparkline points={item.points} direction={direction} />
       <span className="market-detail">상세 차트 ↗</span>
+    </a>
+  );
+}
+
+function DailyBriefTile({ brief }: { brief: (typeof dailyBriefs.briefs)[number] }) {
+  return (
+    <a className={`market-tile daily-brief-tile ${brief.id}`} href={`/daily-briefings#${brief.id}`} aria-label={`${brief.shortTitle} 최신 브리핑 열기`}>
+      <div className="market-name"><b>{brief.shortTitle}</b><span>DAILY AI BRIEF</span></div>
+      <div className="brief-status"><strong>{brief.status}</strong><em>{brief.dateLabel}</em></div>
+      <p>{brief.cardSummary}</p>
+      <span className="market-detail">최신 브리핑 보기 →</span>
     </a>
   );
 }
@@ -191,6 +203,7 @@ export default function MarketOverview() {
                 {items.length > 0
                   ? items.map((item) => <MarketTile item={item} key={item.id} />)
                   : Array.from({ length: category === "주식" ? 6 : 2 }, (_, index) => <div className="market-skeleton" key={index} />)}
+                {category === "환율" && dailyBriefs.briefs.map((brief) => <DailyBriefTile brief={brief} key={brief.id} />)}
               </div>
             </div>
           );

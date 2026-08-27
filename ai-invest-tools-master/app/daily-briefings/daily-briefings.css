@@ -1,0 +1,37 @@
+.briefing-page { max-width: 1050px; padding: 34px 28px 70px; }
+.briefing-back { display: inline-flex; padding: 9px 13px; border: 1px solid #dfe5e1; border-radius: 999px; background: #fffefa; color: #61706c; font-size: 11px; text-decoration: none; }
+.briefing-hero { display: block; padding: 58px 0 38px; }
+.briefing-hero > p { margin: 0 0 11px; color: #1b7666; font: 500 10px "DM Mono", monospace; letter-spacing: .12em; }
+.briefing-hero h1 { margin: 0; font: 800 clamp(44px, 7vw, 72px)/1.08 "Nanum Myeongjo", serif; letter-spacing: -.08em; }
+.briefing-hero h1 em { color: #e56e42; font-style: normal; }
+.briefing-hero > span { display: block; margin-top: 18px; color: #74817e; font-size: 12px; line-height: 1.7; }
+.briefing-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; padding: 0; border: 0; }
+.briefing-nav a { display: flex; align-items: center; justify-content: space-between; min-height: 68px; padding: 16px 18px; border: 1px solid #dfe5e1; border-radius: 15px; background: #fffefa; color: #182329; text-decoration: none; }
+.briefing-nav a span { color: #1b7666; font-size: 10px; }
+.briefing-report { scroll-margin-top: 20px; margin-top: 18px; padding: 27px; border: 1px solid #dfe5e1; border-radius: 21px; background: #fffefa; box-shadow: 0 18px 50px #19372b0c; }
+.briefing-report.rate-risk { border-top: 4px solid #e3a54a; }
+.briefing-report.morning { border-top: 4px solid #1b7666; }
+.briefing-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.briefing-title span { color: #74817e; font: 500 9px "DM Mono", monospace; letter-spacing: .1em; }
+.briefing-title h2 { margin: 7px 0 0; font-size: 27px; letter-spacing: -.05em; }
+.briefing-title > b { flex: 0 0 auto; padding: 8px 11px; border-radius: 999px; background: #e8f2ed; color: #1b7666; font-size: 10px; }
+.rate-risk .briefing-title > b { background: #fff1d8; color: #a66818; }
+.briefing-summary { margin: 22px 0 0; padding: 18px 20px; border-radius: 14px; background: #263438; color: #eaf2ef; font-size: 13px; font-weight: 600; line-height: 1.75; }
+.briefing-highlights { margin-top: 15px; padding: 20px; border-radius: 14px; background: #f1f4f1; }
+.briefing-highlights h3 { margin: 0 0 12px; font-size: 14px; }
+.briefing-highlights ul { display: grid; gap: 8px; margin: 0; padding-left: 18px; color: #52615c; font-size: 11px; line-height: 1.6; }
+.briefing-sections { display: grid; gap: 0; margin-top: 20px; }
+.briefing-sections > section { display: grid; grid-template-columns: 36px 1fr; gap: 12px; padding: 20px 0; border-top: 1px solid #e7ebe8; }
+.briefing-sections > section > span { color: #1b7666; font: 500 10px "DM Mono", monospace; }
+.briefing-sections h3 { margin: 0 0 9px; font-size: 16px; }
+.briefing-sections p { margin: 7px 0 0; color: #5f6e69; font-size: 12px; line-height: 1.75; }
+.briefing-footer { margin-top: 24px; color: #84918c; font-size: 10px; text-align: center; }
+@media (max-width: 700px) {
+  .briefing-page { padding: 22px 16px 45px; }
+  .briefing-hero { padding: 44px 0 30px; }
+  .briefing-nav { grid-template-columns: 1fr; }
+  .briefing-report { padding: 20px 17px; }
+  .briefing-title { display: grid; }
+  .briefing-title > b { justify-self: start; }
+  .briefing-title h2 { font-size: 22px; }
+}
