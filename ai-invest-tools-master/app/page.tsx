@@ -18,6 +18,7 @@ const tools: Tool[] = [
   { icon: "⌁", name: "집 잔금 계산기", description: "입주 잔금과 대출 가능 범위를 계산", url: "https://jip-jangeum-calculator.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
   { icon: "◉", name: "투자거울", description: "투자 판단의 근거·리스크를 비춰보기", url: "https://ai-investment-mirror.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
   { icon: "⌕", name: "집중 아파트 리서치", description: "후보 아파트를 비교하고 핵심을 정리", url: "https://jipjung-apartment-research.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
+  { icon: "▤", name: "등기부 등본 분석", description: "등기부등본의 위험 항목·법적 이슈·권리관계를 AI로 점검", url: "https://realpickai.kr/ai-registry", group: "매수 판단", accent: "blue" },
   { icon: "₩", name: "구매력 계산기", description: "자기자금과 소득으로 매수 가능 금액 확인", url: "https://purchasing-power-calculator.vercel.app/", group: "매수 판단", accent: "blue" },
   { icon: "Σ", name: "종합 시뮬레이션 (부동산 구매)", description: "현금·대출·부대비용·월 상환액을 한 번에 계산", url: "/property-purchase-simulation", group: "매수 판단", accent: "blue" },
   { icon: "⌖", name: "재개발 매물 분석", description: "정비사업 매물의 단계·권리·리스크 점검", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
