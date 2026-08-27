@@ -23,7 +23,7 @@ const tools: Tool[] = [
   { icon: "Σ", name: "종합 시뮬레이션 (부동산 구매)", description: "현금·대출·부대비용·월 상환액을 한 번에 계산", url: "/property-purchase-simulation", group: "매수 판단", accent: "blue" },
   { icon: "⌖", name: "재개발 매물 분석", description: "정비사업 매물의 단계·권리·리스크 점검", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
   { icon: "R", name: "inga-radar", description: "서울 재개발·재건축 인허가 신호 추적", group: "정비사업", accent: "green" },
-  { icon: "R", name: "rone-weekly", description: "주간 자본 흐름과 다음 투자 우선순위", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
+  { icon: "R", name: "주간 아파트 가격동향", description: "시·군·구별 매매·전세 흐름과 주간 변동률을 확인", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
 ];
