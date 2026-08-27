@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">AI 투자 도구 MASTER</title>
+  <desc id="description">짙은 초록색 바탕에 AI 글자와 주황색 상승 표시가 있는 앱 아이콘</desc>
+  <rect width="512" height="512" rx="112" fill="#13292a"/>
+  <circle cx="396" cy="116" r="48" fill="#e56e42"/>
+  <path d="M371 131l24-25 18 18" fill="none" stroke="#fffefa" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M413 124v-31" fill="none" stroke="#fffefa" stroke-width="14" stroke-linecap="round"/>
+  <text x="256" y="310" fill="#fffefa" font-family="Arial, sans-serif" font-size="190" font-weight="800" text-anchor="middle">AI</text>
+  <text x="256" y="382" fill="#a9c2ba" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="8" text-anchor="middle">MASTER</text>
+</svg>
