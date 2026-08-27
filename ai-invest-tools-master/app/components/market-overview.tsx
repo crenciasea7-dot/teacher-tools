@@ -36,7 +36,14 @@ type SentimentItem = {
   available: boolean;
 };
 
-const CATEGORY_ORDER: MarketItem["category"][] = ["암호화폐", "주식", "상품", "채권", "환율"];
+const DISPLAY_GROUPS = [
+  { name: "1. 주식", ids: ["sk-hynix", "samsung"] },
+  { name: "2. 지수", ids: ["sp500", "nasdaq", "kospi", "kosdaq"] },
+  { name: "3. 암호화폐", ids: ["btc", "xrp"] },
+  { name: "4. 상품", ids: ["gold", "oil"] },
+  { name: "5. 채권", ids: ["us10y", "us30y"] },
+  { name: "6. 환율", ids: ["krw-usd"] },
+] as const;
 
 function formatPrice(item: MarketItem) {
   if (item.price === null) return "확인 중";
@@ -167,7 +174,7 @@ export default function MarketOverview() {
     : null;
 
   return (
-    <section className="market-overview" aria-labelledby="market-overview-title">
+    <section className="market-overview" id="macro" aria-labelledby="market-overview-title">
       <div className="sentiment-section">
         <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
@@ -182,13 +189,13 @@ export default function MarketOverview() {
       </div>
       {error && <p className="market-error">일부 시세를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p>}
       <div className="market-groups">
-        {CATEGORY_ORDER.map((category, categoryIndex) => {
-          const items = data?.items.filter((item) => item.category === category) ?? [];
+        {DISPLAY_GROUPS.map((group) => {
+          const items = data?.items.filter((item) => (group.ids as readonly string[]).includes(item.id)) ?? [];
           return (
-            <div className="market-group" key={category}>
-              <h3>{category}</h3>
+            <div className="market-group" key={group.name}>
+              <h3>{group.name}</h3>
               <div className="market-grid">
-                {categoryIndex === 0 ? (
+                {group.name.includes("암호화폐") ? (
                   <a className="market-tile bitcoin-board-tile" href="/bitcoin-indicators" aria-label="비트코인 참고 지표 판단 보드 열기">
                     <div className="market-name"><b>비트코인 참고 지표</b><span>BTC DECISION BOARD</span></div>
                     <div className="bitcoin-board-mark">₿</div>
@@ -198,7 +205,7 @@ export default function MarketOverview() {
                 ) : null}
                 {items.length > 0
                   ? items.map((item) => <MarketTile item={item} key={item.id} />)
-                  : Array.from({ length: category === "주식" ? 6 : 2 }, (_, index) => <div className="market-skeleton" key={index} />)}
+                  : Array.from({ length: group.ids.length }, (_, index) => <div className="market-skeleton" key={index} />)}
               </div>
             </div>
           );

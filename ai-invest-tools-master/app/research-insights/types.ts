@@ -16,6 +16,11 @@ export type ResearchAnalysis = {
     policy: ImpactItem;
     sentiment: ImpactItem;
   };
+  perspectives?: {
+    positive: string;
+    negative: string;
+    neutral: string;
+  };
   actions: string[];
   recommendedTools: { name: string; reason: string }[];
   engine: "ai" | "local";

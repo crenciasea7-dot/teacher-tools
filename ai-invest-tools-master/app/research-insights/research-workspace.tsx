@@ -119,6 +119,11 @@ function localAnalysis(text: string, title: string): ResearchAnalysis {
       policy: affected(/정책|정부|규제|법안|발표/, "정책 변화 신호가 있어 시행일과 적용 대상을 원문에서 확인해야 합니다."),
       sentiment: affected(/심리|관망|수요|공급|상승|하락/, "시장심리에 영향을 줄 표현이 있어 다음 통계와 거래 흐름을 함께 봐야 합니다."),
     },
+    perspectives: {
+      positive: "기회가 될 수 있는 변화와 수혜 대상을 찾되 실제 수치로 확인해야 합니다.",
+      negative: "비용 증가·규제·수요 위축 가능성과 예상이 빗나갈 때의 손실을 먼저 점검해야 합니다.",
+      neutral: "자료 하나로 결론내리지 말고 시행 여부와 다음 공식 통계를 기다리는 편이 안전합니다.",
+    },
     actions: ["원문의 발표일·시행일·적용 대상을 다시 확인하세요.", "내 보유자산과 관심 지역에 직접 적용되는 문장을 표시하세요.", "다음 주 공식 통계와 실제 거래에서 같은 방향이 이어지는지 확인하세요."],
     recommendedTools: has(/아파트|주택|매매|전세/) ? [{ name: "주간 아파트 가격동향", reason: "자료의 방향을 최신 공식 통계와 비교해보세요." }] : [],
     engine: "local",
@@ -167,6 +172,19 @@ export default function ResearchWorkspace() {
     if (!activeKeyword) return records;
     return records.filter((record) => record.analysis.keywords.some(({ word }) => word === activeKeyword));
   }, [activeKeyword, records]);
+
+  const periodicView = useMemo(() => {
+    const now = Date.now();
+    const recent = (days: number) => records.filter((record) => now - new Date(record.createdAt).getTime() <= days * 86_400_000);
+    const summarize = (items: ResearchRecord[]) => {
+      const counts = new Map<string, number>();
+      items.forEach((record) => record.analysis.keywords.forEach(({ word }) => counts.set(word, (counts.get(word) ?? 0) + 1)));
+      return [...counts].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([word]) => word);
+    };
+    const weekly = recent(7);
+    const monthly = recent(30);
+    return { weeklyCount: weekly.length, monthlyCount: monthly.length, weeklyWords: summarize(weekly), monthlyWords: summarize(monthly) };
+  }, [records]);
 
   function chooseFile(nextFile: File) {
     setFile(nextFile);
@@ -284,9 +302,14 @@ export default function ResearchWorkspace() {
         {activeKeyword && <button type="button" className="research-filter-clear" onClick={() => setActiveKeyword(null)}>‘{activeKeyword}’ 필터 해제 ×</button>}
       </section>
 
+      <section className="research-periodic-panel">
+        <div className="research-section-heading"><div><span>03 · RHYTHM</span><h2>정기적 뷰</h2></div><p>반복되는 신호를 주간·월간으로 비교합니다.</p></div>
+        <div className="research-periodic-grid"><article><span>LAST 7 DAYS</span><b>{periodicView.weeklyCount}개 자료</b><p>{periodicView.weeklyWords.length ? periodicView.weeklyWords.join(" · ") : "아직 주간 신호가 없습니다."}</p></article><article><span>LAST 30 DAYS</span><b>{periodicView.monthlyCount}개 자료</b><p>{periodicView.monthlyWords.length ? periodicView.monthlyWords.join(" · ") : "아직 월간 신호가 없습니다."}</p></article><article><span>REPEATED SIGNAL</span><b>반복 신호 포착</b><p>{periodicView.monthlyWords[0] ? `‘${periodicView.monthlyWords[0]}’가 가장 자주 등장했습니다. 방향보다 맥락을 함께 확인하세요.` : "자료가 쌓이면 가장 자주 반복된 키워드를 알려드립니다."}</p></article></div>
+      </section>
+
       <section className="research-timeline">
         <div className="research-section-heading">
-          <div><span>03 · MEMORY</span><h2>인사이트 타임라인</h2></div>
+          <div><span>04 · MEMORY</span><h2>인사이트 타임라인</h2></div>
           <p>요약 → 영향 → 행동이 한 기록에 함께 남습니다.</p>
         </div>
         {!visibleRecords.length && <div className="research-empty-timeline">저장된 자료가 없습니다. 위에서 첫 자료를 넣어보세요.</div>}
@@ -306,6 +329,10 @@ export default function ResearchWorkspace() {
           <div className="research-impact-wrap">
             <h4>🔴 나에게 미치는 영향</h4>
             <div className="research-impact-grid">{(Object.keys(impactLabels) as Array<keyof typeof impactLabels>).map((key) => { const item = record.analysis.impact[key]; return <div className={item.direction} key={key}><i>{directionMark(item.direction)}</i><b>{impactLabels[key]}</b><p>{item.detail}</p></div>; })}</div>
+          </div>
+          <div className="research-perspectives">
+            <h4>⚖️ 다각도 해석</h4>
+            <div><article className="positive"><span>긍정적 시각</span><p>{record.analysis.perspectives?.positive ?? "기회가 될 수 있는 조건과 수혜 대상을 확인하세요."}</p></article><article className="negative"><span>부정적 시각</span><p>{record.analysis.perspectives?.negative ?? "비용과 손실 가능성, 예상이 틀릴 때의 대응을 점검하세요."}</p></article><article className="neutral"><span>중립적 시각</span><p>{record.analysis.perspectives?.neutral ?? "한 자료만으로 결론내리지 말고 다음 공식 수치를 확인하세요."}</p></article></div>
           </div>
           <div className="research-action-wrap">
             <div><span>SO, WHAT NOW?</span><h4>💡 그래서 나는?</h4></div>

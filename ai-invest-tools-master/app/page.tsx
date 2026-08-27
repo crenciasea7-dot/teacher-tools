@@ -44,18 +44,17 @@ export default function Page() {
 
   return (
     <main>
-      <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
+      <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER · V1</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
       <header><div className="brand"><i>AI</i><div><b>AI 투자 도구 MASTER</b><small>MY PERSONAL INVESTMENT TOOLKIT</small></div></div><div className="count"><strong>{tools.length}</strong><span>개의 도구</span></div></header>
-      <section className="ai-shortcuts" aria-label="외부 AI 바로가기">
-        <div><span>AI SHORTCUTS</span><b>외부 AI 바로가기</b></div>
-        <a href="https://gemini.google.com/" target="_blank" rel="noreferrer"><strong>Gemini</strong><small>외부 업체 ↗</small></a>
-        <a href="https://chatgpt.com/" target="_blank" rel="noreferrer"><strong>ChatGPT</strong><small>외부 업체 ↗</small></a>
-        <a href="https://claude.ai/" target="_blank" rel="noreferrer"><strong>Claude</strong><small>외부 업체 ↗</small></a>
-      </section>
-      <section className="hero"><p>ONE PLACE, BETTER DECISIONS</p><h1>생각은 여기서,<br/><em>판단은 도구로.</em></h1><span>자산 관리부터 매수·정비사업·AI 투자 루틴까지.<br/>내가 만든 도구를 한 곳에서 바로 실행하세요.</span></section>
+      <section className="hero"><p>AI × INVESTMENT · A TO Z · V1</p><h1>몸은 편하게.<br/><em>부는 똑똑하게.</em></h1><span>거시 흐름을 먼저 읽고, 질문에 맞는 도구를 따라가며 판단하세요.<br/>Let AI Work. Live Rich.</span></section>
       <MarketOverview />
+      <blockquote className="market-philosophy">“지표를 읽되, 공포에 흔들리지 말고, 환호에 취하지도, 기회를 놓치지도 말 것”</blockquote>
+      <section className="home-intelligence" aria-label="부동산과 정부 정책 분석">
+        <a href="/weekly-apartment-analysis"><span>07 · WEEKLY HOUSING</span><h2>주간 아파트 가격 동향</h2><p>공식 데이터표 → 서울 세분화 → 추세 → 정성판단 → 국면진단 → 한 문장 결론</p><b>6단계 분석 보기 →</b></a>
+        <a href="/research-insights"><span>08 · POLICY IMPACT</span><h2>정부정책 분석</h2><p>정책 원문을 넣고 매매가·대출·세금·심리 영향을 균형 있게 정리합니다.</p><b>정책 자료 분석하기 →</b></a>
+      </section>
       <nav>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
-      <section className="tools">
+      <section className="tools" id="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
           return <a className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`} href={tool.url ?? "#"} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={tool.name} onClick={(event) => { if (!tool.url) event.preventDefault(); }}><i>{tool.icon}</i><div><span>{tool.group}</span><h2>{tool.name}{tool.externalVendor && <small className="vendor-badge">외부 업체</small>}</h2><p>{tool.description}</p></div><b>{tool.url ? (tool.cta ?? "바로가기 ↗") : "준비 중"}</b></a>;
