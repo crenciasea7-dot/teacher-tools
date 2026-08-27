@@ -484,6 +484,14 @@ header {
 .market-single-ticker,
 .market-single-ticker tv-single-ticker { display: block; width: 100%; height: 62px; }
 .market-single-ticker tv-single-ticker > span { display: grid; height: 62px; place-items: center; color: #83938e; font-size: 9px; }
+.market-api-quote { display: grid; min-height: 62px; align-content: center; gap: 7px; }
+.market-api-quote > div { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.market-api-quote strong { font-size: 17px; letter-spacing: -.04em; }
+.market-api-quote em { font-size: 10px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.market-api-quote em.up { color: #d7453d; }
+.market-api-quote em.down { color: #2479bd; }
+.market-api-quote em.flat { color: #6f807a; }
+.market-api-quote > a { color: #70847d; font-size: 8px; font-weight: 700; text-decoration: none; }
 .market-link-card > a { margin-top: auto; color: #176c5d; font-size: 9px; font-weight: 700; line-height: 1.35; text-decoration: none; }
 .market-board-links {
   display: flex;
@@ -1744,6 +1752,7 @@ footer b {
   .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
   .market-link-card { min-height: 166px; padding: 13px; }
   .market-link-card > strong { font-size: 14px; }
+  .market-api-quote strong { font-size: 15px; }
   .market-single-ticker,
   .market-single-ticker tv-single-ticker { height: 54px; }
   .market-board-links { display: grid; }

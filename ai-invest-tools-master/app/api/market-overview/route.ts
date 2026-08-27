@@ -8,6 +8,18 @@ type CryptoFearGreedApi = {
   data?: Array<{ value?: string; value_classification?: string; timestamp?: string }>;
 };
 
+type CoinGeckoPriceApi = Record<string, { usd?: number; usd_24h_change?: number; last_updated_at?: number }>;
+
+type QuoteItem = {
+  id: "btc" | "xrp";
+  price: number;
+  changePercent: number;
+  currency: "USD";
+  measuredAt: string;
+  source: "CoinGecko";
+  sourceUrl: string;
+};
+
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
   market: string;
@@ -80,16 +92,44 @@ async function fetchCryptoSentiment(): Promise<SentimentItem> {
   return { id: "crypto", market: "암호화폐", detail: "BTC 중심 시장심리", score, label: translateCryptoLabel(latest?.value_classification), source: "Alternative.me", sourceUrl: "https://alternative.me/crypto/fear-and-greed-index/", measuredAt, available: score !== null, note: "변동성·거래량·소셜 데이터 등 종합" };
 }
 
+async function fetchCryptoQuotes(): Promise<QuoteItem[]> {
+  const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cripple&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true", {
+    headers: { "User-Agent": "AI-Invest-Tools/1.0" },
+    next: { revalidate: 60 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw new Error(`CoinGecko quote request failed: ${response.status}`);
+  const payload = (await response.json()) as CoinGeckoPriceApi;
+  const definitions = [
+    { id: "btc" as const, key: "bitcoin", sourceUrl: "https://www.coingecko.com/en/coins/bitcoin" },
+    { id: "xrp" as const, key: "ripple", sourceUrl: "https://www.coingecko.com/en/coins/xrp" },
+  ];
+  return definitions.flatMap((definition) => {
+    const item = payload[definition.key];
+    if (!item || typeof item.usd !== "number" || typeof item.usd_24h_change !== "number") return [];
+    return [{
+      id: definition.id,
+      price: item.usd,
+      changePercent: item.usd_24h_change,
+      currency: "USD" as const,
+      measuredAt: new Date((item.last_updated_at ?? Math.floor(Date.now() / 1_000)) * 1_000).toISOString(),
+      source: "CoinGecko" as const,
+      sourceUrl: definition.sourceUrl,
+    }];
+  });
+}
+
 export async function GET() {
-  const [stockSentiments, cryptoSentiment] = await Promise.all([
+  const [stockSentiments, cryptoSentiment, quotes] = await Promise.all([
     fetchStockSentiments().catch(() => [
       unavailableSentiment({ id: "us", market: "미국 주식", detail: "S&P 500 · NASDAQ", source: "CNN Fear & Greed", sourceUrl: "https://www.cnn.com/markets/fear-and-greed", note: "CNN의 7개 미국 시장 지표" }),
       unavailableSentiment({ id: "kr", market: "한국 주식", detail: "KOSPI · KOSDAQ", source: "Fear & Greed Index Korea", sourceUrl: "https://feargreed.co.kr/", note: "한국 시장 6개 지표로 별도 산출" }),
     ]),
     fetchCryptoSentiment().catch(() => unavailableSentiment({ id: "crypto", market: "암호화폐", detail: "BTC 중심 시장심리", source: "Alternative.me", sourceUrl: "https://alternative.me/crypto/fear-and-greed-index/", note: "변동성·거래량·소셜 데이터 등 종합" })),
+    fetchCryptoQuotes().catch(() => []),
   ]);
   return Response.json(
-    { sentiment: [...stockSentiments, cryptoSentiment], asOf: new Date().toISOString(), refreshSeconds: 300, delayedNotice: "거래소 정책에 따라 일부 시세가 지연될 수 있습니다." },
-    { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    { sentiment: [...stockSentiments, cryptoSentiment], quotes, asOf: new Date().toISOString(), refreshSeconds: 60, delayedNotice: "거래소 정책에 따라 일부 시세가 지연될 수 있습니다." },
+    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } },
   );
 }

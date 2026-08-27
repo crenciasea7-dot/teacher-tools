@@ -17,9 +17,20 @@ type SentimentItem = {
 
 type MarketResponse = {
   sentiment: SentimentItem[];
+  quotes: QuoteItem[];
   asOf: string;
   refreshSeconds: number;
   delayedNotice: string;
+};
+
+type QuoteItem = {
+  id: "btc" | "xrp";
+  price: number;
+  changePercent: number;
+  currency: "USD";
+  measuredAt: string;
+  source: "CoinGecko";
+  sourceUrl: string;
 };
 
 type InvestingInstrument = {
@@ -97,15 +108,19 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   );
 }
 
-function MarketLinkCard({ instrument, group }: { instrument: InvestingInstrument; group: string }) {
+function MarketLinkCard({ instrument, group, quote }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem }) {
+  const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
   return (
     <article className="market-link-card" aria-label={`${instrument.name} 현재가와 등락률`}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
-      <div className="market-single-ticker">
+      {quote ? <div className="market-api-quote">
+        <div><strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: quote.currency, maximumFractionDigits: quote.price < 10 ? 4 : 0 }).format(quote.price)}</strong><em className={direction}>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</em></div>
+        <a href={quote.sourceUrl} target="_blank" rel="noreferrer">CoinGecko · 24시간 등락 ↗</a>
+      </div> : <div className="market-single-ticker">
         {createElement("tv-single-ticker", { symbol: instrument.widgetSymbol, locale: "kr", theme: "light", transparent: true, "symbol-url": instrument.url }, <span>시세 확인 중…</span>)}
-      </div>
+      </div>}
       <a href={instrument.url} target="_blank" rel="noreferrer">TradingView에서 상세 보기 ↗</a>
     </article>
   );
@@ -130,7 +145,7 @@ export default function MarketOverview() {
       }
     }
     void load();
-    const timer = window.setInterval(load, 300_000);
+    const timer = window.setInterval(load, 60_000);
     return () => { active = false; controller.abort(); window.clearInterval(timer); };
   }, [refreshKey]);
 
@@ -156,7 +171,7 @@ export default function MarketOverview() {
 
       <div className="tradingview-market-board" aria-label="핵심 시장 현재가 전체 보기">
         {INVESTING_GROUPS.flatMap((group) => group.instruments.map((instrument) => (
-          <MarketLinkCard instrument={instrument} group={group.name} key={instrument.id} />
+          <MarketLinkCard instrument={instrument} group={group.name} quote={data?.quotes?.find((quote) => quote.id === instrument.id)} key={instrument.id} />
         )))}
       </div>
       <div className="market-board-links">
