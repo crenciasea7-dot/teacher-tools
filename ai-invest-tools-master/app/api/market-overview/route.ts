@@ -115,6 +115,17 @@ function normalizeScore(value: unknown) {
   return isFiniteNumber(value) ? Math.max(0, Math.min(100, Math.round(value))) : null;
 }
 
+function translateCryptoLabel(label: string | undefined) {
+  const labels: Record<string, string> = {
+    "Extreme Fear": "극단적 공포",
+    Fear: "공포",
+    Neutral: "중립",
+    Greed: "탐욕",
+    "Extreme Greed": "극단적 탐욕",
+  };
+  return label ? (labels[label] ?? label) : "확인 중";
+}
+
 function unavailableSentiment(item: Omit<SentimentItem, "score" | "label" | "measuredAt" | "available">): SentimentItem {
   return { ...item, score: null, label: "확인 중", measuredAt: null, available: false };
 }
@@ -151,7 +162,7 @@ async function fetchCryptoSentiment(): Promise<SentimentItem> {
   const score = normalizeScore(parsed);
   const measuredAt = latest?.timestamp && Number.isFinite(Number(latest.timestamp)) ? new Date(Number(latest.timestamp) * 1_000).toISOString() : null;
 
-  return { id: "crypto", market: "암호화폐", detail: "BTC 중심 시장심리", score, label: latest?.value_classification ?? "확인 중", source: "Alternative.me", sourceUrl: "https://alternative.me/crypto/fear-and-greed-index/", measuredAt, available: score !== null, note: "변동성·거래량·소셜 데이터 등 종합" };
+  return { id: "crypto", market: "암호화폐", detail: "BTC 중심 시장심리", score, label: translateCryptoLabel(latest?.value_classification), source: "Alternative.me", sourceUrl: "https://alternative.me/crypto/fear-and-greed-index/", measuredAt, available: score !== null, note: "변동성·거래량·소셜 데이터 등 종합" };
 }
 
 export async function GET() {
