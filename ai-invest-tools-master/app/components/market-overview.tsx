@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Script from "next/script";
+import { createElement, useEffect, useState } from "react";
 
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
@@ -25,44 +26,37 @@ type InvestingInstrument = {
   id: string;
   name: string;
   symbol: string;
-  pairId: number;
+  widgetSymbol: string;
   url: string;
 };
 
 const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[] }> = [
   { name: "1. 주식", instruments: [
-    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", pairId: 43430, url: "https://kr.investing.com/equities/sk-hynix-inc" },
-    { id: "samsung", name: "삼성전자", symbol: "005930", pairId: 43433, url: "https://kr.investing.com/equities/samsung-electronics-co-ltd" },
+    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", widgetSymbol: "KRX:000660", url: "https://www.tradingview.com/symbols/KRX-000660/" },
+    { id: "samsung", name: "삼성전자", symbol: "005930", widgetSymbol: "KRX:005930", url: "https://www.tradingview.com/symbols/KRX-005930/" },
   ] },
   { name: "2. 지수", instruments: [
-    { id: "sp500", name: "S&P 500", symbol: "SPX", pairId: 166, url: "https://kr.investing.com/indices/us-spx-500" },
-    { id: "nasdaq", name: "NASDAQ", symbol: "IXIC", pairId: 14958, url: "https://kr.investing.com/indices/nasdaq-composite" },
-    { id: "kospi", name: "코스피", symbol: "KOSPI", pairId: 37426, url: "https://kr.investing.com/indices/kospi" },
-    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", pairId: 38016, url: "https://kr.investing.com/indices/kosdaq" },
+    { id: "sp500", name: "S&P 500", symbol: "SPX", widgetSymbol: "SP:SPX", url: "https://www.tradingview.com/symbols/SP-SPX/" },
+    { id: "nasdaq", name: "NASDAQ", symbol: "IXIC", widgetSymbol: "NASDAQ:IXIC", url: "https://www.tradingview.com/symbols/NASDAQ-IXIC/" },
+    { id: "kospi", name: "코스피", symbol: "KOSPI", widgetSymbol: "KRX:KOSPI", url: "https://www.tradingview.com/symbols/KRX-KOSPI/" },
+    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", widgetSymbol: "KRX:KOSDAQ", url: "https://www.tradingview.com/symbols/KRX-KOSDAQ/" },
   ] },
   { name: "3. 암호화폐", instruments: [
-    { id: "btc", name: "비트코인", symbol: "BTC/USD", pairId: 945629, url: "https://kr.investing.com/crypto/bitcoin/btc-usd" },
-    { id: "xrp", name: "리플", symbol: "XRP/USD", pairId: 1118146, url: "https://kr.investing.com/crypto/xrp/xrp-usd" },
+    { id: "btc", name: "비트코인", symbol: "BTC/USD", widgetSymbol: "BITSTAMP:BTCUSD", url: "https://www.tradingview.com/symbols/BTCUSD/" },
+    { id: "xrp", name: "리플", symbol: "XRP/USD", widgetSymbol: "BITSTAMP:XRPUSD", url: "https://www.tradingview.com/symbols/XRPUSD/" },
   ] },
   { name: "4. 상품", instruments: [
-    { id: "gold", name: "금", symbol: "GOLD", pairId: 8830, url: "https://kr.investing.com/commodities/gold" },
-    { id: "oil", name: "WTI 유가", symbol: "OIL", pairId: 8849, url: "https://kr.investing.com/commodities/crude-oil" },
+    { id: "gold", name: "금", symbol: "XAU/USD", widgetSymbol: "OANDA:XAUUSD", url: "https://www.tradingview.com/symbols/XAUUSD/" },
+    { id: "oil", name: "WTI 유가", symbol: "CL1!", widgetSymbol: "NYMEX:CL1!", url: "https://www.tradingview.com/symbols/NYMEX-CL1!/" },
   ] },
   { name: "5. 채권", instruments: [
-    { id: "us10y", name: "미국 10년물", symbol: "US 10Y", pairId: 23705, url: "https://kr.investing.com/rates-bonds/u.s.-10-year-bond-yield" },
-    { id: "us30y", name: "미국 30년물", symbol: "US 30Y", pairId: 23706, url: "https://kr.investing.com/rates-bonds/u.s.-30-year-bond-yield" },
+    { id: "us10y", name: "미국 10년물", symbol: "US 10Y", widgetSymbol: "TVC:US10Y", url: "https://www.tradingview.com/symbols/TVC-US10Y/" },
+    { id: "us30y", name: "미국 30년물", symbol: "US 30Y", widgetSymbol: "TVC:US30Y", url: "https://www.tradingview.com/symbols/TVC-US30Y/" },
   ] },
   { name: "6. 환율", instruments: [
-    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", pairId: 650, url: "https://kr.investing.com/currencies/usd-krw" },
+    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", widgetSymbol: "FX_IDC:USDKRW", url: "https://www.tradingview.com/symbols/USDKRW/" },
   ] },
 ];
-
-const INVESTING_INSTRUMENTS = INVESTING_GROUPS.flatMap((group) => group.instruments);
-
-function investingWidgetUrl(pairId: number) {
-  const params = new URLSearchParams({ pair_ID: String(pairId), height: "480", width: "650", interval: "300", plotStyle: "area", domain_ID: "18", lang_ID: "18", timezone_ID: "26" });
-  return `https://ssltvc.investing.com/?${params.toString()}`;
-}
 
 function SentimentCard({ item }: { item: SentimentItem }) {
   const score = item.score ?? 0;
@@ -103,11 +97,22 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   );
 }
 
+function TradingViewQuoteCard({ instrument, category }: { instrument: InvestingInstrument; category: string }) {
+  return (
+    <article className="tradingview-quote-card">
+      <header><span>{category}</span><div><b>{instrument.name}</b><small>{instrument.symbol}</small></div></header>
+      <div className="tradingview-single-ticker">
+        {createElement("tv-single-ticker", { symbol: instrument.widgetSymbol, locale: "kr" }, <span>현재가 불러오는 중…</span>)}
+      </div>
+      <a href={instrument.url} target="_blank" rel="noreferrer">TradingView 차트 보기 ↗</a>
+    </article>
+  );
+}
+
 export default function MarketOverview() {
   const [data, setData] = useState<MarketResponse | null>(null);
   const [error, setError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [selectedId, setSelectedId] = useState("kospi");
 
   useEffect(() => {
     let active = true;
@@ -127,16 +132,13 @@ export default function MarketOverview() {
     return () => { active = false; controller.abort(); window.clearInterval(timer); };
   }, [refreshKey]);
 
-  const selected = useMemo(
-    () => INVESTING_INSTRUMENTS.find((instrument) => instrument.id === selectedId) ?? INVESTING_INSTRUMENTS[0],
-    [selectedId],
-  );
   const updatedAt = data?.asOf
     ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(data.asOf))
     : null;
 
   return (
     <section className="market-overview" id="macro" aria-labelledby="market-overview-title">
+      <Script id="tradingview-single-ticker-widget" type="module" src="https://widgets.tradingview-widget.com/w/en/tv-single-ticker.js" strategy="afterInteractive" />
       <div className="sentiment-section">
         <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
@@ -145,34 +147,21 @@ export default function MarketOverview() {
       </div>
 
       <div className="market-heading">
-        <div><span>INVESTING.COM OFFICIAL WIDGET</span><h2 id="market-overview-title">Market Overview</h2><p>Yahoo 시세를 제거하고 Investing.com 공식 차트로 교체했습니다.</p></div>
+        <div><span>TRADINGVIEW LIVE MARKET</span><h2 id="market-overview-title">Market Overview</h2><p>13개 핵심 지표의 현재가와 등락률을 한 화면에서 확인하세요.</p></div>
         <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 심리 데이터 새로고침">↻ {updatedAt ? `${updatedAt} 기준` : "불러오는 중"}</button>
       </div>
       {error ? <p className="market-error">공포·탐욕지수를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p> : null}
 
-      <div className="investing-market-layout">
-        <div className="investing-instrument-groups" aria-label="시장 종목 선택">
-          {INVESTING_GROUPS.map((group) => (
-            <section className="investing-instrument-group" key={group.name}>
-              <h3>{group.name}</h3>
-              <div className="investing-instrument-buttons">
-                {group.instruments.map((instrument) => (
-                  <button type="button" className={selected.id === instrument.id ? "active" : ""} onClick={() => setSelectedId(instrument.id)} aria-pressed={selected.id === instrument.id} key={instrument.id}>
-                    <b>{instrument.name}</b><span>{instrument.symbol}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          ))}
-          <a className="bitcoin-indicator-entry" href="/bitcoin-indicators"><span>₿</span><div><b>비트코인 참고 지표</b><small>공탐·레인보우·도미넌스 보기</small></div><em>→</em></a>
-        </div>
-
-        <article className="investing-official-chart">
-          <header><div><span>INVESTING.COM</span><h3>{selected.name} <small>{selected.symbol}</small></h3></div><a href={selected.url} target="_blank" rel="noreferrer">인베스팅닷컴에서 자세히 보기 ↗</a></header>
-          <iframe key={selected.id} src={investingWidgetUrl(selected.pairId)} title={`${selected.name} Investing.com 공식 차트`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-        </article>
+      <div className="tradingview-market-board" aria-label="핵심 시장 현재가 전체 보기">
+        {INVESTING_GROUPS.flatMap((group) => group.instruments.map((instrument) => (
+          <TradingViewQuoteCard instrument={instrument} category={group.name.replace(/^\d+\.\s*/, "")} key={instrument.id} />
+        )))}
       </div>
-      <p className="market-note">종목을 누르면 공식 차트가 바뀝니다. · {data?.delayedNotice ?? "거래소 정책에 따라 일부 시세가 지연될 수 있습니다."}</p>
+      <div className="market-board-links">
+        <a className="bitcoin-indicator-entry" href="/bitcoin-indicators"><span>₿</span><div><b>비트코인 참고 지표</b><small>공탐·레인보우·도미넌스 보기</small></div><em>→</em></a>
+        <a className="tradingview-all-markets" href="https://www.tradingview.com/markets/" target="_blank" rel="noreferrer">TradingView 전체 시장 보기 ↗</a>
+      </div>
+      <p className="market-note">모든 카드는 TradingView 공식 시세 위젯입니다. · {data?.delayedNotice ?? "거래소 정책에 따라 일부 시세가 지연될 수 있습니다."}</p>
     </section>
   );
 }
