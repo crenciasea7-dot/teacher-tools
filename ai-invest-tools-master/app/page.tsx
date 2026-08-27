@@ -40,6 +40,16 @@ const tools: Tool[] = [
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
 
+const categoryMap = [
+  { icon: "◈", name: "자산관리", count: "2개", description: "지금 가진 자산을 한눈에 파악하고 기록합니다.", items: ["moyo 자산 대시보드", "금 추적"], href: "/asset-tracking" },
+  { icon: "↗", name: "매수매도", count: "7개", description: "살 수 있는지부터 비교·계약·매도까지 이어갑니다.", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집중 아파트 비교"], href: "/investment-flow#buy" },
+  { icon: "₿", name: "비트코인", count: "5개 지표", description: "공포탐욕과 사이클 지표를 같은 화면에서 봅니다.", items: ["공포탐욕", "레인보우 차트", "도미넌스"], href: "/bitcoin-indicators" },
+  { icon: "⌂", name: "재개발", count: "3개", description: "정비사업 특유의 단계·권리·투자금을 점검합니다.", items: ["재개발 매물 분석", "재개발투자금", "inga-radar"], href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" },
+  { icon: "↔", name: "금융투자", count: "5개", description: "부동산 밖 자산까지 비교해 배분을 판단합니다.", items: ["포트폴리오 리밸런싱", "국장이냐 미장이냐", "자료 인사이트"], href: "/rebalancing" },
+  { icon: "％", name: "세금·대출", count: "4개", description: "보유부터 잔금과 총비용까지 숫자로 확인합니다.", items: ["보유세 계산기", "집 잔금 계산기", "토탈 비용"], href: "/property-tax" },
+  { icon: "▤", name: "정책·자료 분석", count: "3개", description: "가격보다 먼저 정책과 시장 방향을 읽습니다.", items: ["주간 아파트 동향", "정부정책 분석", "자료 정리"], href: "/research-insights" },
+];
+
 export default function Page() {
   const [active, setActive] = useState("전체");
   const shown = active === "전체" ? tools : tools.filter((tool) => tool.group === active);
@@ -51,6 +61,13 @@ export default function Page() {
       <section className="hero"><p>AI × INVESTMENT · A TO Z · V1</p><h1>몸은 편하게.<br/><em>부는 똑똑하게.</em></h1><span>거시 흐름을 먼저 읽고, 질문에 맞는 도구를 따라가며 판단하세요.<br/>Let AI Work. Live Rich.</span></section>
       <MarketOverview />
       <blockquote className="market-philosophy">“지표를 읽되, 공포에 흔들리지 말고, 환호에 취하지도, 기회를 놓치지도 말 것”</blockquote>
+      <section className="category-map" aria-labelledby="category-map-title">
+        <div className="category-map-heading"><div><span>INFORMATION ARCHITECTURE · V1</span><h2 id="category-map-title">흩어진 도구를, <em>7개 카테고리</em>로.</h2><p>필요한 일을 먼저 고르면 관련 도구까지 바로 이어집니다.</p></div><a href="#tools">전체 도구 카드 보기 →</a></div>
+        <div className="category-map-grid">{categoryMap.map((category) => {
+          const external = category.href.startsWith("http");
+          return <a href={category.href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={category.name}><header><i>{category.icon}</i><h3>{category.name}</h3><b>{category.count}</b></header><p>{category.description}</p><ul>{category.items.map((item) => <li key={item}>{item}<span>→</span></li>)}</ul></a>;
+        })}</div>
+      </section>
       <section className="home-intelligence" aria-label="부동산과 정부 정책 분석">
         <a href="/weekly-apartment-analysis"><span>07 · WEEKLY HOUSING</span><h2>주간 아파트 가격 동향</h2><p>공식 데이터표 → 서울 세분화 → 추세 → 정성판단 → 국면진단 → 한 문장 결론</p><b>6단계 분석 보기 →</b></a>
         <a href="/research-insights"><span>08 · POLICY IMPACT</span><h2>정부정책 분석</h2><p>정책 원문을 넣고 매매가·대출·세금·심리 영향을 균형 있게 정리합니다.</p><b>정책 자료 분석하기 →</b></a>
