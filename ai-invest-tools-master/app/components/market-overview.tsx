@@ -92,15 +92,38 @@ function MarketTile({ item }: { item: MarketItem }) {
 function SentimentCard({ item }: { item: SentimentItem }) {
   const score = item.score ?? 0;
   const tone = score < 25 ? "extreme-fear" : score < 45 ? "fear" : score < 56 ? "neutral" : score < 75 ? "greed" : "extreme-greed";
+  const title = item.id === "us" ? "CNN 공탐지" : item.id === "kr" ? "코스피 공탐지" : "크립토 공탐지";
+  const centerX = 120;
+  const centerY = 116;
+  const radius = 84;
+  const polar = (angle: number, length = radius) => {
+    const radians = angle * Math.PI / 180;
+    return { x: centerX + length * Math.cos(radians), y: centerY - length * Math.sin(radians) };
+  };
+  const arc = (start: number, end: number) => {
+    const from = polar(start);
+    const to = polar(end);
+    return `M ${from.x} ${from.y} A ${radius} ${radius} 0 0 1 ${to.x} ${to.y}`;
+  };
+  const needle = polar(180 - score * 1.8, 66);
+  const segments = [
+    { start: 180, end: 145, color: "#ff5470" },
+    { start: 143, end: 109, color: "#f08a65" },
+    { start: 107, end: 73, color: "#f0c55f" },
+    { start: 71, end: 37, color: "#57c99a" },
+    { start: 35, end: 0, color: "#54c8db" },
+  ];
 
   return (
     <article className={`sentiment-card ${tone} ${item.available ? "" : "unavailable"}`}>
-      <div className="sentiment-top"><div><b>{item.market}</b><span>{item.detail}</span></div><strong>{item.score ?? "—"}</strong></div>
-      <div className="sentiment-status"><em>{item.label}</em><span>{item.note}</span></div>
-      <div className="sentiment-meter" role="meter" aria-label={`${item.market} 공포탐욕지수`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
-        <i style={{ left: `${score}%` }} />
-      </div>
-      <a href={item.sourceUrl} target="_blank" rel="noreferrer">출처: {item.source} ↗</a>
+      <div className="sentiment-title"><div><b>{title}</b><span>{item.detail}</span></div><em>{item.label}</em></div>
+      <svg className="sentiment-gauge" viewBox="0 0 240 145" role="meter" aria-label={`${title} ${item.score ?? "확인 중"}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
+        {segments.map((segment) => <path d={arc(segment.start, segment.end)} stroke={segment.color} key={segment.start} />)}
+        <text x="31" y="130">0</text><text x="116" y="24">50</text><text x="204" y="130">100</text>
+        {item.available && <><line className="gauge-needle" x1={centerX} y1={centerY} x2={needle.x} y2={needle.y} /><circle className="gauge-hub" cx={centerX} cy={centerY} r="8" /></>}
+        <text className="gauge-score" x={centerX} y="137">{item.score ?? "—"}</text>
+      </svg>
+      <div className="sentiment-foot"><span>{item.note}</span><a href={item.sourceUrl} target="_blank" rel="noreferrer">출처 ↗</a></div>
     </article>
   );
 }
@@ -143,19 +166,19 @@ export default function MarketOverview() {
 
   return (
     <section className="market-overview" aria-labelledby="market-overview-title">
-      <div className="market-heading">
-        <div><span>LIVE MARKET BOARD</span><h2 id="market-overview-title">Market Overview</h2><p>주요 자산의 현재 흐름을 한눈에 확인하세요.</p></div>
-        <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 데이터 새로고침">↻ {updatedAt ? `${updatedAt} 기준` : "불러오는 중"}</button>
-      </div>
-      {error && <p className="market-error">일부 시세를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p>}
       <div className="sentiment-section">
-        <div className="sentiment-heading"><h3>공포·탐욕지수</h3><p>미국 주식·한국 주식·암호화폐는 기준이 달라 각각 따로 봅니다.</p></div>
+        <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
           {data?.sentiment?.length
             ? data.sentiment.map((item) => <SentimentCard item={item} key={item.id} />)
             : Array.from({ length: 3 }, (_, index) => <div className="sentiment-skeleton" key={index} />)}
         </div>
       </div>
+      <div className="market-heading">
+        <div><span>LIVE MARKET BOARD</span><h2 id="market-overview-title">Market Overview</h2><p>주요 자산의 현재 흐름을 한눈에 확인하세요.</p></div>
+        <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 데이터 새로고침">↻ {updatedAt ? `${updatedAt} 기준` : "불러오는 중"}</button>
+      </div>
+      {error && <p className="market-error">일부 시세를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p>}
       <div className="market-groups">
         {CATEGORY_ORDER.map((category) => {
           const items = data?.items.filter((item) => item.category === category) ?? [];

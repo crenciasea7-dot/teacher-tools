@@ -137,6 +137,7 @@ header {
   align-items: flex-end;
   justify-content: space-between;
   gap: 18px;
+  margin-top: 20px;
   padding-bottom: 18px;
   border-bottom: 1px solid #ffffff1f;
 }
@@ -177,20 +178,25 @@ header {
   font-size: 10px;
 }
 .sentiment-section {
-  margin-top: 18px;
-  padding-bottom: 18px;
+  padding-bottom: 22px;
   border-bottom: 1px solid #ffffff1f;
 }
 .sentiment-heading {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 18px;
+  margin-bottom: 16px;
 }
-.sentiment-heading h3 {
-  margin: 0;
-  font-size: 13px;
+.sentiment-heading span {
+  color: #80b9aa;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+.sentiment-heading h2 {
+  margin: 5px 0 0;
+  font-size: 23px;
+  line-height: 1.1;
 }
 .sentiment-heading p {
   margin: 0;
@@ -205,12 +211,12 @@ header {
 .sentiment-card {
   --sentiment: #f0c55f;
   position: relative;
-  min-height: 151px;
-  padding: 14px;
+  min-height: 246px;
+  padding: 15px 15px 12px;
   overflow: hidden;
   border: 1px solid #ffffff16;
-  border-radius: 13px;
-  background: #ffffff0a;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #ffffff0c, #ffffff05);
 }
 .sentiment-card::before {
   position: absolute;
@@ -226,67 +232,84 @@ header {
 .sentiment-card.neutral { --sentiment: #f0c55f; }
 .sentiment-card.greed { --sentiment: #57c99a; }
 .sentiment-card.extreme-greed { --sentiment: #54c8db; }
-.sentiment-top {
+.sentiment-title {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
 }
-.sentiment-top div {
+.sentiment-title div {
   display: grid;
   gap: 3px;
 }
-.sentiment-top b { font-size: 12px; }
-.sentiment-top span {
+.sentiment-title b {
+  font-size: 13px;
+}
+.sentiment-title span {
   color: #78958d;
   font-size: 9px;
 }
-.sentiment-top strong {
+.sentiment-title em {
   color: var(--sentiment);
-  font: 500 28px/1 "DM Mono", monospace;
-}
-.sentiment-status {
-  display: grid;
-  gap: 4px;
-  margin-top: 10px;
-}
-.sentiment-status em {
-  color: var(--sentiment);
-  font-size: 11px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 700;
 }
-.sentiment-status span {
-  color: #829b94;
-  font-size: 9px;
-}
-.sentiment-meter {
-  position: relative;
-  height: 5px;
-  margin-top: 14px;
-  border-radius: 99px;
-  background: linear-gradient(90deg, #ff5470 0%, #f08a65 25%, #f0c55f 50%, #57c99a 75%, #54c8db 100%);
-}
-.sentiment-meter i {
-  position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  border: 2px solid #142b2b;
-  border-radius: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
-}
-.sentiment-card a {
+.sentiment-gauge {
   display: block;
-  margin-top: 10px;
+  width: 100%;
+  max-width: 250px;
+  height: 154px;
+  margin: 4px auto 0;
+  overflow: visible;
+}
+.sentiment-gauge path {
+  fill: none;
+  stroke-width: 22;
+  stroke-linecap: butt;
+  opacity: 0.92;
+}
+.sentiment-gauge text {
+  fill: #78958d;
+  font: 500 8px "DM Mono", monospace;
+  text-anchor: middle;
+}
+.sentiment-gauge .gauge-needle {
+  stroke: #eef7f3;
+  stroke-width: 5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 3px #0008);
+}
+.sentiment-gauge .gauge-hub {
+  fill: #eef7f3;
+  stroke: #142b2b;
+  stroke-width: 3;
+}
+.sentiment-gauge .gauge-score {
+  fill: #eff7f3;
+  font: 700 24px Pretendard, Arial, sans-serif;
+}
+.sentiment-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 3px;
+}
+.sentiment-foot span {
+  color: #829b94;
+  font-size: 8px;
+}
+.sentiment-foot a {
   color: #8fb6aa;
   font-size: 8px;
   text-decoration: none;
+  white-space: nowrap;
 }
 .sentiment-card.unavailable { opacity: 0.55; }
 .sentiment-skeleton {
-  height: 151px;
-  border-radius: 13px;
+  height: 246px;
+  border-radius: 15px;
   background: linear-gradient(90deg, #ffffff09, #ffffff15, #ffffff09);
   background-size: 200% 100%;
   animation: market-pulse 1.4s linear infinite;
@@ -573,7 +596,7 @@ footer b {
     grid-template-columns: 1fr;
   }
   .sentiment-card {
-    min-height: 137px;
+    min-height: 232px;
   }
   .market-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
