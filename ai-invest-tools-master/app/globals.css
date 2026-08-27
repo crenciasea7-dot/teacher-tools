@@ -470,19 +470,21 @@ header {
 .market-link-card {
   display: flex;
   min-width: 0;
-  min-height: 154px;
+  min-height: 178px;
   padding: 16px;
   background: #fff;
   color: #1d2730;
   flex-direction: column;
-  text-decoration: none;
   transition: .16s ease;
 }
 .market-link-card:hover { position: relative; z-index: 1; background: #f3f8f6; box-shadow: inset 0 0 0 2px #3e8d78; }
 .market-link-card > span { color: #698079; font-size: 9px; font-weight: 700; }
 .market-link-card > strong { margin-top: 9px; overflow-wrap: anywhere; font-size: 16px; line-height: 1.25; letter-spacing: -.03em; }
 .market-link-card > small { margin-top: 4px; color: #83938e; font: 9px "DM Mono", monospace; }
-.market-link-card > b { margin-top: auto; color: #176c5d; font-size: 9px; line-height: 1.35; }
+.market-single-ticker,
+.market-single-ticker tv-single-ticker { display: block; width: 100%; height: 62px; }
+.market-single-ticker tv-single-ticker > span { display: grid; height: 62px; place-items: center; color: #83938e; font-size: 9px; }
+.market-link-card > a { margin-top: auto; color: #176c5d; font-size: 9px; font-weight: 700; line-height: 1.35; text-decoration: none; }
 .market-board-links {
   display: flex;
   justify-content: flex-end;
@@ -1740,8 +1742,10 @@ footer b {
   .investing-official-chart header { align-items: flex-start; flex-direction: column; }
   .investing-official-chart iframe { height: 440px; }
   .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
-  .market-link-card { min-height: 132px; padding: 13px; }
+  .market-link-card { min-height: 166px; padding: 13px; }
   .market-link-card > strong { font-size: 14px; }
+  .market-single-ticker,
+  .market-single-ticker tv-single-ticker { height: 54px; }
   .market-board-links { display: grid; }
   .tradingview-all-markets { min-width: 0; }
   .market-tile {

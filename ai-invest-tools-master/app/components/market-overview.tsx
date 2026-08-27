@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Script from "next/script";
+import { createElement, useEffect, useState } from "react";
 
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
@@ -25,34 +26,35 @@ type InvestingInstrument = {
   id: string;
   name: string;
   symbol: string;
+  widgetSymbol: string;
   url: string;
 };
 
 const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[] }> = [
   { name: "1. 주식", instruments: [
-    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", url: "https://www.tradingview.com/symbols/KRX-000660/" },
-    { id: "samsung", name: "삼성전자", symbol: "005930", url: "https://www.tradingview.com/symbols/KRX-005930/" },
+    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", widgetSymbol: "KRX:000660", url: "https://www.tradingview.com/symbols/KRX-000660/" },
+    { id: "samsung", name: "삼성전자", symbol: "005930", widgetSymbol: "KRX:005930", url: "https://www.tradingview.com/symbols/KRX-005930/" },
   ] },
   { name: "2. 지수", instruments: [
-    { id: "sp500", name: "S&P 500", symbol: "SPX", url: "https://www.tradingview.com/symbols/SP-SPX/" },
-    { id: "nasdaq", name: "NASDAQ", symbol: "IXIC", url: "https://www.tradingview.com/symbols/NASDAQ-IXIC/" },
-    { id: "kospi", name: "코스피", symbol: "KOSPI", url: "https://www.tradingview.com/symbols/KRX-KOSPI/" },
-    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", url: "https://www.tradingview.com/symbols/KRX-KOSDAQ/" },
+    { id: "sp500", name: "S&P 500", symbol: "SPX", widgetSymbol: "SP:SPX", url: "https://www.tradingview.com/symbols/SP-SPX/" },
+    { id: "nasdaq", name: "NASDAQ", symbol: "IXIC", widgetSymbol: "NASDAQ:IXIC", url: "https://www.tradingview.com/symbols/NASDAQ-IXIC/" },
+    { id: "kospi", name: "코스피", symbol: "KOSPI", widgetSymbol: "KRX:KOSPI", url: "https://www.tradingview.com/symbols/KRX-KOSPI/" },
+    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", widgetSymbol: "KRX:KOSDAQ", url: "https://www.tradingview.com/symbols/KRX-KOSDAQ/" },
   ] },
   { name: "3. 암호화폐", instruments: [
-    { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.tradingview.com/symbols/BTCUSD/" },
-    { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.tradingview.com/symbols/XRPUSD/" },
+    { id: "btc", name: "비트코인", symbol: "BTC/USD", widgetSymbol: "BITSTAMP:BTCUSD", url: "https://www.tradingview.com/symbols/BTCUSD/" },
+    { id: "xrp", name: "리플", symbol: "XRP/USD", widgetSymbol: "BITSTAMP:XRPUSD", url: "https://www.tradingview.com/symbols/XRPUSD/" },
   ] },
   { name: "4. 상품", instruments: [
-    { id: "gold", name: "금", symbol: "XAU/USD", url: "https://www.tradingview.com/symbols/XAUUSD/" },
-    { id: "oil", name: "WTI 유가", symbol: "CL1!", url: "https://www.tradingview.com/symbols/NYMEX-CL1!/" },
+    { id: "gold", name: "금", symbol: "XAU/USD", widgetSymbol: "OANDA:XAUUSD", url: "https://www.tradingview.com/symbols/XAUUSD/" },
+    { id: "oil", name: "WTI 유가", symbol: "CL1!", widgetSymbol: "NYMEX:CL1!", url: "https://www.tradingview.com/symbols/NYMEX-CL1!/" },
   ] },
   { name: "5. 채권", instruments: [
-    { id: "us10y", name: "미국 10년물", symbol: "US 10Y", url: "https://www.tradingview.com/symbols/TVC-US10Y/" },
-    { id: "us30y", name: "미국 30년물", symbol: "US 30Y", url: "https://www.tradingview.com/symbols/TVC-US30Y/" },
+    { id: "us10y", name: "미국 10년물", symbol: "US 10Y", widgetSymbol: "TVC:US10Y", url: "https://www.tradingview.com/symbols/TVC-US10Y/" },
+    { id: "us30y", name: "미국 30년물", symbol: "US 30Y", widgetSymbol: "TVC:US30Y", url: "https://www.tradingview.com/symbols/TVC-US30Y/" },
   ] },
   { name: "6. 환율", instruments: [
-    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", url: "https://www.tradingview.com/symbols/USDKRW/" },
+    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", widgetSymbol: "FX_IDC:USDKRW", url: "https://www.tradingview.com/symbols/USDKRW/" },
   ] },
 ];
 
@@ -97,12 +99,15 @@ function SentimentCard({ item }: { item: SentimentItem }) {
 
 function MarketLinkCard({ instrument, group }: { instrument: InvestingInstrument; group: string }) {
   return (
-    <a className="market-link-card" href={instrument.url} target="_blank" rel="noreferrer" aria-label={`${instrument.name} TradingView 상세 보기`}>
+    <article className="market-link-card" aria-label={`${instrument.name} 현재가와 등락률`}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
-      <b>TradingView에서 상세 보기 ↗</b>
-    </a>
+      <div className="market-single-ticker">
+        {createElement("tv-single-ticker", { symbol: instrument.widgetSymbol, locale: "kr", theme: "light", transparent: true, "symbol-url": instrument.url }, <span>시세 확인 중…</span>)}
+      </div>
+      <a href={instrument.url} target="_blank" rel="noreferrer">TradingView에서 상세 보기 ↗</a>
+    </article>
   );
 }
 
@@ -135,6 +140,7 @@ export default function MarketOverview() {
 
   return (
     <section className="market-overview" id="macro" aria-labelledby="market-overview-title">
+      <Script id="tradingview-single-ticker-widget" type="module" src="https://widgets.tradingview-widget.com/w/en/tv-single-ticker.js" strategy="afterInteractive" />
       <div className="sentiment-section">
         <div className="sentiment-heading"><div><span>FEAR &amp; GREED INDEX</span><h2>오늘의 공포·탐욕지수</h2></div><p>미국·한국·암호화폐는 계산 기준이 달라 각각 따로 봅니다.</p></div>
         <div className="sentiment-grid">
@@ -143,7 +149,7 @@ export default function MarketOverview() {
       </div>
 
       <div className="market-heading">
-        <div><span>VERIFIED MARKET LINKS</span><h2 id="market-overview-title">Market Overview</h2><p>검증되지 않은 숫자는 숨기고, 종목별 원본 시세 페이지로 바로 연결합니다.</p></div>
+        <div><span>OFFICIAL SINGLE TICKER</span><h2 id="market-overview-title">Market Overview</h2><p>그래프 없이 현재가와 등락률만 간단히 표시하고, 원본 상세 페이지로 바로 연결합니다.</p></div>
         <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 심리 데이터 새로고침">↻ {updatedAt ? `공탐 ${updatedAt} 기준` : "공탐 불러오는 중"}</button>
       </div>
       {error ? <p className="market-error">공포·탐욕지수를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p> : null}
@@ -156,7 +162,7 @@ export default function MarketOverview() {
       <div className="market-board-links">
         <a className="tradingview-all-markets" href="https://www.tradingview.com/markets/" target="_blank" rel="noreferrer">TradingView 전체 시장 보기 ↗</a>
       </div>
-      <p className="market-note">현재가·등락률·미니차트는 신뢰할 수 있는 시세 API 연동 후 다시 표시합니다. 지금은 TradingView 원본 상세 페이지에서 확인해 주세요.</p>
+      <p className="market-note">TradingView 공식 Single Ticker 표시값입니다. 거래소 정책에 따라 일부 시세가 지연될 수 있으며, 카드를 불러오지 못해도 상세 링크는 계속 사용할 수 있습니다.</p>
     </section>
   );
 }
