@@ -7,6 +7,7 @@ type Tool = {
   name: string;
   description: string;
   url?: string;
+  cta?: string;
   group: string;
   accent: string;
 };
@@ -21,6 +22,9 @@ const tools: Tool[] = [
   { icon: "▤", name: "등기부 등본 분석", description: "등기부등본의 위험 항목·법적 이슈·권리관계를 AI로 점검", url: "https://realpickai.kr/ai-registry", group: "매수 판단", accent: "blue" },
   { icon: "₩", name: "구매력 계산기", description: "자기자금과 소득으로 매수 가능 금액 확인", url: "https://purchasing-power-calculator.vercel.app/", group: "매수 판단", accent: "blue" },
   { icon: "Σ", name: "종합 시뮬레이션 (부동산 구매)", description: "현금·대출·부대비용·월 상환액을 한 번에 계산", url: "/property-purchase-simulation", group: "매수 판단", accent: "blue" },
+  { icon: "↔", name: "국장이냐 미장이냐", description: "세금을 고려해 국내주식과 미국주식의 투자비용을 비교", url: "https://simplewoody.com/ko/investment/investment-tax-cost.html", cta: "자세히 보기 ↗", group: "포트폴리오 리벨런싱", accent: "purple" },
+  { icon: "⌂", name: "주식이냐 부동산이냐", description: "주식과 부동산의 자산배분 판단 도구를 준비하고 있습니다", group: "포트폴리오 리벨런싱", accent: "purple" },
+  { icon: "+", name: "기타", description: "추가 리벨런싱 도구를 위한 공간", group: "포트폴리오 리벨런싱", accent: "purple" },
   { icon: "⌖", name: "재개발 매물 분석", description: "정비사업 매물의 단계·권리·리스크 점검", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
   { icon: "R", name: "inga-radar", description: "서울 재개발·재건축 인허가 신호 추적", group: "정비사업", accent: "green" },
   { icon: "R", name: "주간 아파트 가격동향", description: "시·군·구별 매매·전세 흐름과 주간 변동률을 확인", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
@@ -43,7 +47,7 @@ export default function Page() {
       <section className="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
-          return <a className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`} href={tool.url ?? "#"} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={tool.name} onClick={(event) => { if (!tool.url) event.preventDefault(); }}><i>{tool.icon}</i><div><span>{tool.group}</span><h2>{tool.name}</h2><p>{tool.description}</p></div><b>{tool.url ? "바로가기 ↗" : "준비 중"}</b></a>;
+          return <a className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`} href={tool.url ?? "#"} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={tool.name} onClick={(event) => { if (!tool.url) event.preventDefault(); }}><i>{tool.icon}</i><div><span>{tool.group}</span><h2>{tool.name}</h2><p>{tool.description}</p></div><b>{tool.url ? (tool.cta ?? "바로가기 ↗") : "준비 중"}</b></a>;
         })}
       </section>
       <footer><b>AI INVESTMENT MASTER</b><span>도구는 늘어나고, 판단은 더 선명해집니다.</span></footer>
