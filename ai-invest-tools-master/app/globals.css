@@ -550,6 +550,202 @@ nav button.on {
 .card.soon > b {
   color: #9a7061;
 }
+.weekly-analysis-page {
+  max-width: 1050px;
+  padding-bottom: 70px;
+}
+.weekly-analysis-hero {
+  display: block;
+  padding: 42px 0 35px;
+}
+.weekly-analysis-hero > a {
+  display: inline-block;
+  margin-bottom: 48px;
+  color: #61706c;
+  font-size: 11px;
+  text-decoration: none;
+}
+.weekly-analysis-hero > p {
+  margin: 0 0 10px;
+  color: #76539c;
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+.weekly-analysis-hero h1 {
+  margin: 0;
+  font: 800 clamp(42px, 6vw, 70px) / 1.08 "Nanum Myeongjo", serif;
+  letter-spacing: -0.075em;
+}
+.weekly-analysis-hero h1 em {
+  color: #76539c;
+  font-style: normal;
+}
+.weekly-analysis-hero > span {
+  display: block;
+  margin-top: 18px;
+  color: #74817e;
+  font-size: 12px;
+}
+.weekly-analysis-loading,
+.weekly-analysis-error {
+  padding: 28px;
+  border: 1px solid #dfe5e1;
+  border-radius: 16px;
+  background: #fffefa;
+  color: #74817e;
+  text-align: center;
+}
+.weekly-analysis-error { color: #b95143; }
+.weekly-ai-conclusion {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 18px;
+  margin-bottom: 14px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: #273337;
+  color: #fff;
+}
+.weekly-ai-conclusion span {
+  grid-column: 1 / -1;
+  color: #b6c6c1;
+  font: 9px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+.weekly-ai-conclusion b {
+  font: 800 28px "Nanum Myeongjo", serif;
+}
+.weekly-ai-conclusion p {
+  align-self: center;
+  margin: 0;
+  color: #c9d4d0;
+  font-size: 12px;
+}
+.weekly-analysis-card {
+  margin-top: 14px;
+  padding: 22px;
+  border: 1px solid #dfe5e1;
+  border-radius: 17px;
+  background: #fffefa;
+}
+.weekly-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.weekly-section-title > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #eee7f7;
+  color: #76539c;
+  font: 600 10px "DM Mono", monospace;
+}
+.weekly-section-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.weekly-section-title p {
+  margin: 4px 0 0;
+  color: #74817e;
+  font-size: 10px;
+}
+.weekly-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e5e8e5;
+  border-radius: 12px;
+}
+.weekly-summary-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+.weekly-summary-table th,
+.weekly-summary-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #edf0ee;
+  text-align: right;
+  white-space: nowrap;
+}
+.weekly-summary-table th {
+  background: #f5f7f5;
+  color: #74817e;
+  font-size: 10px;
+}
+.weekly-summary-table th:first-child,
+.weekly-summary-table td:first-child {
+  width: 62px;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: center;
+}
+.weekly-summary-table th:nth-child(2),
+.weekly-summary-table td:nth-child(2) {
+  width: 118px;
+  text-align: left;
+}
+.weekly-summary-table th:last-child,
+.weekly-summary-table td:last-child {
+  width: 92px;
+  min-width: 92px;
+}
+.weekly-summary-table tbody tr:last-child td { border-bottom: 0; }
+.weekly-method {
+  display: block;
+  margin-top: 10px;
+  color: #83908c;
+  font-size: 9px;
+  line-height: 1.5;
+}
+.seoul-split,
+.weekly-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.seoul-split article {
+  padding: 14px;
+  border-radius: 13px;
+  background: #f6f7f4;
+}
+.seoul-split h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.seoul-split article > div {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid #e5e8e5;
+  font-size: 10px;
+}
+.seoul-split article > div > b { font-size: 11px; }
+.weekly-analysis-grid { margin-top: 2px; }
+.weekly-analysis-card.compact p {
+  margin: 8px 0 0;
+  color: #5f6e6a;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.weekly-analysis-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  color: #74817e;
+  font-size: 10px;
+}
+.weekly-analysis-footer a {
+  color: #76539c;
+  font-weight: 700;
+  text-decoration: none;
+}
 footer {
   display: flex;
   justify-content: space-between;
@@ -629,6 +825,15 @@ footer b {
   .tools {
     grid-template-columns: 1fr;
   }
+  .weekly-analysis-page { padding: 0 16px 42px; }
+  .weekly-analysis-hero { padding-top: 26px; }
+  .weekly-analysis-hero > a { margin-bottom: 36px; }
+  .weekly-ai-conclusion,
+  .seoul-split,
+  .weekly-analysis-grid { grid-template-columns: 1fr; }
+  .weekly-ai-conclusion { gap: 8px; }
+  .weekly-analysis-card { padding: 16px; }
+  .weekly-analysis-footer { display: grid; }
   .card {
     min-height: 142px;
   }
