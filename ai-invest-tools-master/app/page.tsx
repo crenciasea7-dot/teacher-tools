@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import MarketOverview from "./components/market-overview";
 
 type Tool = {
   icon: string;
@@ -43,6 +44,7 @@ export default function Page() {
       <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
       <header><div className="brand"><i>AI</i><div><b>AI 투자 도구 MASTER</b><small>MY PERSONAL INVESTMENT TOOLKIT</small></div></div><div className="count"><strong>{tools.length}</strong><span>개의 도구</span></div></header>
       <section className="hero"><p>ONE PLACE, BETTER DECISIONS</p><h1>생각은 여기서,<br/><em>판단은 도구로.</em></h1><span>자산 관리부터 매수·정비사업·AI 투자 루틴까지.<br/>내가 만든 도구를 한 곳에서 바로 실행하세요.</span></section>
+      <MarketOverview />
       <nav>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
       <section className="tools">
         {shown.map((tool) => {
