@@ -67,6 +67,10 @@ function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+function chartUrlFor(symbol: string) {
+  return `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}/chart/`;
+}
+
 async function fetchMarket(definition: MarketDefinition) {
   const url = new URL(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(definition.symbol)}`);
   url.searchParams.set("range", "1d");
@@ -100,6 +104,7 @@ async function fetchMarket(definition: MarketDefinition) {
 
   return {
     ...definition,
+    chartUrl: chartUrlFor(definition.symbol),
     price,
     changePercent,
     currency: meta?.currency ?? null,
@@ -178,6 +183,7 @@ export async function GET() {
     if (result.status === "fulfilled") return result.value;
     return {
       ...MARKETS[index],
+      chartUrl: chartUrlFor(MARKETS[index].symbol),
       price: null,
       changePercent: null,
       currency: null,

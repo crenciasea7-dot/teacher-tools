@@ -13,6 +13,7 @@ type MarketItem = {
   marketTime: string | null;
   points: number[];
   available: boolean;
+  chartUrl: string;
 };
 
 type MarketResponse = {
@@ -81,11 +82,12 @@ function MarketTile({ item }: { item: MarketItem }) {
     : `${item.changePercent > 0 ? "+" : ""}${item.changePercent.toFixed(2)}%`;
 
   return (
-    <article className={`market-tile ${item.available ? "" : "unavailable"}`}>
+    <a className={`market-tile ${item.available ? "" : "unavailable"}`} href={item.chartUrl} target="_blank" rel="noreferrer" aria-label={`${item.name} 상세 차트 열기`}>
       <div className="market-name"><b>{item.name}</b><span>{item.symbol}</span></div>
       <div className="market-price"><strong>{formatPrice(item)}</strong><em className={direction}>{change}</em></div>
       <Sparkline points={item.points} direction={direction} />
-    </article>
+      <span className="market-detail">상세 차트 ↗</span>
+    </a>
   );
 }
 
@@ -115,7 +117,7 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   ];
 
   return (
-    <a className={`sentiment-card ${tone} ${item.available ? "" : "unavailable"}`} href={item.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${title} 상세 차트 열기`}>
+    <article className={`sentiment-card ${tone} ${item.available ? "" : "unavailable"}`}>
       <div className="sentiment-title"><div><b>{title}</b><span>{item.detail}</span></div><em>{item.label}</em></div>
       <svg className="sentiment-gauge" viewBox="0 0 240 145" role="meter" aria-label={`${title} ${item.score ?? "확인 중"}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.score ?? undefined}>
         {segments.map((segment) => <path d={arc(segment.start, segment.end)} stroke={segment.color} key={segment.start} />)}
@@ -123,8 +125,8 @@ function SentimentCard({ item }: { item: SentimentItem }) {
         {item.available && <><line className="gauge-needle" x1={centerX} y1={centerY} x2={needle.x} y2={needle.y} /><circle className="gauge-hub" cx={centerX} cy={centerY} r="8" /></>}
         <text className="gauge-score" x={centerX} y="137">{item.score ?? "—"}</text>
       </svg>
-      <div className="sentiment-foot"><span>{item.note}</span><b>자세히 보기 · 외부 업체 ↗</b></div>
-    </a>
+      <div className="sentiment-foot"><span>{item.note}</span><b>실시간 지수</b></div>
+    </article>
   );
 }
 
