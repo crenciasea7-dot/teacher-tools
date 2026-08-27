@@ -50,7 +50,12 @@ export default function Page() {
         <a href="https://chatgpt.com/" target="_blank" rel="noreferrer"><strong>ChatGPT</strong><small>외부 업체 ↗</small></a>
         <a href="https://claude.ai/" target="_blank" rel="noreferrer"><strong>Claude</strong><small>외부 업체 ↗</small></a>
       </section>
-      <section className="hero"><p>ONE PLACE, BETTER DECISIONS</p><h1>생각은 여기서,<br/><em>판단은 도구로.</em></h1><span>자산 관리부터 매수·정비사업·AI 투자 루틴까지.<br/>내가 만든 도구를 한 곳에서 바로 실행하세요.</span></section>
+      <section className="hero slogan-hero">
+        <p>AI INVESTMENT TOOLKIT</p>
+        <h1>AI × 투자 <strong>A to Z</strong></h1>
+        <h2>몸은 편하게. 부는 똑똑하게.</h2>
+        <span>Let AI Work. &nbsp;Live Rich.</span>
+      </section>
       <MarketOverview />
       <nav>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
       <section className="tools">

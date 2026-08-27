@@ -156,6 +156,33 @@ header {
   font-size: 14px;
   line-height: 1.7;
 }
+.slogan-hero {
+  margin: 20px 0 34px;
+  padding: clamp(40px, 7vw, 72px) clamp(24px, 6vw, 64px);
+  border-radius: 24px;
+  background: #0d1929;
+  color: #f7f9fc;
+  box-shadow: 0 24px 65px #0d192927;
+}
+.slogan-hero > p { color: #6b9cff; }
+.slogan-hero h1 {
+  font: 800 clamp(39px, 6vw, 69px)/1.05 Pretendard, Arial, sans-serif;
+  letter-spacing: -.055em;
+}
+.slogan-hero h1 strong { margin-left: .22em; font-weight: 800; }
+.slogan-hero h2 {
+  margin: 22px 0 0;
+  color: #2678ff;
+  font-size: clamp(24px, 4vw, 43px);
+  letter-spacing: -.055em;
+}
+.slogan-hero > span {
+  margin-top: 17px;
+  color: #94a3bb;
+  font-size: clamp(14px, 2vw, 20px);
+  font-style: italic;
+  letter-spacing: .015em;
+}
 .market-overview {
   margin: 14px 0 28px;
   padding: 24px;
@@ -826,6 +853,14 @@ footer b {
   .hero h1 {
     font-size: 48px;
   }
+  .slogan-hero {
+    margin-top: 12px;
+    padding: 38px 22px;
+    border-radius: 18px;
+  }
+  .slogan-hero h1 { font-size: 39px; }
+  .slogan-hero h1 strong { display: block; margin: 9px 0 0; }
+  .slogan-hero h2 { margin-top: 20px; font-size: 27px; }
   .ai-shortcuts {
     grid-template-columns: repeat(3, 1fr);
   }
