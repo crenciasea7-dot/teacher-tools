@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
@@ -23,12 +23,14 @@ type MarketResponse = {
 };
 
 type QuoteItem = {
-  id: "btc" | "xrp";
+  id: string;
   price: number;
+  change: number;
   changePercent: number;
-  currency: "USD";
+  format: "krw" | "usd" | "number" | "percent";
+  precision: number;
   measuredAt: string;
-  source: "CoinGecko";
+  source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
 };
 
@@ -36,71 +38,48 @@ type InvestingInstrument = {
   id: string;
   name: string;
   symbol: string;
-  widgetSymbol: string;
   url: string;
 };
 
 const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[] }> = [
   { name: "1. 주식", instruments: [
-    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", widgetSymbol: "KRX:000660", url: "https://www.tradingview.com/symbols/KRX-000660/" },
-    { id: "samsung", name: "삼성전자", symbol: "005930", widgetSymbol: "KRX:005930", url: "https://www.tradingview.com/symbols/KRX-005930/" },
+    { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", url: "https://finance.naver.com/item/main.naver?code=000660" },
+    { id: "samsung", name: "삼성전자", symbol: "005930", url: "https://finance.naver.com/item/main.naver?code=005930" },
   ] },
   { name: "2. 지수", instruments: [
-    { id: "sp500", name: "S&P 500", symbol: "SPX", widgetSymbol: "SP:SPX", url: "https://www.tradingview.com/symbols/SP-SPX/" },
-    { id: "nasdaq", name: "NASDAQ", symbol: "IXIC", widgetSymbol: "NASDAQ:IXIC", url: "https://www.tradingview.com/symbols/NASDAQ-IXIC/" },
-    { id: "kospi", name: "코스피", symbol: "KOSPI", widgetSymbol: "KRX:KOSPI", url: "https://www.tradingview.com/symbols/KRX-KOSPI/" },
-    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", widgetSymbol: "KRX:KOSDAQ", url: "https://www.tradingview.com/symbols/KRX-KOSDAQ/" },
+    { id: "sp500", name: "S&P 500", symbol: "^GSPC", url: "https://finance.yahoo.com/quote/%5EGSPC/" },
+    { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", url: "https://finance.yahoo.com/quote/%5EIXIC/" },
+    { id: "kospi", name: "코스피", symbol: "KOSPI", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSPI" },
+    { id: "kosdaq", name: "코스닥", symbol: "KOSDAQ", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSDAQ" },
   ] },
   { name: "3. 암호화폐", instruments: [
-    { id: "btc", name: "비트코인", symbol: "BTC/USD", widgetSymbol: "BITSTAMP:BTCUSD", url: "https://www.tradingview.com/symbols/BTCUSD/" },
-    { id: "xrp", name: "리플", symbol: "XRP/USD", widgetSymbol: "BITSTAMP:XRPUSD", url: "https://www.tradingview.com/symbols/XRPUSD/" },
+    { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.coingecko.com/en/coins/bitcoin" },
+    { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.coingecko.com/en/coins/xrp" },
   ] },
   { name: "4. 상품", instruments: [
-    { id: "gold", name: "금", symbol: "GOLD", widgetSymbol: "TVC:GOLD", url: "https://www.tradingview.com/symbols/TVC-GOLD/" },
-    { id: "oil", name: "WTI 유가", symbol: "CL1!", widgetSymbol: "NYMEX:CL1!", url: "https://www.tradingview.com/symbols/NYMEX-CL1!/" },
+    { id: "gold", name: "금", symbol: "GC=F", url: "https://finance.yahoo.com/quote/GC%3DF/" },
+    { id: "oil", name: "WTI 유가", symbol: "CL=F", url: "https://finance.yahoo.com/quote/CL%3DF/" },
   ] },
   { name: "5. 채권", instruments: [
-    { id: "us10y", name: "미국 10년물", symbol: "US 10Y", widgetSymbol: "TVC:US10Y", url: "https://www.tradingview.com/symbols/TVC-US10Y/" },
-    { id: "us30y", name: "미국 30년물", symbol: "US 30Y", widgetSymbol: "TVC:US30Y", url: "https://www.tradingview.com/symbols/TVC-US30Y/" },
+    { id: "us10y", name: "미국 10년물", symbol: "^TNX", url: "https://finance.yahoo.com/quote/%5ETNX/" },
+    { id: "us30y", name: "미국 30년물", symbol: "^TYX", url: "https://finance.yahoo.com/quote/%5ETYX/" },
   ] },
   { name: "6. 환율", instruments: [
-    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", widgetSymbol: "FX_IDC:USDKRW", url: "https://www.tradingview.com/symbols/USDKRW/" },
+    { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", url: "https://finance.yahoo.com/quote/KRW%3DX/" },
   ] },
 ];
 
-function TradingViewSingleQuote({ instrument }: { instrument: InvestingInstrument }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    container.replaceChildren();
-
-    const widget = document.createElement("div");
-    widget.className = "tradingview-widget-container__widget";
-
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-    script.async = true;
-    script.textContent = JSON.stringify({
-      symbol: instrument.widgetSymbol,
-      width: "100%",
-      colorTheme: "light",
-      isTransparent: true,
-      locale: "kr",
-    });
-
-    container.append(widget, script);
-    return () => container.replaceChildren();
-  }, [instrument.widgetSymbol]);
-
-  return (
-    <div className="market-single-ticker">
-      <div className="tradingview-widget-container" ref={containerRef} aria-label={`${instrument.name} TradingView 현재가`} />
-    </div>
-  );
+function formatQuoteValue(value: number, quote: QuoteItem, change = false) {
+  const sign = change ? (value > 0 ? "+" : value < 0 ? "−" : "") : "";
+  const displayValue = change ? Math.abs(value) : value;
+  const formatted = new Intl.NumberFormat("ko-KR", {
+    minimumFractionDigits: quote.precision,
+    maximumFractionDigits: quote.precision,
+  }).format(displayValue);
+  if (quote.format === "krw") return `${sign}₩${formatted}`;
+  if (quote.format === "usd") return `${sign}$${formatted}`;
+  if (quote.format === "percent") return `${sign}${formatted}${change ? "%p" : "%"}`;
+  return `${sign}${formatted}`;
 }
 
 function SentimentCard({ item }: { item: SentimentItem }) {
@@ -142,7 +121,7 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   );
 }
 
-function MarketLinkCard({ instrument, group, quote }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem }) {
+function MarketLinkCard({ instrument, group, quote, loading }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem; loading: boolean }) {
   const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
   return (
     <article className="market-link-card" aria-label={`${instrument.name} 현재가와 등락률`}>
@@ -150,11 +129,12 @@ function MarketLinkCard({ instrument, group, quote }: { instrument: InvestingIns
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
       {quote ? <div className="market-api-quote">
-        <div><strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: quote.currency, maximumFractionDigits: quote.price < 10 ? 4 : 0 }).format(quote.price)}</strong><em className={direction}>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</em></div>
-        <a href={quote.sourceUrl} target="_blank" rel="noreferrer">CoinGecko · 24시간 등락 ↗</a>
-      </div> : <TradingViewSingleQuote instrument={instrument} />}
+        <strong>{formatQuoteValue(quote.price, quote)}</strong>
+        <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
+        <small>{quote.source} · {quote.id === "btc" || quote.id === "xrp" ? "24시간 등락" : "전일 대비"}</small>
+      </div> : <div className={`market-api-state ${loading ? "loading" : "unavailable"}`}>{loading ? "시세 불러오는 중…" : "시세 일시 확인 불가"}</div>}
       <div className="market-detail-link-row">
-        <a href={instrument.url} target="_blank" rel="noreferrer">TradingView에서 상세 보기 ↗</a>
+        <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer">{quote?.source ?? "원본 사이트"}에서 상세 보기 ↗</a>
       </div>
     </article>
   );
@@ -197,20 +177,22 @@ export default function MarketOverview() {
       </div>
 
       <div className="market-heading">
-        <div><span>OFFICIAL SINGLE TICKER</span><h2 id="market-overview-title">Market Overview</h2><p>그래프 없이 현재가와 등락률만 간단히 표시하고, 원본 상세 페이지로 바로 연결합니다.</p></div>
+        <div><span>PUBLIC MARKET DATA</span><h2 id="market-overview-title">Market Overview</h2><p>네이버 금융·Yahoo Finance·CoinGecko 시세를 서버에서 받아 현재가와 전일 대비 변화를 표시합니다.</p></div>
         <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 심리 데이터 새로고침">↻ {updatedAt ? `공탐 ${updatedAt} 기준` : "공탐 불러오는 중"}</button>
       </div>
       {error ? <p className="market-error">공포·탐욕지수를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p> : null}
 
-      <div className="tradingview-market-board" aria-label="핵심 시장 현재가 전체 보기">
+      <div className="market-quote-board" aria-label="핵심 시장 현재가 전체 보기">
         {INVESTING_GROUPS.flatMap((group) => group.instruments.map((instrument) => (
-          <MarketLinkCard instrument={instrument} group={group.name} quote={data?.quotes?.find((quote) => quote.id === instrument.id)} key={instrument.id} />
+          <MarketLinkCard instrument={instrument} group={group.name} quote={data?.quotes?.find((quote) => quote.id === instrument.id)} loading={!data} key={instrument.id} />
         )))}
       </div>
       <div className="market-board-links">
-        <a className="tradingview-all-markets" href="https://www.tradingview.com/markets/" target="_blank" rel="noreferrer">TradingView 전체 시장 보기 ↗</a>
+        <a className="market-source-link" href="https://finance.naver.com/" target="_blank" rel="noreferrer">네이버 금융 ↗</a>
+        <a className="market-source-link" href="https://finance.yahoo.com/markets/" target="_blank" rel="noreferrer">Yahoo Finance ↗</a>
+        <a className="market-source-link" href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko ↗</a>
       </div>
-      <p className="market-note">TradingView 공식 Single Ticker 표시값입니다. 거래소 정책에 따라 일부 시세가 지연될 수 있으며, 카드를 불러오지 못해도 상세 링크는 계속 사용할 수 있습니다.</p>
+      <p className="market-note">키 없이 제공되는 공개 시세 응답을 사용합니다. 제공처 정책과 시장 운영시간에 따라 일부 값이 지연되거나 일시적으로 표시되지 않을 수 있으며, 원본 링크는 계속 사용할 수 있습니다.</p>
     </section>
   );
 }

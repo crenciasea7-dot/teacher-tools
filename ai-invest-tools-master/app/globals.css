@@ -457,7 +457,7 @@ header {
   border: 0;
   background: #fff;
 }
-.tradingview-market-board {
+.market-quote-board {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1px;
@@ -470,7 +470,7 @@ header {
 .market-link-card {
   display: flex;
   min-width: 0;
-  min-height: 230px;
+  min-height: 188px;
   padding: 16px;
   background: #fff;
   color: #1d2730;
@@ -481,35 +481,18 @@ header {
 .market-link-card > span { color: #698079; font-size: 9px; font-weight: 700; }
 .market-link-card > strong { margin-top: 9px; overflow-wrap: anywhere; font-size: 16px; line-height: 1.25; letter-spacing: -.03em; }
 .market-link-card > small { margin-top: 4px; color: #83938e; font: 9px "DM Mono", monospace; }
-.market-single-ticker {
-  display: block;
-  width: 100%;
-  min-height: 108px;
-  margin-top: 6px;
-}
-.market-single-ticker .tradingview-widget-container {
-  width: 100%;
-  min-height: 108px;
-}
-.market-single-ticker .tradingview-widget-container__widget {
-  width: 100%;
-}
-.market-single-ticker .tradingview-widget-container:empty::before {
-  content: "시세 확인 중…";
-  display: grid;
-  min-height: 108px;
-  place-items: center;
-  color: #83938e;
-  font-size: 9px;
-}
-.market-api-quote { display: grid; min-height: 62px; align-content: center; gap: 7px; }
-.market-api-quote > div { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
-.market-api-quote strong { font-size: 17px; letter-spacing: -.04em; }
-.market-api-quote em { font-size: 10px; font-style: normal; font-weight: 800; white-space: nowrap; }
-.market-api-quote em.up { color: #d7453d; }
-.market-api-quote em.down { color: #2479bd; }
-.market-api-quote em.flat { color: #6f807a; }
-.market-api-quote > a { color: #70847d; font-size: 8px; font-weight: 700; text-decoration: none; }
+.market-api-quote { display: grid; min-height: 84px; align-content: center; gap: 5px; margin-top: 5px; }
+.market-api-quote > strong { font-size: 18px; letter-spacing: -.04em; }
+.market-api-quote > div { display: flex; align-items: baseline; gap: 6px; }
+.market-api-quote em,
+.market-api-quote b { font-size: 9px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.market-api-quote > div.up { color: #d7453d; }
+.market-api-quote > div.down { color: #2479bd; }
+.market-api-quote > div.flat { color: #6f807a; }
+.market-api-quote small { color: #70847d; font-size: 8px; font-weight: 700; }
+.market-api-state { display: grid; min-height: 84px; margin-top: 5px; place-items: center; color: #83938e; font-size: 9px; text-align: center; }
+.market-api-state.loading { background: linear-gradient(90deg, #f3f5f4, #e7ece9, #f3f5f4); background-size: 200% 100%; animation: market-pulse 1.4s linear infinite; }
+.market-api-state.unavailable { color: #a07062; }
 .market-detail-link-row {
   display: block;
   margin-top: auto;
@@ -522,7 +505,7 @@ header {
   justify-content: flex-end;
   margin-top: 9px;
 }
-.tradingview-all-markets {
+.market-source-link {
   display: grid;
   min-width: 190px;
   place-items: center;
@@ -1677,7 +1660,7 @@ footer b {
   }
   .investing-market-layout { grid-template-columns: 1fr; }
   .investing-instrument-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .tradingview-market-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .market-quote-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .research-impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
@@ -1774,14 +1757,12 @@ footer b {
   .investing-instrument-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .investing-official-chart header { align-items: flex-start; flex-direction: column; }
   .investing-official-chart iframe { height: 440px; }
-  .tradingview-market-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
-  .market-link-card { min-height: 218px; padding: 13px; }
+  .market-quote-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
+  .market-link-card { min-height: 178px; padding: 13px; }
   .market-link-card > strong { font-size: 14px; }
-  .market-api-quote strong { font-size: 15px; }
-  .market-single-ticker,
-  .market-single-ticker .tradingview-widget-container { min-height: 108px; }
+  .market-api-quote > strong { font-size: 16px; }
   .market-board-links { display: grid; }
-  .tradingview-all-markets { min-width: 0; }
+  .market-source-link { min-width: 0; }
   .market-tile {
     min-height: 98px;
     padding: 11px;
