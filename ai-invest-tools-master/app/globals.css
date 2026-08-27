@@ -1505,19 +1505,19 @@ footer b {
 .research-tool-links b { font-size: 10px; }
 .research-tool-links span { color: var(--muted); font-size: 8px; line-height: 1.45; }
 .platform-nav-wrap { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid #dce4e0; background: #f8faf7ef; backdrop-filter: blur(16px); }
-.platform-nav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; max-width: 1170px; min-height: 62px; margin: auto; padding: 8px 30px; }
+.platform-nav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 20px; max-width: 1170px; min-height: 72px; margin: auto; padding: 9px 30px; }
 .platform-nav a { color: var(--ink); text-decoration: none; }
 .platform-nav-brand { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
-.platform-nav-brand i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #1b7666; color: #fff; font: 500 9px "DM Mono", monospace; font-style: normal; }
-.platform-nav-brand b { font-size: 12px; }
-.platform-nav-brand span { border-radius: 99px; padding: 3px 5px; background: #ffe6da; color: #aa4d2d; font: 700 7px "DM Mono", monospace; }
-.platform-nav-tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+.platform-nav-brand i { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: #1b7666; color: #fff; font: 600 11px "DM Mono", monospace; font-style: normal; }
+.platform-nav-brand b { font-size: 15px; }
+.platform-nav-brand span { border-radius: 99px; padding: 4px 6px; background: #ffe6da; color: #aa4d2d; font: 700 9px "DM Mono", monospace; }
+.platform-nav-tabs { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; }
 .platform-nav-tabs::-webkit-scrollbar { display: none; }
-.platform-nav-tabs a { flex: none; border-radius: 9px; padding: 8px 9px; color: #6c7975; font-size: 9px; font-weight: 700; }
+.platform-nav-tabs a { flex: none; border-radius: 10px; padding: 10px 12px; color: #5d6d68; font-size: 12px; font-weight: 750; }
 .platform-nav-tabs a:hover,
 .platform-nav-tabs a.active { background: #e6f0ec; color: #146454; }
-.platform-ai-links { display: flex; gap: 4px; }
-.platform-ai-links a { border: 1px solid #dfe5e1; border-radius: 8px; padding: 7px 8px; background: #fff; color: #64716d; font: 500 8px "DM Mono", monospace; }
+.platform-ai-links { display: flex; gap: 6px; }
+.platform-ai-links a { border: 1px solid #dfe5e1; border-radius: 9px; padding: 9px 11px; background: #fff; color: #52615c; font: 600 11px "DM Mono", monospace; }
 .global-privacy { display: flex; gap: 9px; max-width: 1170px; margin: 12px auto 0; padding: 9px 13px; border: 1px solid #cce5dc; border-radius: 10px; background: #eaf5f0; color: #46655d; font-size: 9px; line-height: 1.55; }
 .global-privacy span { color: #637a73; }
 .floating-actions { position: fixed; z-index: 70; right: 22px; bottom: 22px; }
@@ -1570,25 +1570,25 @@ footer b {
 .flow-scenario select { border: 1px solid #ffffff21; border-radius: 10px; padding: 10px; background: #ffffff0d; color: #fff; font-size: 10px; }
 .flow-scenario option { color: #152622; }
 .flow-result { display: grid; grid-template-columns: .7fr 1.3fr; gap: 24px; padding: 26px; border: 1px solid #dce3df; border-radius: 22px; background: #fffefa; }
-.flow-result header span { color: #1b7666; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
+.flow-result header span { color: #1b7666; font: 600 10px "DM Mono", monospace; letter-spacing: .12em; }
 .flow-result header h2 { margin: 11px 0 9px; font-size: 28px; letter-spacing: -.05em; }
 .flow-result header p { color: var(--muted); font-size: 12px; line-height: 1.65; }
 .flow-result ol { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
 .flow-result li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 11px; border-radius: 12px; background: #f3f5f2; }
-.flow-result li > i { color: #1b7666; font: 500 9px "DM Mono", monospace; font-style: normal; }
+.flow-result li > i { color: #1b7666; font: 600 10px "DM Mono", monospace; font-style: normal; }
 .flow-result li > div { display: grid; gap: 4px; }
 .flow-result li b { font-size: 13px; }
 .flow-result li span { color: var(--muted); font-size: 10px; line-height: 1.5; }
 .flow-result li a { border-radius: 8px; padding: 8px 9px; background: #fff; color: #176654; font-size: 10px; font-weight: 700; text-decoration: none; }
 .flow-soon { border-radius: 8px; padding: 8px 9px; background: #e7ebe8; color: #7c8985; font-size: 10px; font-style: normal; font-weight: 700; white-space: nowrap; }
 .flow-external-checks { grid-column: 1 / -1; display: flex; gap: 7px; border-top: 1px solid #e2e7e4; padding-top: 14px; }
-.flow-external-checks a { border: 1px solid #e1e5e2; border-radius: 9px; padding: 9px 11px; color: #56635f; font-size: 9px; text-decoration: none; }
+.flow-external-checks a { border: 1px solid #d9e0dc; border-radius: 10px; padding: 11px 14px; color: #465650; font-size: 12px; font-weight: 700; text-decoration: none; }
 .flow-external-checks small { color: #a1725e; }
 .flow-conclusion { display: grid; grid-template-columns: .55fr 1.45fr; gap: 24px; padding: 25px; border-radius: 20px; background: #f8e9df; }
-.flow-conclusion span { color: #b25433; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
+.flow-conclusion span { color: #b25433; font: 600 10px "DM Mono", monospace; letter-spacing: .12em; }
 .flow-conclusion h2 { margin: 7px 0 0; font-size: 22px; }
 .flow-conclusion p { margin: 0; color: #50453f; font-size: 13px; line-height: 1.7; }
-.flow-conclusion > b { grid-column: 2; color: #79584b; font-size: 9px; }
+.flow-conclusion > b { grid-column: 2; color: #79584b; font-size: 11px; line-height: 1.55; }
 .moyo-entry { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 18px; padding: 28px; border-radius: 22px; background: #142b2b; color: #fff; }
 .moyo-entry span,
 .gold-tracker header span { color: #7ab6a7; font: 500 8px "DM Mono", monospace; letter-spacing: .12em; }
