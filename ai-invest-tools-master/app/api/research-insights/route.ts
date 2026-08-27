@@ -1,4 +1,5 @@
 import { createGateway, generateText, Output } from "ai";
+import { getVercelOidcToken } from "@vercel/oidc";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -36,7 +37,14 @@ export async function POST(request: Request) {
       return Response.json({ error: "분석할 본문이 너무 짧습니다." }, { status: 400 });
     }
 
-    const token = process.env.AI_GATEWAY_API_KEY ?? process.env.VERCEL_OIDC_TOKEN;
+    let token = process.env.AI_GATEWAY_API_KEY;
+    if (!token) {
+      try {
+        token = await getVercelOidcToken();
+      } catch {
+        token = undefined;
+      }
+    }
     if (!token) {
       return Response.json({ error: "AI 연결이 아직 활성화되지 않았습니다." }, { status: 503 });
     }
