@@ -36,8 +36,19 @@ const tools: Tool[] = [
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
 
+const toolMenuSections = [
+  { label: "📈 세금", items: ["보유세 계산기", "양도세 (준비중)"] },
+  { label: "🏗️ 재개발", items: ["재개발 투자금", "재개발 매물 분석"] },
+  { label: "💳 금융투자", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
+  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
+  { label: "👤 자산관리", items: ["moyo 자산 대시보드", "금 추적 (준비중)"] },
+  { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
+  { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
+];
+
 export default function Page() {
   const [active, setActive] = useState("전체");
+  const [showToolMenu, setShowToolMenu] = useState(false);
   const shown = active === "전체" ? tools : tools.filter((tool) => tool.group === active);
 
   return (
@@ -56,8 +67,15 @@ export default function Page() {
         <h2>몸은 편하게. 부는 똑똑하게.</h2>
         <span>Let AI Work. &nbsp;Live Rich.</span>
       </section>
+      <a className="os-banner" href="/investment-os">
+        <span>NEW NAVIGATION</span>
+        <strong>투자 판단 OS</strong>
+        <small>부자의 뇌를 훔치는 알고리즘 · 준비중</small>
+        <b>열기 ↗</b>
+      </a>
       <MarketOverview />
-      <nav>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
+      <nav aria-label="도구 필터"><a className="os-nav-link" href="/investment-os">🧠 투자 판단 OS</a><button type="button" className={showToolMenu ? "on tool-menu-toggle" : "tool-menu-toggle"} aria-expanded={showToolMenu} onClick={() => setShowToolMenu((value) => !value)}>🛠️ 도구 모음 <span>{showToolMenu ? "닫기" : "펼치기"}</span></button>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
+      {showToolMenu && <section className="tool-menu" aria-label="도구 모음 카테고리">{toolMenuSections.map((section) => <div className="tool-menu-section" key={section.label}><h2>{section.label}</h2><div>{section.items.map((name) => { const cleanName = name.replace(/ \(준비중\)$/, ""); const tool = tools.find((entry) => entry.name === cleanName); const href = tool?.url; return href ? <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} key={name}><strong>{cleanName}</strong><small>{tool?.externalVendor ? "외부 업체" : "바로가기 ↗"}</small></a> : <span className="tool-menu-soon" key={name}><strong>{cleanName}</strong><small>준비중</small></span>; })}</div></div>)}</section>}
       <section className="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
