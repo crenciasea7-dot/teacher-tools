@@ -40,6 +40,16 @@ const tools: Tool[] = [
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
 
+const toolMenuSections = [
+  { label: "📈 세금", items: ["보유세 계산기", "양도세 (준비중)"] },
+  { label: "🏗️ 재개발", items: ["재개발투자금", "재개발 매물 분석"] },
+  { label: "💳 금융투자", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
+  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
+  { label: "👤 자산관리", items: ["moyo 자산 대시보드", "금 추적 (준비중)"] },
+  { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
+  { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
+];
+
 const categoryMap = [
   { icon: "◈", name: "자산관리", count: "2개", description: "지금 가진 자산을 한눈에 파악하고 기록합니다.", items: ["moyo 자산 대시보드", "금 추적"], href: "/asset-tracking" },
   { icon: "↗", name: "매수매도", count: "7개", description: "살 수 있는지부터 비교·계약·매도까지 이어갑니다.", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집중 아파트 비교"], href: "/investment-flow#buy" },
@@ -52,6 +62,7 @@ const categoryMap = [
 
 export default function Page() {
   const [active, setActive] = useState("전체");
+  const [showToolMenu, setShowToolMenu] = useState(false);
   const shown = active === "전체" ? tools : tools.filter((tool) => tool.group === active);
 
   return (
@@ -59,6 +70,7 @@ export default function Page() {
       <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER · V1</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
       <header><div className="brand"><i>AI</i><div><b>AI 투자 도구 MASTER</b><small>MY PERSONAL INVESTMENT TOOLKIT</small></div></div><div className="count"><strong>{tools.length}</strong><span>개의 도구</span></div></header>
       <section className="hero"><p>AI × INVESTMENT · A TO Z · V1</p><h1>몸은 편하게.<br/><em>부는 똑똑하게.</em></h1><span>거시 흐름을 먼저 읽고, 질문에 맞는 도구를 따라가며 판단하세요.<br/>Let AI Work. Live Rich.</span></section>
+      <a className="os-banner" href="/investment-os"><span>NEW NAVIGATION</span><strong>투자 판단 OS</strong><small>부자의 뇌를 훔치는 알고리즘 · 준비중</small><b>열기 ↗</b></a>
       <MarketOverview />
       <blockquote className="market-philosophy">“지표를 읽되, 공포에 흔들리지 말고, 환호에 취하지도, 기회를 놓치지도 말 것”</blockquote>
       <section className="category-map" aria-labelledby="category-map-title">
@@ -73,7 +85,8 @@ export default function Page() {
         <a href="/research-insights"><span>08 · POLICY IMPACT</span><h2>정부정책 분석</h2><p>정책 원문을 넣고 매매가·대출·세금·심리 영향을 균형 있게 정리합니다.</p><b>정책 자료 분석하기 →</b></a>
       </section>
       <div className="tools-section-heading"><div><span>MY INVESTMENT TOOLKIT</span><h2>필요한 도구를 바로 꺼내세요.</h2></div><p>목적별로 골라 쓰고, 판단 과정은 하나의 흐름으로 이어갑니다.</p></div>
-      <nav className="tool-filters" aria-label="도구 분류">{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
+      <nav className="tool-filters" aria-label="도구 분류"><a className="os-nav-link" href="/investment-os">🧠 투자 판단 OS</a><button type="button" className={showToolMenu ? "on tool-menu-toggle" : "tool-menu-toggle"} aria-expanded={showToolMenu} onClick={() => setShowToolMenu((value) => !value)}>🛠️ 도구 모음 <span>{showToolMenu ? "닫기" : "펼치기"}</span></button>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
+      {showToolMenu && <section className="tool-menu" aria-label="도구 모음 카테고리">{toolMenuSections.map((section) => <div className="tool-menu-section" key={section.label}><h2>{section.label}</h2><div>{section.items.map((name) => { const cleanName = name.replace(/ \(준비중\)$/, ""); const tool = tools.find((entry) => entry.name === cleanName); return tool?.url ? <a href={tool.url} target={tool.url.startsWith("http") ? "_blank" : undefined} rel={tool.url.startsWith("http") ? "noreferrer" : undefined} key={name}><strong>{cleanName}</strong><small>{tool.externalVendor ? "외부 업체" : "바로가기 ↗"}</small></a> : <span className="tool-menu-soon" key={name}><strong>{cleanName}</strong><small>준비중</small></span>; })}</div></div>)}</section>}
       <section className="tools" id="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
