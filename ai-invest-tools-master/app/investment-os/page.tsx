@@ -1,16 +1,6 @@
+"use client";
+import { useEffect, useState } from "react";
 import "../globals.css";
-
-export default function InvestmentOsPage() {
-  return (
-    <main className="os-page">
-      <a className="os-back" href="/">← AI 투자 도구 MASTER</a>
-      <p>NEW NAVIGATION</p>
-      <h1>투자 판단 OS</h1>
-      <h2>부자의 뇌를 훔치는 알고리즘</h2>
-      <div className="os-placeholder">
-        <strong>준비중</strong>
-        <span>투자 도구를 실제 판단 흐름으로 재구성하는 공간입니다.</span>
-      </div>
-    </main>
-  );
-}
+type Card={id:string;axis:string;content:string;createdAt:string};
+const axes=[["A","PEOPLE","투자 철학·알고리즘"],["B","PRINCIPLES","복리·안전마진·사이클"],["C","PATTERNS","성공·실패 패턴"],["D","HISTORY","사건→원인→결과"],["E","THEORY","이론과 모델"],["F","EVIDENCE","현재시장 데이터"],["G","VIEWS","가설과 검증"],["H","ME","나의 매수·매도·편향"]];
+export default function InvestmentOsPage(){const[cards,setCards]=useState<Card[]>([]),[question,setQuestion]=useState(""),[note,setNote]=useState(""),[axis,setAxis]=useState("H"),[decision,setDecision]=useState<string|null>(null);useEffect(()=>{try{setCards(JSON.parse(localStorage.getItem("investment-os-cards")||"[]"))}catch{}},[]);const saveCard=(content:string,a=axis)=>{if(!content.trim())return;const n=[{id:crypto.randomUUID(),axis:a,content:content.trim(),createdAt:new Date().toISOString()},...cards];setCards(n);localStorage.setItem("investment-os-cards",JSON.stringify(n))};const ask=()=>{if(question.trim())setDecision(`현재 질문: ${question}\n\nDO NOW: 자료와 내 조건을 함께 확인하고, 반대 근거가 해소될 때까지 관찰하세요.\nNEXT TRIGGER: 가격·정책·현금흐름 중 하나가 실제로 바뀌는 순간 재검토합니다.`)};return <main className="os-page"><a className="os-back" href="/">← AI 투자 도구 MASTER</a><header className="os-intro"><span>INVESTMENT DECISION OS · V1.1</span><h1>정보를 모으기 위해서가 아니라,<br/><em>같은 순서로 판단하기 위해서입니다.</em></h1><p>지식을 지혜로 바꾼다.</p></header><section className="os-flow"><div><b>NOW</b><span>→</span><b>SIGNAL</b><span>→</span><b>ME</b><span>→</span><b>DO</b></div><small>COLLECT → DISTILL → CONNECT → DECIDE → LEARN ↺</small><strong>DO = WAIT · WATCH · READY · BUY · HOLD · SWITCH · SELL · DEFENSE</strong></section><section className="os-panel"><div className="os-panel-heading"><div><span>DECIDE</span><h2>지금, 무엇을 판단하나요?</h2></div><small>내 카드 {cards.length}개 · 서버에 저장하지 않습니다</small></div><div className="os-question"><textarea value={question} onChange={e=>setQuestion(e.target.value)} placeholder="예: 지금 이 아파트를 사도 될까? 내 조건과 시장 신호를 함께 적어보세요."/><button onClick={ask}>판단 요청</button></div>{decision&&<article className="decision-card"><span>DECISION ENGINE · 10 FIELDS</span><h3>판단 초안</h3><pre>{decision}</pre><button onClick={()=>{saveCard(decision);setDecision(null)}}>이 판단 기록하기</button></article>}</section><section className="os-panel"><div className="os-panel-heading"><div><span>COLLECT</span><h2>지식을 카드로 쌓기</h2></div><small>파일 대신 내 소유 카드로 보관</small></div><div className="os-collect"><select value={axis} onChange={e=>setAxis(e.target.value)}>{axes.map(([id,n])=><option key={id} value={id}>{id}. {n}</option>)}</select><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="원칙, 자료, 링크, 경험을 짧게 기록하세요."/><button onClick={()=>{saveCard(note);setNote("")}}>+ 지식 추가</button></div></section><section className="os-universe"><div className="os-panel-heading"><div><span>KNOWLEDGE UNIVERSE</span><h2>8개의 관점으로 정리합니다</h2></div></div><div className="axis-grid">{axes.map(([id,n,d])=><article key={id}><b>{id}</b><h3>{n}</h3><p>{d}</p><small>{cards.filter(c=>c.axis===id).length} cards</small></article>)}</div></section><section className="os-journal"><span>LEARN</span><h2>판단은 기록할 때 자산이 됩니다.</h2><p>결과가 나온 뒤 무엇이 맞았고 틀렸는지 기록하면 다음 판단의 질이 올라갑니다.</p></section></main>}
