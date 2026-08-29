@@ -265,6 +265,20 @@ export default function ResearchWorkspace() {
     URL.revokeObjectURL(url);
   }
 
+  async function saveToNotion(record: ResearchRecord) {
+    try {
+      const content = [
+        `요약\n${record.analysis.summary}`,
+        `핵심 인사이트\n${record.analysis.insights.join("\n")}`,
+        `영향 분석\n${Object.entries(record.analysis.impact).map(([key, value]) => `${key}: ${value.detail}`).join("\n")}`,
+        `그래서 나는?\n${record.analysis.actions.join("\n")}`,
+      ].join("\n\n");
+      const response = await fetch("/api/save-source", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: record.title, content, url: record.source || undefined }) });
+      if (!response.ok) throw new Error("저장 실패");
+      window.alert("노션 소스뱅크에 저장됐습니다");
+    } catch { window.alert("노션 저장에 실패했습니다. NOTION_TOKEN과 소스 뱅크 연결을 확인하세요."); }
+  }
+
   return (
     <div className="research-workspace">
       <section className="research-upload-panel">
@@ -322,7 +336,7 @@ export default function ResearchWorkspace() {
           </div>
           <div className="research-record-title">
             <div><h3>{record.title}</h3><p>{record.source || "출처 미입력"} · {record.fileName} · {formatBytes(record.fileSize)}</p></div>
-            {record.original && <button type="button" onClick={() => downloadOriginal(record)}>원본 받기 ↓</button>}
+            <div className="research-record-actions"><button type="button" onClick={() => saveToNotion(record)}>노션에 저장</button>{record.original && <button type="button" onClick={() => downloadOriginal(record)}>원본 받기 ↓</button>}</div>
           </div>
           <section className="research-summary"><span>한눈에 요약</span><p>{record.analysis.summary}</p><ul>{record.analysis.insights.map((insight) => <li key={insight}>{insight}</li>)}</ul></section>
           <div className="research-keywords">{record.analysis.keywords.map(({ word }) => <button type="button" key={word} onClick={() => setActiveKeyword(word)}>#{word}</button>)}</div>

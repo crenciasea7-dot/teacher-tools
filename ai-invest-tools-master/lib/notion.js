@@ -93,3 +93,20 @@ export async function fetchAndFlatten(databaseId) {
   const raw = await queryDatabase(databaseId);
   return raw.map(flattenPage);
 }
+
+const SOURCE_BANK_ID = "87b75ba5-2aee-4501-a31f-697eba133470";
+export async function createSourcePage({ title, content, url }) {
+  const token = process.env.NOTION_TOKEN;
+  if (!token) throw new Error("NOTION_TOKEN 환경변수가 없습니다.");
+  const children = content.split(/\n\n+/).filter(Boolean).slice(0, 80).map((text) => ({ object: "block", type: "paragraph", paragraph: { rich_text: [{ type: "text", text: { content: text.slice(0, 1900) } }] } }));
+  const schemaResponse = await fetch(`${NOTION_API}/databases/${SOURCE_BANK_ID}`, { headers: { Authorization: `Bearer ${token}`, "Notion-Version": NOTION_VERSION } });
+  if (!schemaResponse.ok) throw new Error(`소스 뱅크 확인 실패 (${schemaResponse.status})`);
+  const schema = await schemaResponse.json();
+  const titleKey = Object.entries(schema.properties || {}).find(([, prop]) => prop.type === "title")?.[0] || "Name";
+  const properties = { [titleKey]: { title: [{ type: "text", text: { content: title.slice(0, 200) } }] } };
+  const urlKey = Object.entries(schema.properties || {}).find(([key, prop]) => prop.type === "url" && /url|출처|링크/i.test(key))?.[0];
+  if (url && urlKey) properties[urlKey] = { url };
+  const response = await fetch(`${NOTION_API}/pages`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Notion-Version": NOTION_VERSION, "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: SOURCE_BANK_ID }, properties, children }) });
+  if (!response.ok) throw new Error(`Notion 저장 실패 (${response.status}): ${await response.text()}`);
+  return response.json();
+}
