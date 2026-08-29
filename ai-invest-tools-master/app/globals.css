@@ -1961,6 +1961,7 @@ footer b {
 .insight-posts b { display: block; margin-top: 26px; color: #1b7666; font-size: 10px; }
 .rebalancing-grid article { background: #f1f3f0; color: #77837f; }
 .balance-rule { margin: 18px 0 0; padding: 25px; border-left: 4px solid #7658a5; background: #f0e9f8; color: #51415e; font: 700 20px/1.55 "Nanum Myeongjo", serif; }
+.standalone-links{display:grid;gap:12px;margin:28px 0}.standalone-links>a{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 24px;border:1px solid var(--line-soft);border-radius:18px;background:#fff;color:var(--ink);text-decoration:none;box-shadow:0 9px 26px rgba(25,66,54,.05);transition:.18s}.standalone-links>a:hover{transform:translateY(-3px);border-color:#b9d6cb;box-shadow:0 18px 38px rgba(27,63,52,.1)}.standalone-links b{font-size:18px}.standalone-links span{padding:9px 13px;border-radius:10px;background:var(--green-soft);color:var(--green);font-size:13px;font-weight:800;white-space:nowrap}@media(max-width:600px){.standalone-links>a{align-items:flex-start;flex-direction:column;padding:18px}.standalone-links span{align-self:flex-end}}
 .research-periodic-panel { padding: 26px; border: 1px solid var(--line); border-radius: 24px; background: #fffefa; box-shadow: 0 16px 50px #17332a0a; }
 .research-periodic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 18px; }
 .research-periodic-grid article { min-height: 135px; padding: 17px; border-radius: 14px; background: #f1f4f1; }
