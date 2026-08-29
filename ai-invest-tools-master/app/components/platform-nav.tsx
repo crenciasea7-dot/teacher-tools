@@ -10,6 +10,7 @@ const toolGroups = [
   { name: "비트코인", icon: "₿", links: [{ label: "비트코인 판단 보드", href: "/bitcoin-indicators" }, { label: "공포탐욕·레인보우·도미넌스", href: "/bitcoin-indicators" }] },
   { name: "재개발", icon: "⌂", links: [{ label: "재개발투자금", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "재개발 분석기", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "inga-radar", href: "https://inga-radar-seoul.vercel.app/" }] },
   { name: "금융투자", icon: "₩", links: [{ label: "구매력 계산기", href: "https://purchasing-power-calculator.vercel.app/" }, { label: "토탈 비용 시뮬레이션", href: "/property-purchase-simulation" }, { label: "집 잔금 계산기", href: "/jip-jangeum-calculator" }, { label: "집중 아파트 비교", href: "/apartment-research" }, { label: "포트폴리오 리밸런싱", href: "/rebalancing" }, { label: "AI 투자 프롬프트 스튜디오", href: "https://ai-invest-prompt-studio.vercel.app/" }] },
+  { name: "세금·대출", icon: "％", links: [{ label: "보유세 계산기", href: "/property-tax" }, { label: "집 잔금 계산기", href: "/jip-jangeum-calculator" }, { label: "토탈 비용 시뮬레이션", href: "/property-purchase-simulation" }, { label: "양도세 · 준비중", href: "" }] },
   { name: "정책·자료분석", icon: "▤", links: [{ label: "주간 아파트 동향", href: "/weekly-apartment-analysis" }, { label: "정부정책 분석", href: "/research-insights" }, { label: "자료 정리 & 인사이트", href: "/research-insights" }] },
 ];
 
