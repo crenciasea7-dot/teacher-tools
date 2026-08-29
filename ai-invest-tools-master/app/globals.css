@@ -2208,6 +2208,7 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
 .sentiment-heading h2 { font-size: 28px; }
 .sentiment-heading p,.market-note { font-size: 11px; }
 .market-philosophy { margin: 0 0 36px; padding: 29px 34px; border: 0; border-radius: 22px; background: linear-gradient(135deg,#fff5ee,#ffede2); box-shadow: 0 12px 35px rgba(170,78,39,.08); }
+.todays-judgment{margin:28px 0 34px;padding:26px;border:1px solid #dbe6e0;border-radius:22px;background:#fff}.todays-judgment-heading span{color:#d98a4a;font:600 10px "DM Mono",monospace;letter-spacing:.14em}.todays-judgment-heading h2{margin:8px 0 5px;font-size:30px}.todays-judgment-heading p{margin:0 0 18px;color:#718078}.todays-judgment-list{display:grid;gap:10px}.todays-judgment-list a{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border:1px solid #e0e8e3;border-radius:14px;color:#132723;text-decoration:none;font-size:19px;font-weight:800;transition:.18s}.todays-judgment-list a:hover{background:#e7f3ee;border-color:#9fc9b9}.todays-judgment-list b{margin-right:14px;color:#146957;font:600 12px "DM Mono",monospace}.todays-judgment-list strong{color:#146957}@media(max-width:760px){.todays-judgment{padding:18px}.todays-judgment-list a{padding:15px;font-size:16px}}
 .home-intelligence { gap: 18px; margin-bottom: 52px; }
 .home-intelligence a { min-height: 224px; padding: 31px; border-radius: 24px; background: #fff; box-shadow: var(--shadow-soft); }
 .home-intelligence h2 { margin-top: 28px; font-size: 28px; }

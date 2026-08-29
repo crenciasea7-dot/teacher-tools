@@ -72,6 +72,7 @@ export default function Page() {
       <section className="hero"><p>AI × INVESTMENT · A TO Z · V1</p><h1>몸은 편하게.<br/><em>부는 똑똑하게.</em></h1><span>거시 흐름을 먼저 읽고, 질문에 맞는 도구를 따라가며 판단하세요.<br/>Let AI Work. Live Rich.</span></section>
       <a className="os-banner" href="/investment-os"><span>NEW NAVIGATION</span><strong>투자 판단 OS</strong><small>부자의 뇌를 훔치는 알고리즘 · 준비중</small><b>열기 ↗</b></a>
       <MarketOverview />
+      <section className="todays-judgment" aria-labelledby="todays-judgment-title"><div className="todays-judgment-heading"><span>TODAY'S DECISION</span><h2 id="todays-judgment-title">오늘의 판단</h2><p>지금 필요한 질문을 골라 해당 판단 화면으로 이동하세요.</p></div><div className="todays-judgment-list">{[{title:"지금 시장은?",href:"/investment-flow"},{title:"자료 정리 & 인사이트",href:"/research-insights"},{title:"살까?",href:"/investment-flow#buy"},{title:"팔까?",href:"/investment-flow#sell"},{title:"리밸런싱",href:"/rebalancing"}].map((pick,index)=><a href={pick.href} key={pick.title}><span><b>{String(index+1).padStart(2,"0")}</b>{pick.title}</span><strong>→</strong></a>)}</div></section>
       <blockquote className="market-philosophy">“지표를 읽되, 공포에 흔들리지 말고, 환호에 취하지도, 기회를 놓치지도 말 것”</blockquote>
       <section className="category-map" aria-labelledby="category-map-title">
         <div className="category-map-heading"><div><span>INFORMATION ARCHITECTURE · V1</span><h2 id="category-map-title">흩어진 도구를, <em>7개 카테고리</em>로.</h2><p>필요한 일을 먼저 고르면 관련 도구까지 바로 이어집니다.</p></div><a href="#tools">전체 도구 카드 보기 →</a></div>
