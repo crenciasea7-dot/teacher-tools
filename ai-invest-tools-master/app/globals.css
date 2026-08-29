@@ -50,6 +50,7 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
 .platform-nav-tabs .investment-os-link{padding:11px 15px;border-radius:12px;background:#e66f42;color:#fff;font-weight:800;white-space:nowrap}.platform-nav-tabs .investment-os-link:hover{background:#c9572e}.login-link{margin-left:6px;border:1px solid #cbded6!important;color:#146957!important;background:#fff!important;font-weight:800}
 .platform-ai-links { gap: 7px; }
 .platform-ai-links a { padding: 10px 13px; border-radius: 11px; background: #fff; font-size: 12px; box-shadow: 0 5px 16px rgba(25, 66, 54, .05); }
+.platform-ai-links .ai-icon-link{display:grid;place-items:center;width:28px;height:28px;padding:0;border-radius:50%;font-size:11px;font-weight:800}.platform-ai-links .login-link{width:auto;height:auto;padding:8px 12px;border-radius:10px}
 
 .beta { margin-right: -38px; margin-left: -38px; padding: 12px 38px; background: #102c26; font-size: 12px; }
 .beta span { padding: 5px 9px; font-size: 10px; }

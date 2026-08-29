@@ -4,8 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const tabs = [{ href: "/", label: "홈" }];
-
 const toolGroups = [
   { name: "자산관리", icon: "◈", links: [{ label: "자산 추적 moyo", href: "/asset-tracking" }, { label: "금 추적", href: "/asset-tracking" }, { label: "알바비 관리", href: "https://alba-payroll-kr.crenciasea7.chatgpt.site/" }] },
   { name: "매수매도", icon: "↗", links: [{ label: "임장동선 · 준비중", href: "" }, { label: "집 잔금 계산기", href: "/jip-jangeum-calculator" }, { label: "집중 아파트 비교", href: "/apartment-research" }, { label: "등기부등본 분석 · 외부", href: "https://realpickai.kr/ai-registry" }, { label: "아파트 매도 분석", href: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing" }] },
@@ -30,14 +28,13 @@ export default function PlatformNav() {
         <div className="platform-nav-tabs">
           <Link href="/investment-os" className="investment-os-link">투자 판단</Link>
           {toolGroups.map((group) => <div className="top-category-wrap" key={`top-${group.name}`} onMouseEnter={() => setHoverGroup(group.name)} onMouseLeave={() => setHoverGroup(null)}><Link href={`/#tools-${group.name}`} className="top-category-link">{group.name}</Link>{hoverGroup===group.name&&<div className="top-category-dropdown">{group.links.map(link=>link.href?<Link key={link.label} href={link.href} target={link.href.startsWith("http")?"_blank":undefined}>{link.label}</Link>:<span key={link.label}>{link.label}</span>)}</div>}</div>)}
-          {tabs.map((tab) => <Link href={tab.href} className={isActive(tab.href) ? "active" : ""} key={tab.href}>{tab.label}</Link>)}
-          <button type="button" className={toolsOpen ? "tools-menu-trigger active" : "tools-menu-trigger"} aria-expanded={toolsOpen} aria-controls="tools-mega-menu" onClick={() => setToolsOpen((open) => !open)}>🛠 전체 도구 모음 <span>{toolsOpen ? "−" : "+"}</span></button>
+          <button type="button" className={toolsOpen ? "tools-menu-trigger active" : "tools-menu-trigger"} aria-expanded={toolsOpen} aria-controls="tools-mega-menu" onClick={() => setToolsOpen((open) => !open)}>🛠 도구 모음 <span>{toolsOpen ? "−" : "+"}</span></button>
         </div>
         <div className="platform-ai-links" aria-label="외부 AI 바로가기">
-          <a href="https://gemini.google.com/" target="_blank" rel="noreferrer">Gemini</a>
-          <a href="https://chatgpt.com/" target="_blank" rel="noreferrer">ChatGPT</a>
-          <a href="https://claude.ai/" target="_blank" rel="noreferrer">Claude</a>
-          <Link href="/signin-with-chatgpt" className="login-link">로그인</Link>
+          <a className="ai-icon-link" title="Gemini" aria-label="Gemini" href="https://gemini.google.com/" target="_blank" rel="noreferrer">G</a>
+          <a className="ai-icon-link" title="ChatGPT" aria-label="ChatGPT" href="https://chatgpt.com/" target="_blank" rel="noreferrer">C</a>
+          <a className="ai-icon-link" title="Claude" aria-label="Claude" href="https://claude.ai/" target="_blank" rel="noreferrer">A</a>
+          <Link href="/signin-with-chatgpt" className="login-link">관리자</Link>
         </div>
       </nav>
       {toolsOpen && <section className="tools-mega-menu" id="tools-mega-menu" aria-label="전체 도구 모음">
