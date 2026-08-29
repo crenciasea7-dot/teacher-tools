@@ -4,15 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const tabs = [
-  { href: "/", label: "홈" },
-  { href: "/investment-flow", label: "투자 판단" },
-  { href: "/research-insights", label: "자료·인사이트" },
-  { href: "/insights", label: "블로그" },
-  { href: "/asset-tracking", label: "자산 추적" },
-  { href: "/rebalancing", label: "리밸런싱" },
-  { href: "/bitcoin-indicators", label: "비트코인" },
-];
+const tabs = [{ href: "/", label: "홈" }];
 
 const toolGroups = [
   { name: "세금·대출", icon: "％", links: [{ label: "보유세 계산기", href: "/property-tax" }, { label: "양도세 · 준비중", href: "" }, { label: "집 잔금 계산기", href: "/jip-jangeum-calculator" }] },
@@ -36,14 +28,16 @@ export default function PlatformNav() {
       <nav className="platform-nav" aria-label="AI 투자 도구 V1 주요 메뉴">
         <Link href="/" className="platform-nav-brand"><i>AI</i><b>투자 A to Z</b><span>V1</span></Link>
         <div className="platform-nav-tabs">
-          {tabs.map((tab) => <Link href={tab.href} className={isActive(tab.href) ? "active" : ""} key={tab.href}>{tab.label}</Link>)}
+          <Link href="/investment-os" className="investment-os-link">투자 판단</Link>
           {toolGroups.map((group) => <Link href={`/#tools-${group.name}`} className="top-category-link" key={`top-${group.name}`}>{group.name}</Link>)}
+          {tabs.map((tab) => <Link href={tab.href} className={isActive(tab.href) ? "active" : ""} key={tab.href}>{tab.label}</Link>)}
           <button type="button" className={toolsOpen ? "tools-menu-trigger active" : "tools-menu-trigger"} aria-expanded={toolsOpen} aria-controls="tools-mega-menu" onClick={() => setToolsOpen((open) => !open)}>🛠 도구 모음 <span>{toolsOpen ? "−" : "+"}</span></button>
         </div>
         <div className="platform-ai-links" aria-label="외부 AI 바로가기">
           <a href="https://gemini.google.com/" target="_blank" rel="noreferrer">Gemini</a>
           <a href="https://chatgpt.com/" target="_blank" rel="noreferrer">ChatGPT</a>
           <a href="https://claude.ai/" target="_blank" rel="noreferrer">Claude</a>
+          <Link href="/signin-with-chatgpt" className="login-link">로그인</Link>
         </div>
       </nav>
       {toolsOpen && <section className="tools-mega-menu" id="tools-mega-menu" aria-label="전체 도구 모음">
