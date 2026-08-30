@@ -38,7 +38,8 @@ export default function WeeklyApartmentAnalysis() {
     {error && <div className="weekly-analysis-error">{error}</div>}
     {!data && !error && <div className="weekly-analysis-loading">한국부동산원 자료를 분석하고 있습니다…</div>}
     {data && <>
-      <section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section>
+      <a className="weekly-source-dashboard" href="https://rone-weekly-capital-dashboard.vercel.app/" target="_blank" rel="noreferrer"><div><span>OFFICIAL R-ONE DASHBOARD</span><strong>주간 아파트 가격동향 공식 차트·표</strong><p>원본 시황 대시보드에서 전국·수도권·서울·지방 및 전체 구별 자료를 확인하세요.</p></div><b>대시보드 열기 ↗</b></a>
+      <details className="weekly-ai-fold"><summary>AI 분석 진단 펼치기 <span>조사기준일 기준 자동 분석</span></summary><section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section></details>
       <WeeklyRateChart rows={data.summary}/>
       <details className="weekly-official-details">
         <summary><span>전체 공식 차트·표 보기</span><b>전국·수도권·서울·지방 및 전체 구별 자료를 확인하려면 클릭하세요 ↓</b></summary>
