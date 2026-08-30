@@ -72,7 +72,6 @@ export async function GET() {
       releaseDate: data.releaseDate,
       updatedAt: new Date().toISOString(),
       summary,
-      regions: data.regions,
       seoul: { gangnam, nonGangnam },
       analysis: {
         trend: trendText,
