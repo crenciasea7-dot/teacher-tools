@@ -9,6 +9,7 @@ type AnalysisData = {
   updatedAt: string;
   summary: Array<{ area: string; saleRate: number; previousSaleRate: number; jeonseRate: number }>;
   seoul: { gangnam: District[]; nonGangnam: District[] };
+  regions?: Array<{ name: string; weeks: Array<{ date: string; saleRate: number; jeonseRate: number }> }>;
   analysis: { trend: string; jeonse: string; qualitative: string; transactionNote: string; phase: string; conclusion: string };
   methodology: string;
   sourceUrl: string;
@@ -42,7 +43,7 @@ export default function WeeklyApartmentAnalysis() {
       <WeeklyRateChart rows={data.summary}/>
       <details className="weekly-official-details" open>
         <summary><span>R-ONE 공식 데이터 · 전체 차트·표</span><b>전국·수도권·서울·지방 및 전체 구별 자료</b></summary>
-        <div className="weekly-official-details-body"><p>한국부동산원 R-ONE의 최신 공식 차트와 전체 구별 표를 새 화면에서 확인할 수 있습니다.</p><a href={data.sourceUrl} target="_blank" rel="noreferrer">공식 자료 열기 ↗</a></div>
+        <div className="weekly-official-details-body"><p>한국부동산원 R-ONE에서 가져온 최신 전국·수도권·서울·지방 및 전체 구별 공식 수치입니다.</p><div className="weekly-full-table-wrap"><table className="weekly-full-table"><thead><tr><th>지역·구</th><th>조사기준일</th><th>매매 변동률</th><th>전세 변동률</th></tr></thead><tbody>{(data.regions ?? []).flatMap((region) => { const latest = region.weeks.at(-1); return [{ key: region.name, name: `${region.name} (지역)`, date: latest?.date, sale: latest?.saleRate, jeonse: latest?.jeonseRate }, ...(region.name === "서울" ? [] : (region as { districts?: Array<{ name: string; weeks: Array<{ date: string; saleRate: number; jeonseRate: number }> } }>).districts ?? []).map((district) => { const week = district.weeks.at(-1); return { key: `${region.name}-${district.name}`, name: district.name, date: week?.date, sale: week?.saleRate, jeonse: week?.jeonseRate }; })]; }).map((row) => <tr key={row.key}><td><b>{row.name}</b></td><td>{row.date?.replaceAll("-", ".")}</td><td className={tone(row.sale ?? 0)}>{rate(row.sale ?? 0)}</td><td className={tone(row.jeonse ?? 0)}>{rate(row.jeonse ?? 0)}</td></tr>)}</tbody></table></div><a href={data.sourceUrl} target="_blank" rel="noreferrer">R-ONE 원문 보기 ↗</a></div>
       </details>
       <section className="weekly-analysis-card">
         <div className="weekly-section-title"><span>01</span><div><h2>데이터 표 정리</h2><p>매매·전세 주간 변동률</p></div></div>
