@@ -3,7 +3,8 @@ import { lookup } from "node:dns/promises";
 function isPrivateIp(ip: string) { return /^(10\.|127\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(ip) || ip === "::1" || ip.startsWith("fc") || ip.startsWith("fd") || ip.startsWith("fe80:"); }
 
 function cleanHtml(html: string) {
-  return html.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<style[\s\S]*?<\/style>/gi, "").replace(/<nav[\s\S]*?<\/nav>/gi, "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+  const article = html.match(/<(?:div|article)[^>]+class=["'][^"']*(?:se-main-container|postViewArea)[^"']*["'][^>]*>[\s\S]*?<\/(?:div|article)>/i)?.[0] ?? html;
+  return article.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<style[\s\S]*?<\/style>/gi, "").replace(/<(?:nav|header|footer|aside|form)[^>]*>[\s\S]*?<\/(?:nav|header|footer|aside|form)>/gi, "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").replace(/(?:레이어 닫기|블로그 아이디가 필요해요!?|이웃과 소식을 만나보세요|공감\s*\d+|댓글\s*\d+|공유하기)/g, " ").replace(/\s+/g, " ").trim();
 }
 
 export async function POST(request: Request) {
