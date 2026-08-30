@@ -39,10 +39,9 @@ export default function WeeklyApartmentAnalysis() {
     {!data && !error && <div className="weekly-analysis-loading">한국부동산원 자료를 분석하고 있습니다…</div>}
     {data && <>
       <a className="weekly-source-dashboard" href="https://rone-weekly-capital-dashboard.vercel.app/" target="_blank" rel="noreferrer"><div><span>OFFICIAL R-ONE DASHBOARD</span><strong>주간 아파트 가격동향 공식 차트·표</strong><p>원본 시황 대시보드에서 전국·수도권·서울·지방 및 전체 구별 자료를 확인하세요.</p></div><b>대시보드 열기 ↗</b></a>
-      <details className="weekly-ai-fold"><summary>AI 분석 진단 펼치기 <span>조사기준일 기준 자동 분석</span></summary><section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section></details>
       <WeeklyRateChart rows={data.summary}/>
-      <details className="weekly-official-details">
-        <summary><span>전체 공식 차트·표 보기</span><b>전국·수도권·서울·지방 및 전체 구별 자료를 확인하려면 클릭하세요 ↓</b></summary>
+      <details className="weekly-official-details" open>
+        <summary><span>R-ONE 공식 데이터 · 전체 차트·표</span><b>전국·수도권·서울·지방 및 전체 구별 자료</b></summary>
         <div className="weekly-official-details-body"><p>한국부동산원 R-ONE의 최신 공식 차트와 전체 구별 표를 새 화면에서 확인할 수 있습니다.</p><a href={data.sourceUrl} target="_blank" rel="noreferrer">공식 자료 열기 ↗</a></div>
       </details>
       <section className="weekly-analysis-card">
@@ -50,6 +49,7 @@ export default function WeeklyApartmentAnalysis() {
         <div className="weekly-table-wrap"><table className="weekly-summary-table"><thead><tr><th>조사일</th><th>지역</th><th>매매</th><th>전주</th><th>전세</th></tr></thead><tbody>{data.summary.map((row) => <tr key={row.area}><td>{data.latestDate.slice(5).replace("-", ".")}</td><td><b>{row.area}</b></td><td className={tone(row.saleRate)}>{rate(row.saleRate)}</td><td>{rate(row.previousSaleRate)}</td><td className={tone(row.jeonseRate)}>{rate(row.jeonseRate)}</td></tr>)}</tbody></table></div>
         <small className="weekly-method">* {data.methodology}</small>
       </section>
+      <section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS · AI 6단계 분석</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section>
       <section className="weekly-analysis-card">
         <div className="weekly-section-title"><span>02</span><div><h2>서울 세분화</h2><p>강남권과 비강남권의 확산 여부</p></div></div>
         <div className="seoul-split"><DistrictGroup title="강남·서초" districts={data.seoul.gangnam}/><DistrictGroup title="비강남 관찰지역" districts={data.seoul.nonGangnam}/></div>
