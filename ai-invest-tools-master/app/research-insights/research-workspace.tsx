@@ -304,9 +304,15 @@ export default function ResearchWorkspace() {
             body: JSON.stringify({ title: recordTitle, category, source, text: text.slice(0, 45_000) }),
           });
         }
-        if (!response.ok) throw new Error("AI unavailable");
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({} as { error?: string }));
+          throw new Error(errorBody.error || "AI 분석 호출에 실패했습니다.");
+        }
         analysis = await response.json() as ResearchAnalysis;
-      } catch {
+      } catch (analysisError) {
+        if (canAnalyzeOriginalFile) {
+          throw analysisError;
+        }
         text = file ? await extractText(file) : pastedText;
         if (text.trim().length < MIN_READABLE_TEXT_LENGTH) throw new Error("읽을 수 있는 본문이 너무 짧습니다. 스캔 PDF라면 해상도가 높은 파일이나 본문 직접 붙여넣기를 함께 사용해 주세요.");
         analysis = localAnalysis(text, recordTitle);
