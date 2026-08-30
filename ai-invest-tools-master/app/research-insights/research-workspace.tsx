@@ -289,6 +289,15 @@ export default function ResearchWorkspace() {
     } catch { window.alert("노션 저장에 실패했습니다. NOTION_TOKEN과 소스 뱅크 연결을 확인하세요."); }
   }
 
+  async function saveRawToNotion() {
+    if (!title.trim() || !pastedText.trim()) { setMessage("원문 저장에는 제목과 본문이 필요합니다."); return; }
+    try {
+      const response = await fetch("/api/save-source", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: title.trim(), content: pastedText, url: source.trim() || undefined }) });
+      if (!response.ok) throw new Error("저장 실패");
+      setMessage("노션 소스뱅크에 원문 그대로 저장됐습니다.");
+    } catch { setMessage("원문 저장에 실패했습니다. NOTION_TOKEN 설정을 확인하세요."); }
+  }
+
   return (
     <div className="research-workspace">
       <section className="research-upload-panel">
@@ -311,7 +320,7 @@ export default function ResearchWorkspace() {
         </div>
         <div className="research-submit-row">
           <p className={message ? "show" : ""}>{message || "원본과 분석 기록은 이 브라우저에 누적됩니다."}</p>
-          <button type="button" onClick={analyze} disabled={busy}>{busy ? "분석 중…" : "AI로 정리해서 저장"}</button>
+          <div><button type="button" onClick={analyze} disabled={busy}>{busy ? "분석 중…" : "AI로 정리해서 저장"}</button><button type="button" onClick={saveRawToNotion}>원문 그대로 저장</button></div>
         </div>
       </section>
 
