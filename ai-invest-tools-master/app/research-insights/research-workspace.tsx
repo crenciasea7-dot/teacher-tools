@@ -291,8 +291,7 @@ export default function ResearchWorkspace() {
         if (!response.ok) throw new Error("AI unavailable");
         analysis = await response.json() as ResearchAnalysis;
       } catch {
-        setMessage("AI 요약을 사용하려면 운영자 AI 연결 설정을 먼저 등록해주세요. 현재는 자료를 저장하지 않았습니다.");
-        return;
+        analysis = localAnalysis(text, recordTitle);
       }
       const record: ResearchRecord = {
         id: crypto.randomUUID(),

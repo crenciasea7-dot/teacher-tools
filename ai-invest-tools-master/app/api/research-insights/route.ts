@@ -36,6 +36,62 @@ const analysisSchema = z.object({
 
 const dailyUsage = new Map<string, { day: string; count: number }>();
 
+function extractJson(text: string) {
+  const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) throw new Error("AI 응답을 JSON으로 읽지 못했습니다.");
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
+async function generateWithGemini(prompt: string) {
+  const key = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  if (!key) throw new Error("Gemini key missing");
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      generationConfig: {
+        temperature: 0.2,
+        responseMimeType: "application/json",
+      },
+      contents: [{
+        role: "user",
+        parts: [{
+          text: `${prompt}
+
+반드시 아래 JSON 형식만 반환하세요. 마크다운 설명은 쓰지 마세요.
+{
+  "summary": "짧은 요약",
+  "insights": ["핵심 인사이트 1", "핵심 인사이트 2"],
+  "keywords": [{"word": "키워드", "weight": 8}],
+  "impact": {
+    "salePrice": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
+    "loan": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
+    "tax": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
+    "policy": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
+    "sentiment": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"}
+  },
+  "perspectives": {
+    "positive": "긍정적 해석",
+    "negative": "부정적 해석",
+    "neutral": "중립적 해석"
+  },
+  "actions": ["해야 할 일 1", "해야 할 일 2"],
+  "recommendedTools": [{"name": "주간 아파트 가격동향", "reason": "추천 이유"}]
+}`,
+        }],
+      }],
+    }),
+  });
+
+  const body = await response.json();
+  if (!response.ok) throw new Error(body.error?.message || "Gemini 분석 호출에 실패했습니다.");
+  const text = body.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("\n") || "";
+  return analysisSchema.parse(extractJson(text));
+}
+
 export async function POST(request: Request) {
   try {
     const admin = await hasAdminSession();
@@ -67,15 +123,32 @@ export async function POST(request: Request) {
       return Response.json({ error: "AI 연결이 아직 활성화되지 않았습니다." }, { status: 503 });
     }
 
-    const gateway = createGateway({ apiKey: token });
-    const { output } = await generateText({
-      model: gateway("openai/gpt-5.6-luna"),
-      output: Output.object({ schema: analysisSchema }),
-      system: `당신은 한국의 개인 투자자를 돕는 리서치 편집자다. 주어진 자료에 없는 사실을 만들지 말고, 불확실하면 반드시 '확인 필요'라고 쓴다. 모든 답변은 쉽고 짧은 한국어로 작성한다. 영향 분석은 사용자의 구체적인 자산 정보가 없다는 점을 전제로 일반적인 영향을 설명한다. 키워드는 명사 중심으로 중복 없이 뽑는다. 행동 제안은 당장 확인할 수 있는 구체적인 단계로 쓴다. 공포나 환호 한쪽에 치우치지 않도록 긍정·부정·중립 시각을 각각 제시한다. 원문에 네이버 블로그·뉴스 사이트의 검색창, 메뉴, 공감/댓글 숫자, 공유·레이어 닫기·이웃추가 같은 UI 문구가 섞여 있으면 모두 무시하고 실제 글 본문만 분석한다.`,
-      prompt: `자료 제목: ${body.title || "제목 없음"}\n자료 종류: ${body.category || "기타"}\n출처: ${body.source || "미입력"}\n\n아래 자료를 요약하고, 핵심 인사이트와 키워드를 추출한 뒤 매매가·대출·세금·정책·시장심리에 미치는 영향을 구분해 분석하라. 같은 사실을 긍정적·부정적·중립적 시각에서 각각 해석하고, 마지막에는 '그래서 나는?'에 넣을 행동과 이 대시보드의 적절한 도구를 추천하라.\n\n--- 원문 ---\n${text}`,
-    });
+    const analysisPrompt = `당신은 한국의 개인 투자자를 돕는 리서치 편집자다. 주어진 자료에 없는 사실을 만들지 말고, 불확실하면 반드시 '확인 필요'라고 쓴다. 모든 답변은 쉽고 짧은 한국어로 작성한다. 영향 분석은 사용자의 구체적인 자산 정보가 없다는 점을 전제로 일반적인 영향을 설명한다. 키워드는 명사 중심으로 중복 없이 뽑는다. 행동 제안은 당장 확인할 수 있는 구체적인 단계로 쓴다. 공포나 환호 한쪽에 치우치지 않도록 긍정·부정·중립 시각을 각각 제시한다. 원문에 네이버 블로그·뉴스 사이트의 검색창, 메뉴, 공감/댓글 숫자, 공유·레이어 닫기·이웃추가 같은 UI 문구가 섞여 있으면 모두 무시하고 실제 글 본문만 분석한다.
 
-    return Response.json({ ...output, engine: "ai" });
+자료 제목: ${body.title || "제목 없음"}
+자료 종류: ${body.category || "기타"}
+출처: ${body.source || "미입력"}
+
+아래 자료를 요약하고, 핵심 인사이트와 키워드를 추출한 뒤 매매가·대출·세금·정책·시장심리에 미치는 영향을 구분해 분석하라. 같은 사실을 긍정적·부정적·중립적 시각에서 각각 해석하고, 마지막에는 '그래서 나는?'에 넣을 행동과 이 대시보드의 적절한 도구를 추천하라.
+
+--- 원문 ---
+${text}`;
+
+    try {
+      const gateway = createGateway({ apiKey: token });
+      const { output } = await generateText({
+        model: gateway("openai/gpt-5.6-luna"),
+        output: Output.object({ schema: analysisSchema }),
+        prompt: analysisPrompt,
+      });
+
+      return Response.json({ ...output, engine: "ai" });
+    } catch (gatewayError) {
+      if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) throw gatewayError;
+      console.warn("AI Gateway failed, falling back to Gemini", gatewayError);
+      const output = await generateWithGemini(analysisPrompt);
+      return Response.json({ ...output, engine: "ai" });
+    }
   } catch (error) {
     console.error("research insight analysis failed", error);
     return Response.json({ error: "AI 분석 중 문제가 생겼습니다." }, { status: 500 });
