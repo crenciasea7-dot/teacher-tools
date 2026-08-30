@@ -17,7 +17,7 @@ const toolGroups = [
 export default function PlatformNav() {
   const pathname = usePathname();
   const [toolsOpen, setToolsOpen] = useState(false);
-  const [hoverGroup, setHoverGroup] = useState<string | null>(null);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
   const isActive = (href: string) => {
     if (href.includes("#")) return false;
     return pathname === href || (href !== "/" && pathname.startsWith(href));
@@ -28,7 +28,7 @@ export default function PlatformNav() {
         <Link href="/" className="platform-nav-brand"><i>AI</i><b>투자 A to Z</b><span>V1</span></Link>
         <div className="platform-nav-tabs">
           <Link href="/investment-os" className="investment-os-link">투자 판단</Link>
-          {toolGroups.map((group) => <div className="top-category-wrap" key={`top-${group.name}`} onMouseEnter={() => setHoverGroup(group.name)} onMouseLeave={() => setHoverGroup(null)}><Link href={`/#tools-${group.name}`} className="top-category-link">{group.name}</Link>{hoverGroup===group.name&&<div className="top-category-dropdown">{group.links.map(link=>link.href?<Link key={link.label} href={link.href} target={link.href.startsWith("http")?"_blank":undefined}>{link.label}</Link>:<span key={link.label}>{link.label}</span>)}</div>}</div>)}
+          {toolGroups.map((group) => <div className="top-category-wrap" key={`top-${group.name}`}><button type="button" className="top-category-link" aria-expanded={openCategory === group.name} onClick={() => setOpenCategory(openCategory === group.name ? null : group.name)}>{group.name} <span aria-hidden="true">▾</span></button></div>)}
           <button type="button" className={toolsOpen ? "tools-menu-trigger active" : "tools-menu-trigger"} aria-expanded={toolsOpen} aria-controls="tools-mega-menu" onClick={() => setToolsOpen((open) => !open)}>🛠 도구 모음 <span>{toolsOpen ? "−" : "+"}</span></button>
         </div>
         <div className="platform-ai-links" aria-label="외부 AI 바로가기">
@@ -38,6 +38,7 @@ export default function PlatformNav() {
           <Link href="/signin-with-chatgpt" className="login-link">관리자</Link>
         </div>
       </nav>
+      {openCategory && <section className="category-toggle-panel" aria-label={`${openCategory} 도구 목록`}><div className="category-toggle-inner"><strong>{openCategory}</strong><div>{toolGroups.find((group) => group.name === openCategory)?.links.map((link) => link.href ? <Link key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} onClick={() => setOpenCategory(null)}>{link.label}<b>→</b></Link> : <span key={link.label}>{link.label}</span>)}</div></div></section>}
       {toolsOpen && <section className="tools-mega-menu" id="tools-mega-menu" aria-label="전체 도구 모음">
         <div className="tools-mega-heading"><div><span>TOOL LIBRARY · V1.0</span><h2>무엇을 하려는지부터 고르세요.</h2></div><Link href="/#tools" onClick={() => setToolsOpen(false)}>전체 카드로 보기 →</Link></div>
         <div className="tools-mega-grid">{toolGroups.map((group) => <article key={group.name}><i>{group.icon}</i><h3>{group.name}</h3><div>{group.links.map((link) => link.href ? <Link href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} onClick={() => setToolsOpen(false)} key={link.label}>{link.label}<b>→</b></Link> : <span key={link.label}>{link.label}</span>)}</div></article>)}</div>

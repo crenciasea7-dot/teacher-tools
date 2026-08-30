@@ -45,8 +45,12 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
 .platform-nav-tabs a:hover,
 .platform-nav-tabs a.active { background: var(--green-soft); color: var(--green); }
 .platform-nav-tabs .top-category-link { padding: 11px 8px; color: #52645e; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.platform-nav-tabs .top-category-link { border: 0; background: transparent; cursor: pointer; font-family: inherit; }
+.platform-nav-tabs .top-category-link span { margin-left: 3px; font-size: 10px; }
 .platform-nav-tabs .top-category-link:hover { color: var(--green); background: var(--green-soft); }
 .top-category-wrap{position:relative}.top-category-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:80;min-width:190px;padding:8px;border:1px solid #dbe6e0;border-radius:12px;background:#fff;box-shadow:0 16px 35px #193f3222}.top-category-dropdown a,.top-category-dropdown span{display:block;padding:8px 10px;color:#52645e;font-size:12px;text-decoration:none;white-space:nowrap}.top-category-dropdown a:hover{background:#e7f3ee;color:#146957}
+.category-toggle-panel{position:fixed;top:70px;left:0;right:0;z-index:75;padding:14px 24px;border-bottom:1px solid #dbe6e0;background:#fff;box-shadow:0 16px 35px rgba(25,63,50,.14)}
+.category-toggle-inner{max-width:1160px;margin:0 auto}.category-toggle-inner>strong{display:block;margin-bottom:10px;color:#146957;font-size:13px}.category-toggle-inner>div{display:flex;flex-wrap:wrap;gap:8px}.category-toggle-inner a,.category-toggle-inner span{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid #dbe6e0;border-radius:10px;color:#314d44;font-size:13px;text-decoration:none;background:#f8fbf9}.category-toggle-inner a:hover{border-color:#9bc8b8;background:#e8f3ee;color:#146957}.category-toggle-inner b{color:#146957}
 .platform-nav-tabs .investment-os-link{padding:11px 15px;border-radius:12px;background:#e66f42;color:#fff;font-weight:800;white-space:nowrap}.platform-nav-tabs .investment-os-link:hover{background:#c9572e}.login-link{margin-left:6px;border:1px solid #cbded6!important;color:#146957!important;background:#fff!important;font-weight:800}
 .platform-ai-links { gap: 7px; }
 .platform-ai-links a { padding: 10px 13px; border-radius: 11px; background: #fff; font-size: 12px; box-shadow: 0 5px 16px rgba(25, 66, 54, .05); }
