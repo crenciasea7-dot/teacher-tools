@@ -21,10 +21,21 @@ export async function POST(request: Request) {
       const [blogId, logNo] = parsed.pathname.split("/").filter(Boolean);
       if (blogId && logNo) target = `https://blog.naver.com/PostView.naver?blogId=${encodeURIComponent(blogId)}&logNo=${encodeURIComponent(logNo)}`;
     }
-    const response = await fetch(target, { redirect: "error", headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(15_000) });
+    let response = await fetch(target, { redirect: "manual", headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(15_000) });
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      if (!location) throw new Error("리디렉션 주소가 없습니다.");
+      const redirected = new URL(location, target);
+      if (!allowedHost(redirected.hostname)) throw new Error("허용되지 않은 리디렉션입니다.");
+      const redirectedIp = await lookup(redirected.hostname);
+      if (isPrivateIp(redirectedIp.address)) throw new Error("공개 인터넷 주소만 가져올 수 있습니다.");
+      response = await fetch(redirected, { redirect: "error", headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(15_000) });
+    }
     if (!response.ok) throw new Error(`페이지를 가져오지 못했습니다 (${response.status})`);
     const text = cleanHtml(await response.text());
     if (text.length < 80) throw new Error("본문을 찾지 못했습니다.");
     return Response.json({ text: text.slice(0, 45_000), source: url });
   } catch (error) { return Response.json({ error: "자동으로 가져오지 못했습니다. 본문을 직접 붙여넣어 주세요." }, { status: 502 }); }
 }
+
+function allowedHost(hostname: string) { return /(^|\.)((m\.)?blog\.naver\.com|news\.naver\.com|n\.news\.naver\.com|mk\.co\.kr|hankyung\.com|sedaily\.com|chosun\.com|joongang\.co\.kr|khan\.co\.kr)$/i.test(hostname); }
