@@ -36,6 +36,29 @@ const analysisSchema = z.object({
 
 const dailyUsage = new Map<string, { day: string; count: number }>();
 
+function buildAnalysisPrompt(body: { title?: string; category?: string; source?: string }, text?: string) {
+  const sourceText = text ? `\n\n--- 원문 ---\n${text}` : "";
+  return `당신은 한국 부동산·금융시장 자료를 읽는 투자 리서치 편집자다.
+
+목표:
+- 단순 요약이 아니라, 이 자료를 "어떻게 써먹을지"까지 정리한다.
+- 원문에 없는 사실은 만들지 말고, 불확실하면 반드시 "확인 필요"라고 쓴다.
+- OCR로 깨진 글자, 페이지 번호, 메뉴, 검색창, 공유, 댓글, UI 문구는 버린다.
+- 숫자, 시점, 정책명, 세금·대출 조건, 금리·통화량·공급 같은 핵심 변수는 최대한 살린다.
+
+출력 수준:
+- summary: 제목 나열이 아니라 전체 결론을 5~8문장으로 쓴다.
+- insights: 목차별 주요 메시지처럼 4~6개를 뽑고, 각 항목은 "무엇이 핵심인가 + 왜 중요한가"까지 쓴다.
+- impact: 매매가, 대출, 세금, 정책, 시장심리에 각각 어떤 압력/기회/주의점이 있는지 구분한다.
+- perspectives: 같은 자료를 긍정·부정·중립으로 다르게 해석한다.
+- actions: "그래서 나는?"에 들어갈 행동으로, 투자자가 다음에 확인할 체크리스트를 쓴다.
+- recommendedTools: 이 대시보드에서 이어서 볼 도구를 추천한다.
+
+자료 제목: ${body.title || "제목 없음"}
+자료 종류: ${body.category || "기타"}
+출처: ${body.source || "미입력"}${sourceText}`;
+}
+
 function extractJson(text: string) {
   const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
   const start = cleaned.indexOf("{");
@@ -44,9 +67,36 @@ function extractJson(text: string) {
   return JSON.parse(cleaned.slice(start, end + 1));
 }
 
-async function generateWithGemini(prompt: string) {
+async function generateWithGemini(prompt: string, file?: File) {
   const key = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!key) throw new Error("Gemini key missing");
+  const parts: Array<{ text: string } | { inlineData: { mimeType: string; data: string } }> = [{ text: `${prompt}
+
+반드시 아래 JSON 형식만 반환하세요. 마크다운 설명은 쓰지 마세요.
+{
+  "summary": "전체 결론 5~8문장",
+  "insights": ["목차별 핵심 메시지와 의미", "시장 변수와 투자 해석"],
+  "keywords": [{"word": "키워드", "weight": 8}],
+  "impact": {
+    "salePrice": {"direction": "positive|neutral|negative|uncertain", "detail": "매매가 영향"},
+    "loan": {"direction": "positive|neutral|negative|uncertain", "detail": "대출 영향"},
+    "tax": {"direction": "positive|neutral|negative|uncertain", "detail": "세금 영향"},
+    "policy": {"direction": "positive|neutral|negative|uncertain", "detail": "정책 영향"},
+    "sentiment": {"direction": "positive|neutral|negative|uncertain", "detail": "시장심리 영향"}
+  },
+  "perspectives": {
+    "positive": "긍정적 해석",
+    "negative": "부정적 해석",
+    "neutral": "중립적 해석"
+  },
+  "actions": ["투자자가 다음에 확인할 행동 1", "투자자가 다음에 확인할 행동 2"],
+  "recommendedTools": [{"name": "주간 아파트 가격동향", "reason": "추천 이유"}]
+}` }];
+
+  if (file) {
+    const bytes = Buffer.from(await file.arrayBuffer()).toString("base64");
+    parts.push({ inlineData: { mimeType: file.type || "application/octet-stream", data: bytes } });
+  }
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
     method: "POST",
@@ -58,30 +108,7 @@ async function generateWithGemini(prompt: string) {
       },
       contents: [{
         role: "user",
-        parts: [{
-          text: `${prompt}
-
-반드시 아래 JSON 형식만 반환하세요. 마크다운 설명은 쓰지 마세요.
-{
-  "summary": "짧은 요약",
-  "insights": ["핵심 인사이트 1", "핵심 인사이트 2"],
-  "keywords": [{"word": "키워드", "weight": 8}],
-  "impact": {
-    "salePrice": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
-    "loan": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
-    "tax": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
-    "policy": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"},
-    "sentiment": {"direction": "positive|neutral|negative|uncertain", "detail": "설명"}
-  },
-  "perspectives": {
-    "positive": "긍정적 해석",
-    "negative": "부정적 해석",
-    "neutral": "중립적 해석"
-  },
-  "actions": ["해야 할 일 1", "해야 할 일 2"],
-  "recommendedTools": [{"name": "주간 아파트 가격동향", "reason": "추천 이유"}]
-}`,
-        }],
+        parts,
       }],
     }),
   });
@@ -104,10 +131,27 @@ export async function POST(request: Request) {
       if (count >= limit) return Response.json({ error: "오늘 AI 요약 사용 한도를 초과했습니다. 내일 다시 시도해주세요." }, { status: 429 });
       dailyUsage.set(ip, { day, count: count + 1 });
     }
-    const body = await request.json() as { title?: string; category?: string; source?: string; text?: string };
+    const contentType = request.headers.get("content-type") || "";
+    let body: { title?: string; category?: string; source?: string; text?: string };
+    let file: File | undefined;
+
+    if (contentType.includes("multipart/form-data")) {
+      const form = await request.formData();
+      body = {
+        title: String(form.get("title") || ""),
+        category: String(form.get("category") || ""),
+        source: String(form.get("source") || ""),
+        text: String(form.get("text") || ""),
+      };
+      const uploaded = form.get("file");
+      if (uploaded instanceof File) file = uploaded;
+    } else {
+      body = await request.json() as { title?: string; category?: string; source?: string; text?: string };
+    }
+
     const text = body.text?.trim().slice(0, 45_000) ?? "";
 
-    if (text.length < 40) {
+    if (!file && text.length < 40) {
       return Response.json({ error: "분석할 본문이 너무 짧습니다." }, { status: 400 });
     }
 
@@ -119,22 +163,14 @@ export async function POST(request: Request) {
         token = undefined;
       }
     }
-    if (!token) {
+    if (!token && !process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
       return Response.json({ error: "AI 연결이 아직 활성화되지 않았습니다." }, { status: 503 });
     }
 
-    const analysisPrompt = `당신은 한국의 개인 투자자를 돕는 리서치 편집자다. 주어진 자료에 없는 사실을 만들지 말고, 불확실하면 반드시 '확인 필요'라고 쓴다. 모든 답변은 쉽고 짧은 한국어로 작성한다. 영향 분석은 사용자의 구체적인 자산 정보가 없다는 점을 전제로 일반적인 영향을 설명한다. 키워드는 명사 중심으로 중복 없이 뽑는다. 행동 제안은 당장 확인할 수 있는 구체적인 단계로 쓴다. 공포나 환호 한쪽에 치우치지 않도록 긍정·부정·중립 시각을 각각 제시한다. 원문에 네이버 블로그·뉴스 사이트의 검색창, 메뉴, 공감/댓글 숫자, 공유·레이어 닫기·이웃추가 같은 UI 문구가 섞여 있으면 모두 무시하고 실제 글 본문만 분석한다.
-
-자료 제목: ${body.title || "제목 없음"}
-자료 종류: ${body.category || "기타"}
-출처: ${body.source || "미입력"}
-
-아래 자료를 요약하고, 핵심 인사이트와 키워드를 추출한 뒤 매매가·대출·세금·정책·시장심리에 미치는 영향을 구분해 분석하라. 같은 사실을 긍정적·부정적·중립적 시각에서 각각 해석하고, 마지막에는 '그래서 나는?'에 넣을 행동과 이 대시보드의 적절한 도구를 추천하라.
-
---- 원문 ---
-${text}`;
+    const analysisPrompt = buildAnalysisPrompt(body, file ? undefined : text);
 
     try {
+      if (!token) throw new Error("AI Gateway token missing");
       const gateway = createGateway({ apiKey: token });
       const { output } = await generateText({
         model: gateway("openai/gpt-5.6-luna"),
@@ -146,7 +182,7 @@ ${text}`;
     } catch (gatewayError) {
       if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) throw gatewayError;
       console.warn("AI Gateway failed, falling back to Gemini", gatewayError);
-      const output = await generateWithGemini(analysisPrompt);
+      const output = await generateWithGemini(analysisPrompt, file);
       return Response.json({ ...output, engine: "ai" });
     }
   } catch (error) {

@@ -278,19 +278,37 @@ export default function ResearchWorkspace() {
     setBusy(true);
     setMessage("원문을 읽고 핵심을 찾고 있습니다…");
     try {
-      const text = file ? await extractText(file) : pastedText;
-      if (text.trim().length < MIN_READABLE_TEXT_LENGTH) throw new Error("읽을 수 있는 본문이 너무 짧습니다. 스캔 PDF라면 해상도가 높은 파일이나 본문 직접 붙여넣기를 함께 사용해 주세요.");
       const recordTitle = title.trim() || file?.name || "새 자료";
       let analysis: ResearchAnalysis;
+      let text = pastedText;
+      const extension = file?.name.split(".").pop()?.toLowerCase();
+      const canAnalyzeOriginalFile = Boolean(file && (file.type === "application/pdf" || file.type.startsWith("image/") || ["pdf", "png", "jpg", "jpeg", "webp"].includes(extension ?? "")));
+
       try {
-        const response = await fetch("/api/research-insights", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: recordTitle, category, source, text: text.slice(0, 45_000) }),
-        });
+        let response: Response;
+        if (file && canAnalyzeOriginalFile) {
+          setMessage("AI가 PDF 원본을 직접 읽고 있습니다. 스캔 PDF는 시간이 조금 걸릴 수 있습니다…");
+          const form = new FormData();
+          form.append("file", file);
+          form.append("title", recordTitle);
+          form.append("category", category);
+          form.append("source", source);
+          response = await fetch("/api/research-insights", { method: "POST", body: form });
+          text = `${recordTitle}\n\nPDF/이미지 원본을 AI가 직접 분석했습니다.`;
+        } else {
+          text = file ? await extractText(file) : pastedText;
+          if (text.trim().length < MIN_READABLE_TEXT_LENGTH) throw new Error("읽을 수 있는 본문이 너무 짧습니다. 스캔 PDF라면 해상도가 높은 파일이나 본문 직접 붙여넣기를 함께 사용해 주세요.");
+          response = await fetch("/api/research-insights", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: recordTitle, category, source, text: text.slice(0, 45_000) }),
+          });
+        }
         if (!response.ok) throw new Error("AI unavailable");
         analysis = await response.json() as ResearchAnalysis;
       } catch {
+        text = file ? await extractText(file) : pastedText;
+        if (text.trim().length < MIN_READABLE_TEXT_LENGTH) throw new Error("읽을 수 있는 본문이 너무 짧습니다. 스캔 PDF라면 해상도가 높은 파일이나 본문 직접 붙여넣기를 함께 사용해 주세요.");
         analysis = localAnalysis(text, recordTitle);
       }
       const record: ResearchRecord = {
