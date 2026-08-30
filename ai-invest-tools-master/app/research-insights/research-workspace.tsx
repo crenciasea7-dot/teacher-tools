@@ -88,7 +88,12 @@ async function extractText(file: File) {
     }
     return pages.join("\n\n");
   }
-  throw new Error("PDF, DOCX, TXT, MD, CSV, JSON 파일을 지원합니다.");
+  if (file.type.startsWith("image/") || ["png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
+    const { createWorker } = await import("tesseract.js");
+    const worker = await createWorker("kor+eng", 1, { workerPath: "/ocr/worker.min.js", langPath: "/ocr/", corePath: "/ocr/" });
+    try { const result = await worker.recognize(file); if (!result.data.text.trim()) throw new Error("텍스트 인식에 실패했습니다."); return result.data.text; } finally { await worker.terminate(); }
+  }
+  throw new Error("이미지(PNG/JPG), PDF, DOCX, TXT, MD, CSV, JSON 파일을 지원합니다.");
 }
 
 function localKeywords(text: string) {
@@ -307,7 +312,7 @@ export default function ResearchWorkspace() {
         </div>
         <div className="research-form-grid">
           <div className={`research-dropzone ${dragging ? "dragging" : ""}`} onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={handleDrop} onClick={() => fileInput.current?.click()} role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") fileInput.current?.click(); }}>
-            <input ref={fileInput} type="file" accept=".pdf,.docx,.txt,.md,.csv,.json,.html" onChange={(event) => { const nextFile = event.target.files?.[0]; if (nextFile) chooseFile(nextFile); }} />
+            <input ref={fileInput} type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.txt,.md,.csv,.json,.html" onChange={(event) => { const nextFile = event.target.files?.[0]; if (nextFile) chooseFile(nextFile); }} />
             <i>{file ? "✓" : "+"}</i>
             <b>{file ? file.name : "파일을 여기에 놓으세요"}</b>
             <span>{file ? formatBytes(file.size) : "또는 눌러서 파일 선택"}</span>
