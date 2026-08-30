@@ -1,6 +1,7 @@
 import { createGateway, generateText, Output } from "ai";
 import { getVercelOidcToken } from "@vercel/oidc";
 import { z } from "zod";
+import { hasAdminSession } from "../../../lib/admin-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -33,8 +34,20 @@ const analysisSchema = z.object({
   })).max(3),
 });
 
+const dailyUsage = new Map<string, { day: string; count: number }>();
+
 export async function POST(request: Request) {
   try {
+    const admin = await hasAdminSession();
+    if (!admin) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+      const day = new Date().toISOString().slice(0, 10);
+      const limit = Math.max(1, Number(process.env.PUBLIC_AI_DAILY_LIMIT_PER_IP || 10));
+      const usage = dailyUsage.get(ip);
+      const count = usage?.day === day ? usage.count : 0;
+      if (count >= limit) return Response.json({ error: "오늘 AI 요약 사용 한도를 초과했습니다. 내일 다시 시도해주세요." }, { status: 429 });
+      dailyUsage.set(ip, { day, count: count + 1 });
+    }
     const body = await request.json() as { title?: string; category?: string; source?: string; text?: string };
     const text = body.text?.trim().slice(0, 45_000) ?? "";
 
