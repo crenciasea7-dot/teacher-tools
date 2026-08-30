@@ -44,10 +44,10 @@ export async function GET() {
       const district = districtMap.get(name);
       const latest = district?.weeks.at(-1);
       const prior = district?.weeks.at(-2);
-      return { name, saleRate: latest?.saleRate ?? 0, previousSaleRate: prior?.saleRate ?? 0, jeonseRate: latest?.jeonseRate ?? 0, falling: (latest?.saleRate ?? 0) < 0 };
+      return { name, saleRate: latest?.saleRate ?? 0, previousSaleRate: prior?.saleRate ?? 0, jeonseRate: latest?.jeonseRate ?? 0, previousJeonseRate: prior?.jeonseRate ?? 0, falling: (latest?.saleRate ?? 0) < 0, movement: Math.max(Math.abs((latest?.saleRate ?? 0) - (prior?.saleRate ?? 0)), Math.abs((latest?.jeonseRate ?? 0) - (prior?.jeonseRate ?? 0))) };
     });
-    const gangnam = districtResult(["강남구", "서초구"]);
-    const nonGangnam = districtResult(["성북구", "중랑구", "서대문구", "중구", "강북구"]);
+    const gangnam = districtResult(["강남구", "서초구", "송파구"]);
+    const nonGangnam = districtResult([...districtMap.keys()].filter((name) => !["강남구", "서초구", "송파구"].includes(name)).map((name) => name)).sort((a, b) => b.movement - a.movement).slice(0, 6);
 
     const saleDelta = round((seoulNow?.saleRate ?? 0) - (seoulBefore?.saleRate ?? 0));
     const jeonseSupports = (seoulNow?.jeonseRate ?? 0) > 0 && (seoulNow?.jeonseRate ?? 0) >= (seoulNow?.saleRate ?? 0) * 0.65;
