@@ -25,6 +25,22 @@ const impactLabels = {
 };
 
 const stopWords = new Set(["그리고", "그러나", "대한", "위한", "관련", "통해", "이번", "현재", "경우", "자료", "분석", "시장", "있다", "있는", "하는", "했다", "된다", "따라", "대해", "것으로", "에서", "으로", "이라고", "또한", "보다", "까지"]);
+const MIN_READABLE_TEXT_LENGTH = 40;
+
+async function createOcrWorker() {
+  const { createWorker } = await import("tesseract.js");
+  return createWorker("kor+eng", 1, { workerPath: "/ocr/worker.min.js", langPath: "/ocr/", corePath: "/ocr/" });
+}
+
+async function recognizeImage(source: File | HTMLCanvasElement) {
+  const worker = await createOcrWorker();
+  try {
+    const result = await worker.recognize(source);
+    return result.data.text;
+  } finally {
+    await worker.terminate();
+  }
+}
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -86,12 +102,29 @@ async function extractText(file: File) {
       const content = await page.getTextContent();
       pages.push(content.items.map((item) => "str" in item ? item.str : "").join(" "));
     }
-    return pages.join("\n\n");
+    const embeddedText = pages.join("\n\n").trim();
+    if (embeddedText.length >= MIN_READABLE_TEXT_LENGTH) return embeddedText;
+
+    const ocrPages: string[] = [];
+    const maxPages = Math.min(pdf.numPages, 8);
+    for (let pageNumber = 1; pageNumber <= maxPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 2 });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) continue;
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      await page.render({ canvas, canvasContext: context, viewport }).promise;
+      const pageText = await recognizeImage(canvas);
+      if (pageText.trim()) ocrPages.push(pageText);
+    }
+    return ocrPages.join("\n\n").trim();
   }
   if (file.type.startsWith("image/") || ["png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
-    const { createWorker } = await import("tesseract.js");
-    const worker = await createWorker("kor+eng", 1, { workerPath: "/ocr/worker.min.js", langPath: "/ocr/", corePath: "/ocr/" });
-    try { const result = await worker.recognize(file); if (!result.data.text.trim()) throw new Error("텍스트 인식에 실패했습니다."); return result.data.text; } finally { await worker.terminate(); }
+    const text = await recognizeImage(file);
+    if (!text.trim()) throw new Error("텍스트 인식에 실패했습니다.");
+    return text;
   }
   throw new Error("이미지(PNG/JPG), PDF, DOCX, TXT, MD, CSV, JSON 파일을 지원합니다.");
 }
@@ -214,7 +247,7 @@ export default function ResearchWorkspace() {
     setMessage("원문을 읽고 핵심을 찾고 있습니다…");
     try {
       const text = file ? await extractText(file) : pastedText;
-      if (text.trim().length < 40) throw new Error("읽을 수 있는 본문이 너무 짧습니다.");
+      if (text.trim().length < MIN_READABLE_TEXT_LENGTH) throw new Error("읽을 수 있는 본문이 너무 짧습니다. 스캔 PDF라면 해상도가 높은 파일이나 본문 직접 붙여넣기를 함께 사용해 주세요.");
       const recordTitle = title.trim() || file?.name || "새 자료";
       let analysis: ResearchAnalysis;
       try {
