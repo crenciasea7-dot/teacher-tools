@@ -26,20 +26,42 @@ const impactLabels = {
 
 const stopWords = new Set(["그리고", "그러나", "대한", "위한", "관련", "통해", "이번", "현재", "경우", "자료", "분석", "시장", "있다", "있는", "하는", "했다", "된다", "따라", "대해", "것으로", "에서", "으로", "이라고", "또한", "보다", "까지"]);
 const MIN_READABLE_TEXT_LENGTH = 40;
+const OCR_OPTIONS = {
+  workerPath: "/ocr/worker.min.js",
+  langPath: "/ocr/",
+  corePath: "/ocr/tesseract-core-simd-lstm.wasm.js",
+};
 
 async function createOcrWorker() {
   const { createWorker } = await import("tesseract.js");
-  return createWorker("kor+eng", 1, { workerPath: "/ocr/worker.min.js", langPath: "/ocr/", corePath: "/ocr/" });
+  try {
+    return await createWorker("kor+eng", 1, OCR_OPTIONS);
+  } catch {
+    return createWorker("kor+eng");
+  }
 }
 
-async function recognizeImage(source: File | HTMLCanvasElement) {
-  const worker = await createOcrWorker();
+type OcrWorker = Awaited<ReturnType<typeof createOcrWorker>>;
+
+async function canvasToBlob(canvas: HTMLCanvasElement) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("PDF 페이지를 이미지로 변환하지 못했습니다.")), "image/png");
+  });
+}
+
+async function recognizeImage(source: File | Blob | HTMLCanvasElement, worker?: OcrWorker) {
+  const activeWorker = worker ?? await createOcrWorker();
   try {
-    const result = await worker.recognize(source);
+    const image = source instanceof HTMLCanvasElement ? await canvasToBlob(source) : source;
+    const result = await activeWorker.recognize(image);
     return result.data.text;
   } finally {
-    await worker.terminate();
+    if (!worker) await activeWorker.terminate();
   }
+}
+
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error || "자료를 분석하지 못했습니다.");
 }
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -106,18 +128,28 @@ async function extractText(file: File) {
     if (embeddedText.length >= MIN_READABLE_TEXT_LENGTH) return embeddedText;
 
     const ocrPages: string[] = [];
-    const maxPages = Math.min(pdf.numPages, 8);
-    for (let pageNumber = 1; pageNumber <= maxPages; pageNumber += 1) {
-      const page = await pdf.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: 2 });
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (!context) continue;
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      await page.render({ canvas, canvasContext: context, viewport }).promise;
-      const pageText = await recognizeImage(canvas);
-      if (pageText.trim()) ocrPages.push(pageText);
+    const maxPages = Math.min(pdf.numPages, 12);
+    const worker = await createOcrWorker();
+    try {
+      for (let pageNumber = 1; pageNumber <= maxPages; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 2.4 });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        if (!context) continue;
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvas, canvasContext: context, viewport }).promise;
+        const pageText = await recognizeImage(canvas, worker);
+        if (pageText.trim()) ocrPages.push(pageText);
+        canvas.width = 1;
+        canvas.height = 1;
+        if (ocrPages.join("\n").trim().length >= 2_500 && pageNumber >= 3) break;
+      }
+    } finally {
+      await worker.terminate();
     }
     return ocrPages.join("\n\n").trim();
   }
@@ -283,7 +315,7 @@ export default function ResearchWorkspace() {
       setMessage(analysis.engine === "ai" ? "AI 분석과 원본 저장이 끝났습니다." : "기본 분석으로 저장했습니다. AI 연결이 활성화되면 더 정교하게 분석됩니다.");
       window.setTimeout(() => document.getElementById(`doc-${record.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "자료를 분석하지 못했습니다.");
+      setMessage(errorMessage(error));
     } finally {
       setBusy(false);
     }
