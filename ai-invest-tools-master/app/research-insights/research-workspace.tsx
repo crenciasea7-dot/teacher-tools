@@ -150,6 +150,7 @@ export default function ResearchWorkspace() {
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [fetchingSource, setFetchingSource] = useState(false);
   const [activeKeyword, setActiveKeyword] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -265,6 +266,14 @@ export default function ResearchWorkspace() {
     URL.revokeObjectURL(url);
   }
 
+  async function fetchSource() {
+    if (!source.trim()) { setMessage("출처 URL을 먼저 입력해 주세요."); return; }
+    setFetchingSource(true); setMessage("페이지 본문을 가져오는 중입니다…");
+    try { const response = await fetch("/api/fetch-source", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: source.trim() }) }); const body = await response.json(); if (!response.ok) throw new Error(body.error); setPastedText(body.text); setMessage("본문을 가져왔습니다. 내용을 확인한 뒤 분석하세요."); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "자동으로 가져오지 못했습니다. 본문을 직접 붙여넣어 주세요."); }
+    finally { setFetchingSource(false); }
+  }
+
   async function saveToNotion(record: ResearchRecord) {
     try {
       const content = [
@@ -295,7 +304,7 @@ export default function ResearchWorkspace() {
           </div>
           <div className="research-fields">
             <label>자료 제목<input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="예: 8·27 부동산 정책 발표" /></label>
-            <div><label>종류<select value={category} onChange={(event) => setCategory(event.target.value)}><option>정책 발표</option><option>보고서</option><option>뉴스</option><option>시장 분석</option><option>강의 자료</option><option>기타</option></select></label><label>출처<input value={source} onChange={(event) => setSource(event.target.value)} placeholder="기관·언론사·URL" /></label></div>
+            <div><label>종류<select value={category} onChange={(event) => setCategory(event.target.value)}><option>정책 발표</option><option>보고서</option><option>뉴스</option><option>시장 분석</option><option>강의 자료</option><option>기타</option></select></label><label>출처<div className="research-source-row"><input value={source} onChange={(event) => setSource(event.target.value)} placeholder="기관·언론사·URL" /><button type="button" onClick={fetchSource} disabled={fetchingSource}>{fetchingSource ? "가져오는 중…" : "가져오기"}</button></div></label></div>
             <label>본문 직접 붙여넣기<textarea value={pastedText} onChange={(event) => setPastedText(event.target.value)} placeholder="파일이 없다면 기사나 답변 내용을 그대로 붙여 넣으세요." /></label>
           </div>
         </div>
