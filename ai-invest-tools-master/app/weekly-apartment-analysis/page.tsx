@@ -40,6 +40,10 @@ export default function WeeklyApartmentAnalysis() {
     {data && <>
       <section className="weekly-ai-conclusion"><span>FINAL DIAGNOSIS</span><b>{data.analysis.phase}</b><p>{data.analysis.conclusion}</p></section>
       <WeeklyRateChart rows={data.summary}/>
+      <details className="weekly-official-details">
+        <summary><span>전체 공식 차트·표 보기</span><b>전국·수도권·서울·지방 및 전체 구별 자료를 확인하려면 클릭하세요 ↓</b></summary>
+        <div className="weekly-official-details-body"><p>한국부동산원 R-ONE의 최신 공식 차트와 전체 구별 표를 새 화면에서 확인할 수 있습니다.</p><a href={data.sourceUrl} target="_blank" rel="noreferrer">공식 자료 열기 ↗</a></div>
+      </details>
       <section className="weekly-analysis-card">
         <div className="weekly-section-title"><span>01</span><div><h2>데이터 표 정리</h2><p>매매·전세 주간 변동률</p></div></div>
         <div className="weekly-table-wrap"><table className="weekly-summary-table"><thead><tr><th>조사일</th><th>지역</th><th>매매</th><th>전주</th><th>전세</th></tr></thead><tbody>{data.summary.map((row) => <tr key={row.area}><td>{data.latestDate.slice(5).replace("-", ".")}</td><td><b>{row.area}</b></td><td className={tone(row.saleRate)}>{rate(row.saleRate)}</td><td>{rate(row.previousSaleRate)}</td><td className={tone(row.jeonseRate)}>{rate(row.jeonseRate)}</td></tr>)}</tbody></table></div>
@@ -55,7 +59,7 @@ export default function WeeklyApartmentAnalysis() {
         <AnalysisStep number="05" title="최종 국면 진단" lines={[`선택 국면: ${data.analysis.phase}`, "다섯 개 후보 중 하나만 선택했습니다."]}/>
         <AnalysisStep number="06" title="결론 한 문장" lines={[data.analysis.conclusion]}/>
       </section>
-      <div className="weekly-analysis-footer"><span>마지막 분석 {new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Seoul" }).format(new Date(data.updatedAt))}</span><a href={data.sourceUrl} target="_blank" rel="noreferrer">전체 공식 차트·표 보기 ↗</a></div>
+      <div className="weekly-analysis-footer"><span>마지막 분석 {new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Seoul" }).format(new Date(data.updatedAt))}</span></div>
     </>}
   </main>;
 }
