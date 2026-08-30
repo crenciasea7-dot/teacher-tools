@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const toolGroups = [
-  { name: "자산관리", icon: "◈", links: [{ label: "자산 포트폴리오 현황", href: "/asset-tracking" }, { label: "알바비 관리", href: "https://alba-payroll-kr.crenciasea7.chatgpt.site/" }, { label: "AI 투자 프롬프트 스튜디오", href: "https://ai-invest-prompt-studio.vercel.app/" }] },
+  { name: "자산관리", icon: "◈", links: [{ label: "자산 포트폴리오 현황", href: "/asset-tracking" }, { label: "AI 투자 프롬프트 스튜디오", href: "https://ai-invest-prompt-studio.vercel.app/" }, { label: "알바비 관리", href: "https://alba-payroll-kr.crenciasea7.chatgpt.site/" }] },
   { name: "매수매도", icon: "↗", links: [{ label: "임장동선 · 준비중", href: "" }, { label: "구매력 계산기", href: "https://purchasing-power-calculator.vercel.app/" }, { label: "집중 아파트 비교", href: "/apartment-research" }, { label: "집 잔금 계산기", href: "/jip-jangeum-calculator" }, { label: "등기부등본 분석 · 외부", href: "https://realpickai.kr/ai-registry" }, { label: "아파트 매도 분석", href: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing" }] },
   { name: "비트코인", icon: "₿", links: [{ label: "비트코인 판단 보드", href: "/bitcoin-indicators" }, { label: "공포탐욕·레인보우·도미넌스", href: "/bitcoin-indicators" }] },
   { name: "재개발", icon: "⌂", links: [{ label: "재개발 매물 분석", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "재개발투자금", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "재개발 분석기", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "inga-radar", href: "https://inga-radar-seoul.vercel.app/" }] },
