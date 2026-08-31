@@ -5,6 +5,7 @@ import { hasAdminSession } from "../../../lib/admin-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+const RESEARCH_INSIGHTS_DISABLED = true;
 
 const impactItem = z.object({
   direction: z.enum(["positive", "neutral", "negative", "uncertain"]),
@@ -123,6 +124,10 @@ async function generateWithGemini(prompt: string, file?: File) {
 
 export async function POST(request: Request) {
   try {
+    if (RESEARCH_INSIGHTS_DISABLED) {
+      return Response.json({ error: "자료 정리 & 인사이트는 현재 보완중입니다. 기능 안정화 후 다시 열겠습니다." }, { status: 503 });
+    }
+
     const admin = await hasAdminSession();
     if (!admin) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";

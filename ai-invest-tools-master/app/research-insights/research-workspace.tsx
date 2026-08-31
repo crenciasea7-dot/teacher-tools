@@ -26,6 +26,7 @@ const impactLabels = {
 
 const stopWords = new Set(["그리고", "그러나", "대한", "위한", "관련", "통해", "이번", "현재", "경우", "자료", "분석", "시장", "있다", "있는", "하는", "했다", "된다", "따라", "대해", "것으로", "에서", "으로", "이라고", "또한", "보다", "까지"]);
 const MIN_READABLE_TEXT_LENGTH = 40;
+const FEATURE_DISABLED = true;
 const OCR_OPTIONS = {
   workerPath: "/ocr/worker.min.js",
   langPath: "/ocr/",
@@ -271,6 +272,10 @@ export default function ResearchWorkspace() {
   }
 
   async function analyze() {
+    if (FEATURE_DISABLED) {
+      setMessage("자료 정리 & 인사이트는 현재 보완중입니다. 기존 자료는 볼 수 있지만 새 AI 분석은 잠시 중단했습니다.");
+      return;
+    }
     if (!file && pastedText.trim().length < 40) {
       setMessage("파일을 고르거나 분석할 내용을 40자 이상 붙여 넣어주세요.");
       return;
@@ -395,8 +400,12 @@ export default function ResearchWorkspace() {
     <div className="research-workspace">
       <section className="research-upload-panel">
         <div className="research-section-heading">
-          <div><span>01 · INPUT</span><h2>자료 넣기</h2></div>
-          <p>PDF · DOCX · TXT · MD · CSV · JSON</p>
+          <div><span>01 · INPUT</span><h2>자료 정리 & 인사이트</h2></div>
+          <p>보완중 · 새 AI 분석 일시 중단</p>
+        </div>
+        <div className="research-empty-cloud">
+          <b>현재 보완중입니다.</b>
+          <span>PDF 요약 품질을 다시 설계하는 동안 새 AI 분석과 저장을 잠시 비활성화했습니다. 기존 저장 기록은 아래에서 확인할 수 있습니다.</span>
         </div>
         <div className="research-form-grid">
           <div className={`research-dropzone ${dragging ? "dragging" : ""}`} onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={handleDrop} onClick={() => fileInput.current?.click()} role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") fileInput.current?.click(); }}>
@@ -412,8 +421,8 @@ export default function ResearchWorkspace() {
           </div>
         </div>
         <div className="research-submit-row">
-          <p className={message ? "show" : ""}>{message || "원본과 분석 기록은 이 브라우저에 누적됩니다."}</p>
-          <div><button type="button" onClick={analyze} disabled={busy}>{busy ? "분석 중…" : "AI로 정리해서 저장"}</button><button type="button" onClick={saveRawToNotion}>원문 그대로 저장</button></div>
+          <p className="show">{message || "현재 보완중입니다. 새 AI 분석은 잠시 중단했습니다."}</p>
+          <div><button type="button" onClick={analyze} disabled>{busy ? "분석 중…" : "보완중"}</button><button type="button" onClick={saveRawToNotion} disabled>원문 저장 중단</button></div>
         </div>
       </section>
 
