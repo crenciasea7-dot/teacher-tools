@@ -99,13 +99,6 @@ export default function FloatingActions() {
   return (
     <div className="floating-actions">
       {notice && <div className="floating-notice">{notice}</div>}
-      {false && <aside className="assistant-panel">
-        <div><span>V1 GUIDE</span><button type="button" onClick={() => setAssistantOpen(false)}>×</button></div>
-        <h2>지금 무엇을 판단하고 있나요?</h2>
-        <p>질문을 고르면 필요한 도구를 순서대로 안내합니다.</p>
-        <div>{assistantQuestions.map((question) => <Link href={question.href} onClick={() => setAssistantOpen(false)} key={question.href}>{question.label}<b>→</b></Link>)}</div>
-        <small>생성형 AI 연결 전에도 V1 자동 가이드는 작동합니다.</small>
-      </aside>}
       {shareOpen && <aside className="share-panel">
         <div><span>SHARE</span><button type="button" onClick={() => setShareOpen(false)}>×</button></div>
         <button type="button" onClick={shareToMobile}>📱 나챗·카카오톡 보내기</button>
