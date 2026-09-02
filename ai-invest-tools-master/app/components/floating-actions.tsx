@@ -116,8 +116,8 @@ export default function FloatingActions() {
         <small>파일은 서버가 아닌 현재 기기에 직접 저장됩니다.</small>
       </aside>}
       <div className="floating-buttons">
-        <button type="button" className={downloadOpen ? "active" : ""} onClick={() => { setDownloadOpen((open) => !open); setShareOpen(false); setAssistantOpen(false); }} aria-label="다운로드 메뉴 열기">↓</button>
-        <button type="button" className={shareOpen ? "active" : ""} onClick={() => { setShareOpen((open) => !open); setDownloadOpen(false); setAssistantOpen(false); }} aria-label="공유 메뉴 열기">↗</button>
+        <button type="button" className={downloadOpen ? "active" : ""} onClick={() => { setDownloadOpen((open) => !open); setShareOpen(false); }} aria-label="다운로드 메뉴 열기">↓</button>
+        <button type="button" className={shareOpen ? "active" : ""} onClick={() => { setShareOpen((open) => !open); setDownloadOpen(false); }} aria-label="공유 메뉴 열기">↗</button>
         <nav className="ai-shortcuts">{aiShortcuts.map((item) => <a href={item.href} target="_blank" rel="noreferrer" key={item.label} title={item.label}><span>{item.icon}</span><small>{item.label}</small></a>)}</nav>
       </div>
     </div>
