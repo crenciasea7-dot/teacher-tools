@@ -2536,3 +2536,47 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
     min-height: 225px;
   }
 }
+
+
+/* Compact section page hero */
+.section-page > .section-hero {
+  display: block;
+  min-height: 0;
+  padding: 46px 52px;
+}
+
+.section-page > .section-hero > span {
+  display: block;
+  margin: 0 0 15px;
+}
+
+.section-page > .section-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(38px, 5vw, 56px);
+  line-height: 1.15;
+  letter-spacing: -0.055em;
+  word-break: keep-all;
+}
+
+.section-page > .section-hero p {
+  max-width: 720px;
+  margin: 17px 0 0;
+  font-size: 16px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+@media (max-width: 760px) {
+  .section-page > .section-hero {
+    padding: 34px 25px;
+  }
+
+  .section-page > .section-hero h1 {
+    font-size: 38px;
+  }
+
+  .section-page > .section-hero p {
+    font-size: 14px;
+  }
+}
