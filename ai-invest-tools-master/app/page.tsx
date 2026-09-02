@@ -20,7 +20,7 @@ const tools: Tool[] = [
   { icon: "↗", name: "아파트 매도 분석", description: "내 호가와 최근 거래·시장 반응을 비교해 매도 전략을 점검", url: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing", group: "자산 관리", accent: "orange" },
   { icon: "⌁", name: "집 잔금 계산기", description: "입주 잔금과 대출 가능 범위를 로그인 없이 계산", url: "/jip-jangeum-calculator", group: "매수 판단", accent: "blue" },
   { icon: "◉", name: "투자거울", description: "투자 판단의 근거·리스크를 비춰보기", group: "매수 판단", accent: "blue" },
-  { icon: "⌕", name: "집중 아파트 비교 리서치", description: "후보 아파트를 로그인 없이 비교하고 핵심을 정리", url: "/apartment-research", group: "매수 판단", accent: "blue" },
+  { icon: "⌕", name: "집중 아파트 비교 리서치", description: "후보 아파트를 로그인 없이 비교하고 핵심을 정리", url: "https://jipjung-apartment-research.crenciasea7.chatgpt.site/", group: "매수 판단", accent: "blue" },
   { icon: "▤", name: "등기부 등본 분석", description: "등기부등본의 위험 항목·법적 이슈·권리관계를 AI로 점검", url: "https://realpickai.kr/ai-registry", group: "매수 판단", accent: "blue", externalVendor: true },
   { icon: "₩", name: "구매력 계산기", description: "내 소득과 가진 돈으로 갈 수 있는 곳", url: "https://purchasing-power-calculator.vercel.app/", group: "매수 판단", accent: "blue" },
   { icon: "Σ", name: "토탈 비용 시뮬레이션", description: "현금·대출·부대비용·월 상환액을 한 번에 계산", url: "/property-purchase-simulation", group: "매수 판단", accent: "blue" },

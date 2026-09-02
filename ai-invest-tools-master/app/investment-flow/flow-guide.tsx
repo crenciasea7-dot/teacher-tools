@@ -34,7 +34,7 @@ const questions: Question[] = [
     { name: "구매력 계산기", description: "가능한 가격 범위를 먼저 확정", href: "https://purchasing-power-calculator.vercel.app/", external: true },
     { name: "임장동선", description: "후보 단지 방문 순서와 이동 동선 정리" },
     { name: "집 잔금 계산기", description: "잔금과 대출 가능 범위를 계산", href: "/jip-jangeum-calculator" },
-    { name: "집중 아파트 비교 리서치", description: "후보 단지를 같은 기준으로 비교", href: "/apartment-research" },
+    { name: "집중 아파트 비교 리서치", description: "후보 단지를 같은 기준으로 비교", href: "https://jipjung-apartment-research.crenciasea7.chatgpt.site/", external: true },
     { name: "주간 아파트 가격 동향", description: "지역별 현재 방향 확인", href: "/weekly-apartment-analysis" },
     { name: "재개발투자금 vs 일반주택", description: "재개발과 일반주택의 자금·위험 비교", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", external: true },
   ]},

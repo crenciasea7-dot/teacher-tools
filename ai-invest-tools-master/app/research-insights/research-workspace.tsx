@@ -11,7 +11,7 @@ const toolLinks: Record<string, string> = {
   "주간 아파트 가격동향": "/weekly-apartment-analysis",
   "보유세 계산기": "/property-tax",
   "구매력 계산기": "https://purchasing-power-calculator.vercel.app/",
-  "집중 아파트 비교 리서치": "/apartment-research",
+  "집중 아파트 비교 리서치": "https://jipjung-apartment-research.crenciasea7.chatgpt.site/",
   "토탈 비용 시뮬레이션": "/property-purchase-simulation",
   "비트코인 참고 지표": "/bitcoin-indicators",
 };
