@@ -1,7 +1,7 @@
 const posts = [
   { tag: "투자 원칙", title: "지표는 예언이 아니라 현재 위치다", summary: "공포탐욕·금리·환율을 한 숫자로 결론내리지 않고 서로 확인하는 방법", href: "/investment-flow" },
   { tag: "부동산", title: "집값보다 먼저 총비용을 계산해야 하는 이유", summary: "취득비용·대출·보유비용·출구전략을 매수 전에 한 번에 보는 체크리스트", href: "/property-purchase-simulation" },
-  { tag: "시장 읽기", title: "주간 아파트 통계를 6단계로 읽는 법", summary: "데이터표에서 한 문장 결론까지, 뉴스에 흔들리지 않는 정리 순서", href: "/weekly-apartment-analysis" },
+  { tag: "시장 읽기", title: "주간 아파트 가격동향 그래프", summary: "한국부동산원 공식 주간 수치를 지역별 그래프로 확인", href: "https://rone-weekly-capital-dashboard.vercel.app/" },
   { tag: "자료 관리", title: "좋은 자료보다 반복되는 신호가 중요하다", summary: "보고서와 정책을 누적해 주간·월간 패턴으로 바꾸는 개인 리서치 습관", href: "/research-insights" },
 ];
 

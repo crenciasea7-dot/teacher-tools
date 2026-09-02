@@ -8,7 +8,8 @@ const STORE_NAME = "documents";
 const dateTimeFormatter = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" });
 
 const toolLinks: Record<string, string> = {
-  "주간 아파트 가격동향": "/weekly-apartment-analysis",
+  "주간 아파트 가격동향": "https://rone-weekly-capital-dashboard.vercel.app/",
+  "주간 아파트 가격동향 그래프": "https://rone-weekly-capital-dashboard.vercel.app/",
   "보유세 계산기": "/property-tax",
   "구매력 계산기": "https://purchasing-power-calculator.vercel.app/",
   "집중 아파트 비교 리서치": "https://jipjung-apartment-research.crenciasea7.chatgpt.site/",
@@ -196,7 +197,7 @@ function localAnalysis(text: string, title: string): ResearchAnalysis {
       neutral: "자료 하나로 결론내리지 말고 시행 여부와 다음 공식 통계를 기다리는 편이 안전합니다.",
     },
     actions: ["원문의 발표일·시행일·적용 대상을 다시 확인하세요.", "내 보유자산과 관심 지역에 직접 적용되는 문장을 표시하세요.", "다음 주 공식 통계와 실제 거래에서 같은 방향이 이어지는지 확인하세요."],
-    recommendedTools: has(/아파트|주택|매매|전세/) ? [{ name: "주간 아파트 가격동향", reason: "자료의 방향을 최신 공식 통계와 비교해보세요." }] : [],
+    recommendedTools: has(/아파트|주택|매매|전세/) ? [{ name: "주간 아파트 가격동향 그래프", reason: "자료의 방향을 최신 공식 통계와 비교해보세요." }] : [],
     engine: "local",
   };
 }

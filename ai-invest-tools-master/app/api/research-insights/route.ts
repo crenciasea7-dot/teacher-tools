@@ -30,7 +30,7 @@ const analysisSchema = z.object({
   }),
   actions: z.array(z.string()).min(3).max(8),
   recommendedTools: z.array(z.object({
-    name: z.enum(["주간 아파트 가격동향", "보유세 계산기", "구매력 계산기", "집중 아파트 비교 리서치", "토탈 비용 시뮬레이션", "비트코인 참고 지표"]),
+    name: z.enum(["주간 아파트 가격동향 그래프", "보유세 계산기", "구매력 계산기", "집중 아파트 비교 리서치", "토탈 비용 시뮬레이션", "비트코인 참고 지표"]),
     reason: z.string(),
   })).max(3),
 });
@@ -93,7 +93,7 @@ async function generateWithGemini(prompt: string, file?: File) {
     "neutral": "중립적 해석 3~5문장"
   },
   "actions": ["투자자가 다음에 확인할 행동 1", "투자자가 다음에 확인할 행동 2", "투자자가 다음에 확인할 행동 3"],
-  "recommendedTools": [{"name": "주간 아파트 가격동향", "reason": "추천 이유"}]
+  "recommendedTools": [{"name": "주간 아파트 가격동향 그래프", "reason": "추천 이유"}]
 }` }];
 
   if (file) {

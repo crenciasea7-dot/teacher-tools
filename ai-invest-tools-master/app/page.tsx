@@ -32,7 +32,7 @@ const tools: Tool[] = [
   { icon: "⌖", name: "재개발 매물 분석", description: "정비사업 매물의 단계·권리·리스크 점검", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
   { icon: "₩", name: "재개발투자금", description: "재개발 매물의 필요 투자금과 권리·위험을 함께 확인", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
   { icon: "R", name: "inga-radar", description: "서울 재개발·재건축 인허가 신호 추적", group: "정비사업", accent: "green" },
-  { icon: "R", name: "주간 아파트 가격동향", description: "공식 주간 통계와 6단계 AI 시장 국면 분석", url: "/weekly-apartment-analysis", group: "AI 투자 루틴", accent: "purple" },
+  { icon: "R", name: "주간 아파트 가격동향 그래프", description: "한국부동산원 공식 주간 통계를 지역별 그래프로 확인", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "✦", name: "자료 정리 & 인사이트", description: "복잡한 보고서와 정책 자료를 요약하고 나에게 미치는 영향까지 축적", url: "/research-insights", cta: "자료 넣고 분석하기 →", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
@@ -45,7 +45,7 @@ const toolMenuSections = [
   { label: "📈 세금", items: ["보유세 계산기", "양도세 (준비중)"] },
   { label: "🏗️ 재개발", items: ["재개발투자금", "재개발 매물 분석"] },
   { label: "💳 금융투자", items: ["금 추적", "구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
-  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
+  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향 그래프", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
   { label: "👤 자산관리", items: ["moyo 자산 대시보드"] },
   { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
   { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
@@ -58,7 +58,7 @@ const categoryMap = [
   { icon: "⌂", name: "재개발", count: "3개", description: "정비사업 특유의 단계·권리·투자금을 점검합니다.", items: ["재개발 매물 분석", "재개발투자금", "inga-radar"], href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" },
   { icon: "↔", name: "금융투자", count: "5개", description: "부동산 밖 자산까지 비교해 배분을 판단합니다.", items: ["금 추적", "포트폴리오 리밸런싱", "국장이냐 미장이냐"], href: "/rebalancing" },
   { icon: "％", name: "세금·대출", count: "4개", description: "보유부터 잔금과 총비용까지 숫자로 확인합니다.", items: ["보유세 계산기", "집 잔금 계산기", "토탈 비용"], href: "/property-tax" },
-  { icon: "▤", name: "정책·자료 분석", count: "3개", description: "가격보다 먼저 정책과 시장 방향을 읽습니다.", items: ["주간 아파트 동향", "정부정책 분석", "자료 정리"], href: "/research-insights" },
+  { icon: "▤", name: "정책·자료 분석", count: "3개", description: "가격보다 먼저 정책과 시장 방향을 읽습니다.", items: ["주간 아파트 가격동향 그래프", "정부정책 분석", "자료 정리"], href: "/research-insights" },
 ];
 
 export default function Page() {
@@ -93,7 +93,7 @@ export default function Page() {
         })}</div>
       </section>
       <section className="home-intelligence" aria-label="부동산과 정부 정책 분석">
-        <a href="/weekly-apartment-analysis"><span>07 · WEEKLY HOUSING</span><h2>주간 아파트 가격 동향</h2><p>공식 데이터표 → 서울 세분화 → 추세 → 정성판단 → 국면진단 → 한 문장 결론</p><b>6단계 분석 보기 →</b></a>
+        <a href="https://rone-weekly-capital-dashboard.vercel.app/" target="_blank" rel="noreferrer"><span>07 · WEEKLY HOUSING</span><h2>주간 아파트 가격동향 그래프</h2><p>한국부동산원 공식 주간 수치를 전국·수도권·서울·지방과 시·군·구별 그래프로 확인합니다.</p><b>독립 페이지 열기 ↗</b></a>
         <a href="/research-insights"><span>08 · POLICY IMPACT</span><h2>정부정책 분석</h2><p>정책 원문을 넣고 매매가·대출·세금·심리 영향을 균형 있게 정리합니다.</p><b>정책 자료 분석하기 →</b></a>
       </section>
       <div className="tools-section-heading"><div><span>MY INVESTMENT TOOLKIT</span><h2>필요한 도구를 바로 꺼내세요.</h2></div><p>목적별로 골라 쓰고, 판단 과정은 하나의 흐름으로 이어갑니다.</p></div>

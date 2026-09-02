@@ -7,7 +7,7 @@ type Question = { id: string; label: string; lead: string; tools: ToolStep[] };
 
 const questions: Question[] = [
   { id: "market", label: "지금 시장은?", lead: "가격보다 먼저 방향과 정책의 온도를 확인합니다.", tools: [
-    { name: "주간 아파트 가격 동향", description: "공식 데이터와 6단계 국면 진단", href: "/weekly-apartment-analysis" },
+    { name: "주간 아파트 가격동향 그래프", description: "한국부동산원 공식 주간 그래프", href: "https://rone-weekly-capital-dashboard.vercel.app/", external: true },
     { name: "정부정책 영향", description: "정책 원문을 넣고 다각도로 분석", href: "/research-insights" },
     { name: "거시경제 메크로", description: "주식·지수·금리·환율의 현재 흐름", href: "/#macro" },
   ]},
@@ -26,7 +26,7 @@ const questions: Question[] = [
   ]},
   { id: "sell", label: "팔까?", lead: "내 호가만 보지 말고 시장·정책·대체투자까지 함께 확인합니다.", tools: [
     { name: "아파트 매도 분석", description: "내 호가와 거래·시장 반응 비교", href: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing", external: true },
-    { name: "주간 아파트 가격 동향", description: "상승폭과 거래심리의 변화를 확인", href: "/weekly-apartment-analysis" },
+    { name: "주간 아파트 가격동향 그래프", description: "상승폭과 거래심리의 변화를 확인", href: "https://rone-weekly-capital-dashboard.vercel.app/", external: true },
     { name: "정부정책 영향", description: "매도 시점에 영향을 주는 정책 점검", href: "/research-insights" },
     { name: "양도세", description: "보유기간·주택 수·지역별 양도세 검토 기능 준비 중" },
   ]},
@@ -35,7 +35,7 @@ const questions: Question[] = [
     { name: "임장동선", description: "후보 단지 방문 순서와 이동 동선 정리" },
     { name: "집 잔금 계산기", description: "잔금과 대출 가능 범위를 계산", href: "/jip-jangeum-calculator" },
     { name: "집중 아파트 비교 리서치", description: "후보 단지를 같은 기준으로 비교", href: "https://jipjung-apartment-research.crenciasea7.chatgpt.site/", external: true },
-    { name: "주간 아파트 가격 동향", description: "지역별 현재 방향 확인", href: "/weekly-apartment-analysis" },
+    { name: "주간 아파트 가격동향 그래프", description: "지역별 현재 방향 확인", href: "https://rone-weekly-capital-dashboard.vercel.app/", external: true },
     { name: "재개발투자금 vs 일반주택", description: "재개발과 일반주택의 자금·위험 비교", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", external: true },
   ]},
 ];
