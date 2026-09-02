@@ -11,7 +11,7 @@ const toolGroups = [
   { name: "재개발", icon: "⌂", links: [{ label: "재개발 매물 분석", href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" }, { label: "inga-radar", href: "https://inga-radar-seoul.vercel.app/" }] },
   { name: "금융투자", icon: "₩", links: [{ label: "금 추적", href: "/rebalancing#gold-tracker" }, { label: "투자 세금 기회비용 분석", href: "/rebalancing" }] },
   { name: "세금·대출", icon: "％", links: [{ label: "보유세 계산기", href: "/property-tax" }, { label: "토탈 비용 시뮬레이션", href: "/property-purchase-simulation" }, { label: "양도세 · 준비중", href: "" }] },
-  { name: "정책·자료분석", icon: "▤", links: [{ label: "주간 아파트 가격동향 그래프", href: "https://rone-weekly-capital-dashboard.vercel.app/" }, { label: "자료 정리 & 인사이트", href: "/research-insights" }] },
+  { name: "정책·자료분석", icon: "▤", links: [{ label: "주간 아파트 가격동향 그래프", href: "https://rone-weekly-capital-dashboard.vercel.app/" }, { label: "주간 아파트 가격동향 분석", href: "/weekly-apartment-analysis" }, { label: "자료 정리 & 인사이트", href: "/research-insights" }] },
 ];
 
 export default function PlatformNav() {
