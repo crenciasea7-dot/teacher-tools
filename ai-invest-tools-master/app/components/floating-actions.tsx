@@ -3,15 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const assistantQuestions = [
-  { label: "지금 시장은?", href: "/investment-flow#market" },
-  { label: "사야 할까?", href: "/investment-flow#buy" },
-  { label: "팔아야 할까?", href: "/investment-flow#sell" },
-  { label: "뭘 사야 할까?", href: "/investment-flow#choose" },
-];
+const aiShortcuts = [
+  { label: "ChatGPT", icon: "🟢", href: "https://chatgpt.com/" }, { label: "제미나이", icon: "✦", href: "https://gemini.google.com/" },
+  { label: "제미나이 노트북", icon: "📓", href: "https://notebooklm.google.com/" }, { label: "릴리스AI", icon: "◈", href: "https://release.ai/" },
+  { label: "클로드", icon: "◉", href: "https://claude.ai/" }, { label: "노션", icon: "▦", href: "https://www.notion.so/" },
+] as const;
 
 export default function FloatingActions() {
-  const [assistantOpen, setAssistantOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [notice, setNotice] = useState("");
@@ -101,7 +99,7 @@ export default function FloatingActions() {
   return (
     <div className="floating-actions">
       {notice && <div className="floating-notice">{notice}</div>}
-      {assistantOpen && <aside className="assistant-panel">
+      {false && <aside className="assistant-panel">
         <div><span>V1 GUIDE</span><button type="button" onClick={() => setAssistantOpen(false)}>×</button></div>
         <h2>지금 무엇을 판단하고 있나요?</h2>
         <p>질문을 고르면 필요한 도구를 순서대로 안내합니다.</p>
@@ -127,7 +125,7 @@ export default function FloatingActions() {
       <div className="floating-buttons">
         <button type="button" className={downloadOpen ? "active" : ""} onClick={() => { setDownloadOpen((open) => !open); setShareOpen(false); setAssistantOpen(false); }} aria-label="다운로드 메뉴 열기">↓</button>
         <button type="button" className={shareOpen ? "active" : ""} onClick={() => { setShareOpen((open) => !open); setDownloadOpen(false); setAssistantOpen(false); }} aria-label="공유 메뉴 열기">↗</button>
-        <button type="button" className={`assistant-trigger ${assistantOpen ? "active" : ""}`} onClick={() => { setAssistantOpen((open) => !open); setShareOpen(false); setDownloadOpen(false); }}>🤖 <span>AI 가이드</span></button>
+        <nav className="ai-shortcuts">{aiShortcuts.map((item) => <a href={item.href} target="_blank" rel="noreferrer" key={item.label} title={item.label}><span>{item.icon}</span><small>{item.label}</small></a>)}</nav>
       </div>
     </div>
   );
