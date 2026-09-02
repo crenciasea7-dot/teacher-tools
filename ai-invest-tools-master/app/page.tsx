@@ -70,28 +70,19 @@ export default function Page() {
       <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER · V1</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
       <header><div className="brand"><i>AI</i><div><b>AI 투자 도구 MASTER</b><small>MY PERSONAL INVESTMENT TOOLKIT</small></div></div><div className="count"><strong>{tools.length}</strong><span>개의 도구</span></div></header>
       <section className="hero"><p>AI × INVESTMENT · A TO Z · V1</p><h1>몸은 편하게.<br/><em>부는 똑똑하게.</em></h1><span>거시 흐름을 먼저 읽고, 질문에 맞는 도구를 따라가며 판단하세요.<br/>Let AI Work. Live Rich.</span></section>
-      <section className="master-entry-grid" aria-label="핵심 투자 판단 도구">
-        <a className="master-entry-card decision-flow-entry" href="/investment-flow">
-          <i aria-hidden="true">OS</i>
-          <div>
-            <span>오늘의 판단</span>
-            <strong>투자 판단 OS</strong>
-            <small>지금 필요한 질문을 고르고, 확인할 자료와 도구를 순서대로 따라가세요.</small>
-          </div>
-          <b>판단 시작하기 <em>→</em></b>
-        </a>
+      <section className="home-primary-grid" aria-label="오늘의 판단과 투자 판단 OS">
+      <section className="todays-judgment" aria-labelledby="todays-judgment-title"><div className="todays-judgment-heading"><span>TODAY'S DECISION</span><h2 id="todays-judgment-title">오늘의 판단</h2><p>지금 필요한 질문을 골라 해당 판단 화면으로 이동하세요.</p></div><div className="todays-judgment-list">{[{title:"지금 시장은?",href:"/market-now"},{title:"자료 정리 & 인사이트",href:"/research-insights"},{title:"살까?",href:"/should-i-buy"},{title:"팔까?",href:"/should-i-sell"},{title:"리밸런싱",href:"/rebalancing"}].map((pick,index)=><a href={pick.href} key={pick.title}><span><b>{String(index+1).padStart(2,"0")}</b>{pick.title}</span><strong>→</strong></a>)}</div></section>
         <a className="master-entry-card knowledge-entry" href="/investment-os">
           <i aria-hidden="true">🧠</i>
           <div>
-            <span>DECISION ENGINE</span>
+            <span>투자 판단 OS</span>
             <strong>부자의 뇌를 훔치는<br/>알고리즘</strong>
-            <small>근거와 반대 근거, 무효화 조건까지 같은 순서로 검토하세요.</small>
+            <small>근거와 반대 근거, 무효화 조건까지 같은 순서로 판단합니다.</small>
           </div>
-          <b>알고리즘 열기 <em>→</em></b>
+          <b>투자 판단 OS 열기 <em>→</em></b>
         </a>
       </section>
       <MarketOverview />
-      <section className="todays-judgment" aria-labelledby="todays-judgment-title"><div className="todays-judgment-heading"><span>TODAY'S DECISION</span><h2 id="todays-judgment-title">오늘의 판단</h2><p>지금 필요한 질문을 골라 해당 판단 화면으로 이동하세요.</p></div><div className="todays-judgment-list">{[{title:"지금 시장은?",href:"/market-now"},{title:"자료 정리 & 인사이트",href:"/research-insights"},{title:"살까?",href:"/should-i-buy"},{title:"팔까?",href:"/should-i-sell"},{title:"리밸런싱",href:"/rebalancing"}].map((pick,index)=><a href={pick.href} key={pick.title}><span><b>{String(index+1).padStart(2,"0")}</b>{pick.title}</span><strong>→</strong></a>)}</div></section>
       <blockquote className="market-philosophy">“지표를 읽되, 공포에 흔들리지 말고, 환호에 취하지도, 기회를 놓치지도 말 것”</blockquote>
       <section className="category-map" aria-labelledby="category-map-title">
         <div className="category-map-heading"><div><span>INFORMATION ARCHITECTURE · V1</span><h2 id="category-map-title">흩어진 도구를, <em>7개 카테고리</em>로.</h2><p>필요한 일을 먼저 고르면 관련 도구까지 바로 이어집니다.</p></div><a href="#tools">전체 도구 카드 보기 →</a></div>
