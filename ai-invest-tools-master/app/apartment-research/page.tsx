@@ -6,11 +6,11 @@ import "../tool-pages.css";
 type Complex = { name: string; location: string; price: string; change: string; school: string; transit: string; note: string; score: number; area: string; mapUrl: string; naverUrl: string };
 const priceInBillions = (value: string) => Number.parseFloat(value.replace("억", ""));
 const complexes: Complex[] = [
-  { name: "래미안 리더스원", location: "서울 서초구 · 2019년", price: "24.8억", change: "+3.1%", school: "학군 우수", transit: "2호선 8분", note: "실거주 수요와 생활 인프라가 강점", score: 82, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/래미안%20리더스원", naverUrl: "https://new.land.naver.com/complexes/118344" },
-  { name: "마포 래미안 푸르지오", location: "서울 마포구 · 2014년", price: "18.6억", change: "+1.8%", school: "학군 보통", transit: "5호선 6분", note: "직주근접·교통 접근성을 함께 점검", score: 76, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/마포%20래미안%20푸르지오", naverUrl: "https://new.land.naver.com/complexes/104226" },
-  { name: "고덕 그라시움", location: "서울 강동구 · 2019년", price: "17.2억", change: "+2.6%", school: "학군 우수", transit: "5호선 10분", note: "대단지 수요와 공급 물량을 비교", score: 74, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/고덕%20그라시움", naverUrl: "https://new.land.naver.com/complexes/116379" },
-  { name: "공덕 자이", location: "서울 마포구 · 2013년", price: "9.8억", change: "+1.2%", school: "학군 보통", transit: "5호선 5분", note: "직주근접과 예산 적합성을 점검", score: 71, area: "전용 59㎡ (약 18평)", mapUrl: "https://map.naver.com/p/search/공덕자이", naverUrl: "https://new.land.naver.com/complexes/106950" },
-  { name: "상계 주공", location: "서울 노원구 · 1988년", price: "7.6억", change: "-0.4%", school: "학군 보통", transit: "4호선 8분", note: "재건축 가능성과 추가 분담금을 확인", score: 68, area: "전용 58㎡ (약 18평)", mapUrl: "https://map.naver.com/p/search/상계주공", naverUrl: "https://new.land.naver.com/complexes/11111" },
+  { name: "래미안 리더스원", location: "서울 서초구 · 2019년", price: "24.8억", change: "+3.1%", school: "학군 우수", transit: "2호선 8분", note: "실거주 수요와 생활 인프라가 강점", score: 82, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/래미안%20리더스원", naverUrl: "https://new.land.naver.com/search?sk=래미안%20리더스원" },
+  { name: "마포 래미안 푸르지오", location: "서울 마포구 · 2014년", price: "18.6억", change: "+1.8%", school: "학군 보통", transit: "5호선 6분", note: "직주근접·교통 접근성을 함께 점검", score: 76, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/마포%20래미안%20푸르지오", naverUrl: "https://new.land.naver.com/search?sk=마포%20래미안%20푸르지오" },
+  { name: "고덕 그라시움", location: "서울 강동구 · 2019년", price: "17.2억", change: "+2.6%", school: "학군 우수", transit: "5호선 10분", note: "대단지 수요와 공급 물량을 비교", score: 74, area: "전용 84㎡ (약 25평)", mapUrl: "https://map.naver.com/p/search/고덕%20그라시움", naverUrl: "https://new.land.naver.com/search?sk=고덕%20그라시움" },
+  { name: "공덕 자이", location: "서울 마포구 · 2013년", price: "9.8억", change: "+1.2%", school: "학군 보통", transit: "5호선 5분", note: "직주근접과 예산 적합성을 점검", score: 71, area: "전용 59㎡ (약 18평)", mapUrl: "https://map.naver.com/p/search/공덕자이", naverUrl: "https://new.land.naver.com/search?sk=공덕자이" },
+  { name: "상계 주공", location: "서울 노원구 · 1988년", price: "7.6억", change: "-0.4%", school: "학군 보통", transit: "4호선 8분", note: "재건축 가능성과 추가 분담금을 확인", score: 68, area: "전용 58㎡ (약 18평)", mapUrl: "https://map.naver.com/p/search/상계주공", naverUrl: "https://new.land.naver.com/search?sk=상계주공" },
 ];
 
 export default function ApartmentResearchPage() {
