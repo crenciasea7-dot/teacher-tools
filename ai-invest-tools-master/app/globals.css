@@ -2299,3 +2299,169 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
 .weekly-official-details{margin:24px 0;border:1px solid #cbded6;border-radius:18px;background:#fff;box-shadow:0 8px 24px rgba(27,63,52,.06);overflow:hidden}.weekly-official-details summary{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:92px;padding:22px 26px;cursor:pointer;list-style:none;color:#146957}.weekly-official-details summary::-webkit-details-marker{display:none}.weekly-official-details summary span{font-size:20px;font-weight:800}.weekly-official-details summary b{font-size:13px;color:#647b73}.weekly-official-details summary:after{content:"＋";font-size:24px}.weekly-official-details[open] summary:after{content:"−"}.weekly-official-details-body{padding:0 26px 26px;border-top:1px solid #e5ece8;color:#52645e}.weekly-official-details-body a{display:inline-block;margin-top:8px;padding:12px 18px;border-radius:10px;background:#146957;color:#fff;text-decoration:none;font-weight:700}@media(max-width:760px){.weekly-official-details summary{align-items:flex-start;flex-direction:column;min-height:0;padding:20px}.weekly-official-details summary span{font-size:18px}.weekly-official-details summary b{font-size:12px}}
 .research-source-row{display:flex;gap:8px}.research-source-row input{min-width:0;flex:1}.research-source-row button{flex:none;border:1px solid #146957;border-radius:9px;padding:0 13px;background:#146957;color:#fff;font-weight:700;cursor:pointer}.research-source-row button:disabled{opacity:.6;cursor:wait}
 .weekly-source-dashboard{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:22px 0;padding:22px 26px;border:1px solid #b9d6cb;border-radius:18px;background:#eaf5f0;color:#173b31;text-decoration:none}.weekly-source-dashboard span{display:block;color:#16715f;font:700 10px "DM Mono",monospace;letter-spacing:.1em}.weekly-source-dashboard strong{display:block;margin:7px 0;font-size:21px}.weekly-source-dashboard p{margin:0;color:#60766e;font-size:13px}.weekly-source-dashboard>b{white-space:nowrap;padding:12px 16px;border-radius:10px;background:#146957;color:#fff;font-size:13px}.weekly-ai-fold{margin-bottom:20px}.weekly-ai-fold>summary{padding:16px 20px;border:1px solid #d6e3dd;border-radius:13px;background:#fff;color:#146957;font-weight:800;cursor:pointer}.weekly-ai-fold>summary span{margin-left:10px;color:#82928c;font-size:12px;font-weight:500}@media(max-width:760px){.weekly-source-dashboard{align-items:flex-start;flex-direction:column;padding:19px}.weekly-source-dashboard strong{font-size:18px}.weekly-source-dashboard>b{width:100%;text-align:center}.weekly-ai-fold>summary span{display:block;margin:5px 0 0}}
+
+
+/* Home: two large primary investment entry cards */
+.master-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin: -6px 0 38px;
+}
+.master-entry-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-content: start;
+  gap: 22px;
+  min-height: 288px;
+  padding: 32px;
+  overflow: hidden;
+  border: 1px solid rgba(20, 105, 87, .14);
+  border-radius: 28px;
+  color: #132723;
+  text-decoration: none;
+  box-shadow: 0 20px 55px rgba(25, 66, 54, .10);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.master-entry-card::after {
+  content: "";
+  position: absolute;
+  right: -54px;
+  bottom: -76px;
+  width: 220px;
+  height: 220px;
+  border: 42px solid rgba(255, 255, 255, .34);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.master-entry-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(20, 105, 87, .3);
+  box-shadow: 0 30px 70px rgba(25, 66, 54, .16);
+}
+.master-entry-card > i {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  place-items: center;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .86);
+  color: #146957;
+  font: 800 22px "DM Mono", monospace;
+  font-style: normal;
+  box-shadow: 0 13px 30px rgba(20, 74, 61, .14);
+}
+.master-entry-card > div {
+  position: relative;
+  z-index: 1;
+  padding-top: 3px;
+}
+.master-entry-card span {
+  display: block;
+  margin-bottom: 12px;
+  color: #146957;
+  font: 700 10px "DM Mono", monospace;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.master-entry-card strong {
+  display: block;
+  font-size: clamp(27px, 3.2vw, 41px);
+  line-height: 1.08;
+  letter-spacing: -.055em;
+}
+.master-entry-card small {
+  display: block;
+  max-width: 380px;
+  margin-top: 15px;
+  color: #5f716b;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.master-entry-card > b {
+  position: absolute;
+  z-index: 1;
+  right: 30px;
+  bottom: 27px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #155f50;
+  font-size: 13px;
+}
+.master-entry-card > b em {
+  font-size: 24px;
+  font-style: normal;
+  transition: transform .2s ease;
+}
+.master-entry-card:hover > b em {
+  transform: translateX(5px);
+}
+.decision-flow-entry {
+  background: linear-gradient(145deg, #ffffff 0%, #eaf6f1 100%);
+}
+.knowledge-entry {
+  border-color: rgba(70, 85, 160, .16);
+  background: linear-gradient(145deg, #f8faff 0%, #e8efff 100%);
+}
+.knowledge-entry > i {
+  color: #384f94;
+  font-family: inherit;
+  font-size: 34px;
+}
+.knowledge-entry span,
+.knowledge-entry > b {
+  color: #384f94;
+}
+@media (max-width: 760px) {
+  .master-entry-grid {
+    gap: 11px;
+    margin: 0 0 25px;
+  }
+  .master-entry-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    min-height: 242px;
+    padding: 18px;
+    border-radius: 21px;
+  }
+  .master-entry-card > i {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    font-size: 16px;
+  }
+  .knowledge-entry > i {
+    font-size: 25px;
+  }
+  .master-entry-card span {
+    margin-bottom: 8px;
+    font-size: 8px;
+  }
+  .master-entry-card strong {
+    font-size: clamp(21px, 5.6vw, 29px);
+    line-height: 1.12;
+  }
+  .master-entry-card small {
+    display: none;
+  }
+  .master-entry-card > b {
+    right: 17px;
+    bottom: 16px;
+    left: 18px;
+    font-size: 11px;
+  }
+  .master-entry-card > b em {
+    font-size: 19px;
+  }
+}
+@media (max-width: 360px) {
+  .master-entry-grid {
+    grid-template-columns: 1fr;
+  }
+  .master-entry-card {
+    min-height: 225px;
+  }
+}
