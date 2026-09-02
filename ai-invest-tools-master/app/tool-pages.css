@@ -39,7 +39,9 @@
 .research-search { display: grid; grid-template-columns: 1.35fr 1fr 150px; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); }
 .research-search label { display: grid; gap: 6px; color: #5d6b64; font-size: 10px; font-weight: 700; }
 .research-search input, .research-search select { height: 42px; border: 1px solid var(--line); border-radius: 9px; padding: 0 11px; background: #fafbf7; color: var(--ink); outline: none; }
-.research-search button { align-self: end; height: 42px; border: 0; border-radius: 9px; background: #245a49; color: white; font-weight: 700; }
+.research-search button { align-self: end; height: 42px; border: 0; border-radius: 9px; background: #245a49; color: white; font-weight: 700; cursor: pointer; position: relative; z-index: 2; }
+.research-search button:hover { background: #1b493b; }
+.research-confirm { margin: 10px 0 0; color: #176b59; font-size: 12px; font-weight: 700; }
 .research-layout { display: grid; grid-template-columns: 250px 1fr; gap: 15px; margin-top: 15px; }
 .research-summary, .research-results, .research-detail { border: 1px solid var(--line); border-radius: 18px; background: var(--paper); }
 .research-summary, .research-results { padding: 23px; }

@@ -14,12 +14,14 @@ export default function ApartmentResearchPage() {
   const [query, setQuery] = useState("서울");
   const [budget, setBudget] = useState("20억 이하");
   const [selected, setSelected] = useState<Complex | null>(null);
+  const [searched, setSearched] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => complexes.filter((complex) => !query || `${complex.name} ${complex.location}`.includes(query) || query.includes("서울")), [query]);
 
   function startResearch() {
     const first = results[0] ?? null;
     setSelected(first);
+    setSearched(true);
     window.setTimeout(() => {
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
@@ -32,8 +34,9 @@ export default function ApartmentResearchPage() {
       <section className="research-search">
         <label>관심 지역 또는 단지<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="예: 마포구, 공덕역, 래미안" /></label>
         <label>예산<select value={budget} onChange={(event) => setBudget(event.target.value)}><option>10억 이하</option><option>15억 이하</option><option>20억 이하</option><option>20억 초과</option></select></label>
-        <button type="button" onClick={startResearch}>리서치 시작 →</button>
+        <button type="button" onClick={startResearch} aria-label="리서치 시작">리서치 시작 →</button>
       </section>
+      {searched && <p className="research-confirm" role="status">조건을 적용했습니다. 아래 비교 단지 결과를 확인하세요.</p>}
       <section className="research-layout" ref={resultsRef}>
         <aside className="research-summary"><span>RESEARCH FILTER</span><h2>이번 리서치 기준</h2><div><small>관심 지역</small><b>{query || "전체"}</b></div><div><small>예산</small><b>{budget}</b></div><div><small>비교 단지</small><b>{results.length}개</b></div><p>단지의 좋고 나쁨보다 <b>내 목적과 가격</b>이 맞는지 확인하세요.</p></aside>
         <div className="research-results">
