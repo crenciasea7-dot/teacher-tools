@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import "../tool-pages.css";
 
 type Complex = { name: string; location: string; price: string; change: string; school: string; transit: string; note: string; score: number };
+const priceInBillions = (value: string) => Number.parseFloat(value.replace("억", ""));
 const complexes: Complex[] = [
   { name: "래미안 리더스원", location: "서울 서초구 · 2019년", price: "24.8억", change: "+3.1%", school: "학군 우수", transit: "2호선 8분", note: "실거주 수요와 생활 인프라가 강점", score: 82 },
   { name: "마포 래미안 푸르지오", location: "서울 마포구 · 2014년", price: "18.6억", change: "+1.8%", school: "학군 보통", transit: "5호선 6분", note: "직주근접·교통 접근성을 함께 점검", score: 76 },
@@ -16,7 +17,15 @@ export default function ApartmentResearchPage() {
   const [selected, setSelected] = useState<Complex | null>(null);
   const [searched, setSearched] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
-  const results = useMemo(() => complexes.filter((complex) => !query || `${complex.name} ${complex.location}`.includes(query) || query.includes("서울")), [query]);
+  const results = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const maxBudget = budget === "10억 이하" ? 10 : budget === "15억 이하" ? 15 : budget === "20억 이하" ? 20 : Infinity;
+    return complexes.filter((complex) => {
+      const searchable = `${complex.name} ${complex.location}`.toLowerCase();
+      const queryMatches = !normalizedQuery || searchable.includes(normalizedQuery);
+      return queryMatches && (maxBudget === Infinity || priceInBillions(complex.price) <= maxBudget);
+    });
+  }, [query, budget]);
 
   function startResearch() {
     const first = results[0] ?? null;
