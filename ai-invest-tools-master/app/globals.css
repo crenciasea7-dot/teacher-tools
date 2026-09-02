@@ -2465,3 +2465,71 @@ main { max-width: 1240px; padding-right: 38px; padding-left: 38px; }
     min-height: 225px;
   }
 }
+
+
+/* Home correction: today's decisions beside the single Investment OS */
+.home-primary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 22px;
+  margin: -6px 0 38px;
+}
+.home-primary-grid .todays-judgment {
+  margin: 0;
+  height: 100%;
+  box-shadow: 0 20px 55px rgba(25, 66, 54, .10);
+}
+.home-primary-grid .master-entry-card {
+  height: 100%;
+  min-height: 100%;
+}
+.home-primary-grid .knowledge-entry > div {
+  align-self: center;
+}
+.home-primary-grid .knowledge-entry strong {
+  font-size: clamp(31px, 3.7vw, 48px);
+}
+@media (max-width: 760px) {
+  .home-primary-grid {
+    gap: 11px;
+    margin: 0 0 25px;
+  }
+  .home-primary-grid .todays-judgment {
+    padding: 16px;
+    border-radius: 21px;
+  }
+  .home-primary-grid .todays-judgment-heading h2 {
+    margin: 6px 0 10px;
+    font-size: 23px;
+  }
+  .home-primary-grid .todays-judgment-heading p {
+    display: none;
+  }
+  .home-primary-grid .todays-judgment-list {
+    gap: 7px;
+  }
+  .home-primary-grid .todays-judgment-list a {
+    padding: 12px 11px;
+    border-radius: 11px;
+    font-size: 13px;
+  }
+  .home-primary-grid .todays-judgment-list b {
+    margin-right: 7px;
+    font-size: 9px;
+  }
+  .home-primary-grid .master-entry-card {
+    min-height: 100%;
+  }
+  .home-primary-grid .knowledge-entry strong {
+    font-size: clamp(21px, 5.6vw, 29px);
+  }
+}
+@media (max-width: 360px) {
+  .home-primary-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-primary-grid .master-entry-card {
+    min-height: 225px;
+  }
+}
