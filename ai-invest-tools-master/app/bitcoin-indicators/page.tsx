@@ -1,6 +1,6 @@
 import BitcoinDashboard from "./bitcoin-dashboard";
 
-const flow = ["시장 심리", "장기 가격 위치", "비트코인 자금 집중", "스테이블코인 대기자금", "온체인 검증"];
+const flow = ["실시간 시세", "시장 심리", "장기 가격 위치", "비트코인 자금 집중", "스테이블코인 대기자금", "온체인 검증"];
 
 export default function BitcoinIndicatorsPage() {
   return (

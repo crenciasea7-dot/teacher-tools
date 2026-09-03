@@ -18,12 +18,13 @@ type BitcoinReferenceResponse = {
 
 const tradingViewBase = "https://s.tradingview.com/widgetembed/";
 
-function tradingViewUrl(symbol: "BTC.D" | "USDT.D") {
+function tradingViewUrl(symbol: "BTCUSDT" | "BTC.D" | "USDT.D") {
+  const isPriceChart = symbol === "BTCUSDT";
   const params = new URLSearchParams({
     frameElementId: `tradingview_${symbol.replace(".", "_").toLowerCase()}`,
-    symbol: `CRYPTOCAP:${symbol}`,
-    interval: "D",
-    hidesidetoolbar: "1",
+    symbol: isPriceChart ? "BINANCE:BTCUSDT" : `CRYPTOCAP:${symbol}`,
+    interval: isPriceChart ? "60" : "D",
+    hidesidetoolbar: isPriceChart ? "0" : "1",
     symboledit: "0",
     saveimage: "0",
     toolbarbg: "f1f3f6",
@@ -62,7 +63,7 @@ function FearGreedPanel({ data }: { data: BitcoinReferenceResponse | null }) {
   return (
     <article className="bitcoin-live-panel fear-greed-panel">
       <div className="bitcoin-panel-heading">
-        <div><span>01 · MARKET SENTIMENT</span><h2>크립토 공포·탐욕 지수</h2></div>
+        <div><span>02 · MARKET SENTIMENT</span><h2>크립토 공포·탐욕 지수</h2></div>
         <small>Alternative.me · 외부 업체</small>
       </div>
       <div className="bitcoin-gauge-wrap">
@@ -85,7 +86,7 @@ function FearGreedPanel({ data }: { data: BitcoinReferenceResponse | null }) {
   );
 }
 
-function EmbeddedChart({ step, title, source, description, src, externalUrl }: { step: string; title: string; source: string; description: string; src: string; externalUrl?: string }) {
+function EmbeddedChart({ step, title, source, description, src, externalUrl, externalLabel = "원문 사이트에서 보기 ↗" }: { step: string; title: string; source: string; description: string; src: string; externalUrl?: string; externalLabel?: string }) {
   return (
     <article className="bitcoin-live-panel embedded-chart-panel">
       <div className="bitcoin-panel-heading">
@@ -95,7 +96,7 @@ function EmbeddedChart({ step, title, source, description, src, externalUrl }: {
       <div className="bitcoin-embed-frame">
         <iframe src={src} title={`${title} 임베드 차트`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
       </div>
-      {externalUrl ? <a className="bitcoin-source-link" href={externalUrl} target="_blank" rel="noreferrer">레인보우 차트 원문 사이트에서 보기 ↗</a> : null}
+      {externalUrl ? <a className="bitcoin-source-link" href={externalUrl} target="_blank" rel="noreferrer">{externalLabel}</a> : null}
     </article>
   );
 }
@@ -108,7 +109,7 @@ function EuphoriaPanel({ data }: { data: BitcoinReferenceResponse | null }) {
   return (
     <article className="bitcoin-live-panel euphoria-panel">
       <div className="bitcoin-panel-heading">
-        <div><span>05 · ON-CHAIN FRAMEWORK</span><h2>Glassnode: Euphoria Zone</h2><p>신고가가 최근 30일 안에 갱신됐는지 확인하는 공개 프레임워크를 이 화면에서 재현합니다.</p></div>
+        <div><span>06 · ON-CHAIN FRAMEWORK</span><h2>Glassnode: Euphoria Zone</h2><p>신고가가 최근 30일 안에 갱신됐는지 확인하는 공개 프레임워크를 이 화면에서 재현합니다.</p></div>
         <small>Glassnode 기준 · Yahoo Finance 시세</small>
       </div>
       <div className="euphoria-summary">
@@ -149,11 +150,12 @@ export default function BitcoinDashboard() {
   return (
     <section className="bitcoin-live-dashboard" aria-label="비트코인 실시간 참고 지표">
       {error ? <p className="bitcoin-data-error">실시간 숫자를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</p> : null}
+      <EmbeddedChart step="01 · LIVE PRICE" title="비트코인 실시간 시세 차트" source="TradingView · Binance" description="BTC/USDT 캔들, 거래량과 시간대별 가격 흐름을 실시간으로 확인합니다." src={tradingViewUrl("BTCUSDT")} externalUrl="https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT" externalLabel="TradingView에서 크게 보기 ↗" />
       <FearGreedPanel data={data} />
-      <EmbeddedChart step="02 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalUrl="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" />
+      <EmbeddedChart step="03 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalUrl="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalLabel="레인보우 차트 원문 사이트에서 보기 ↗" />
       <div className="dominance-grid">
-        <EmbeddedChart step="03 · CAPITAL FLOW" title="비트코인 도미넌스" source="TradingView" description="BTC로 자금이 집중되는지 확인합니다." src={tradingViewUrl("BTC.D")} />
-        <EmbeddedChart step="04 · WAITING CAPITAL" title="테더 도미넌스" source="TradingView" description="스테이블코인 대기자금과 위험 회피 흐름을 확인합니다." src={tradingViewUrl("USDT.D")} />
+        <EmbeddedChart step="04 · CAPITAL FLOW" title="비트코인 도미넌스" source="TradingView" description="BTC로 자금이 집중되는지 확인합니다." src={tradingViewUrl("BTC.D")} />
+        <EmbeddedChart step="05 · WAITING CAPITAL" title="테더 도미넌스" source="TradingView" description="스테이블코인 대기자금과 위험 회피 흐름을 확인합니다." src={tradingViewUrl("USDT.D")} />
       </div>
       <EuphoriaPanel data={data} />
     </section>
