@@ -4,6 +4,18 @@ import { useEffect, useState } from "react";
 
 type FearGreedPoint = { value: number; label: string; timestamp: string };
 type PricePoint = { timestamp: string; value: number; ath: number };
+type TechnicalAnalysis = {
+  current: number; sma20: number; sma50: number; sma200: number; rsi14: number; momentum20: number;
+  support: { low: number; high: number }; resistance: { low: number; high: number };
+  trend: string; pattern: string; outlook: string;
+  probabilities: { bullish: number; range: number; bearish: number };
+};
+type MarketNews = {
+  direction: "up" | "down" | "flat" | "unknown"; change24h: number | null; verified: boolean; confidence: string; summary: string;
+  factors: Array<{ headline: string; explanation: string }>;
+  sources: Array<{ title: string; url: string; domain: string }>;
+  checks: Array<{ label: string; passed: boolean }>;
+};
 type BitcoinReferenceResponse = {
   fearGreed: { current: FearGreedPoint | null; history: FearGreedPoint[] };
   euphoria: {
@@ -12,6 +24,8 @@ type BitcoinReferenceResponse = {
     allTimeHighDate: string | null;
     newHighWithin30Days: boolean;
     points: PricePoint[];
+    technical: TechnicalAnalysis | null;
+    marketNews: MarketNews;
   };
   asOf: string;
 };
@@ -101,6 +115,50 @@ function EmbeddedChart({ step, title, source, description, src, externalUrl, ext
   );
 }
 
+function TechnicalAnalysisPanel({ analysis }: { analysis: TechnicalAnalysis | null | undefined }) {
+  const money = (value: number) => `$${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}`;
+  if (!analysis) return <article className="bitcoin-technical-panel loading"><b>기술적 분석 계산 중…</b><p>최근 가격과 거래량 데이터를 불러오고 있습니다.</p></article>;
+  const probabilityItems = [
+    { label: "상승", value: analysis.probabilities.bullish, tone: "bullish" },
+    { label: "횡보", value: analysis.probabilities.range, tone: "range" },
+    { label: "하락", value: analysis.probabilities.bearish, tone: "bearish" },
+  ];
+  return (
+    <article className="bitcoin-technical-panel">
+      <header><div><span>AUTO TECHNICAL READ</span><h2>차트 기술적 분석</h2></div><small>최근 180일 가격·거래량 기준</small></header>
+      <div className="technical-zone-grid">
+        <section className="support"><span>핵심 지지 매물대</span><strong>{money(analysis.support.low)} – {money(analysis.support.high)}</strong><p>이 구간을 지키면 반등 시나리오가 유지됩니다.</p></section>
+        <section className="resistance"><span>핵심 저항 매물대</span><strong>{money(analysis.resistance.low)} – {money(analysis.resistance.high)}</strong><p>거래량을 동반해 넘겨야 추가 상승이 유리합니다.</p></section>
+      </div>
+      <div className="technical-reading-grid">
+        <section><span>현재 추세</span><strong>{analysis.trend}</strong><p>20일선 {money(analysis.sma20)} · 50일선 {money(analysis.sma50)} · RSI {analysis.rsi14.toFixed(1)}</p></section>
+        <section><span>관찰 패턴</span><strong>{analysis.pattern}</strong><p>최근 20일 모멘텀 {analysis.momentum20 >= 0 ? "+" : ""}{analysis.momentum20.toFixed(1)}%</p></section>
+      </div>
+      <div className="technical-probabilities">
+        <div><span>향후 조건부 시나리오 우세도</span><small>통계적 예측값이 아닌 기술 신호 점수</small></div>
+        {probabilityItems.map((item) => <div className={`technical-probability ${item.tone}`} key={item.label}><b>{item.label} {item.value}%</b><i><span style={{ width: `${item.value}%` }} /></i></div>)}
+      </div>
+      <p className="technical-outlook"><b>가능성이 높은 흐름</b>{analysis.outlook}</p>
+      <p className="technical-caution">※ 종가 기반 근사 매물대와 이동평균·RSI·모멘텀을 조합한 참고 분석입니다. 미래 가격을 보장하지 않으며, 실시간 차트의 거래량과 돌파 여부를 함께 확인하세요.</p>
+    </article>
+  );
+}
+
+function MarketNewsPanel({ news }: { news: MarketNews | undefined }) {
+  if (!news) return <article className="bitcoin-news-panel loading"><b>가격 변동 뉴스 3중 검토 중…</b><p>최근 72시간 자료를 교차 확인하고 있습니다.</p></article>;
+  const directionLabel = news.direction === "up" ? "상승" : news.direction === "down" ? "하락" : news.direction === "flat" ? "보합" : "방향 확인 불가";
+  return (
+    <article className={`bitcoin-news-panel ${news.verified ? "verified" : "unknown"}`}>
+      <header><div><span>WHY DID BTC MOVE?</span><h2>왜 {directionLabel}했나 · 시장 뉴스 검증</h2></div><strong>{news.change24h === null ? "변동률 확인 불가" : `24시간 ${news.change24h >= 0 ? "+" : ""}${news.change24h.toFixed(2)}%`}</strong></header>
+      <div className="news-verification-row">{news.checks.map((check) => <span className={check.passed ? "passed" : "failed"} key={check.label}>{check.passed ? "✓" : "?"} {check.label}</span>)}</div>
+      <section className="news-summary"><b>{news.verified ? `검증 결론 · 신뢰도 ${news.confidence}` : "확인 불가 · 모름"}</b><p>{news.summary}</p></section>
+      {news.factors.length ? <div className="news-factor-grid">{news.factors.map((factor) => <section key={factor.headline}><b>{factor.headline}</b><p>{factor.explanation}</p></section>)}</div> : null}
+      {news.sources.length ? <div className="news-sources"><b>교차 확인 출처</b><div>{news.sources.map((source) => <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>{source.title} <small>{source.domain}</small> ↗</a>)}</div></div> : null}
+      <p className="news-honesty-note">가격 변동에는 여러 요인이 동시에 작용합니다. 기사와 가격의 시간 순서가 맞아도 인과관계가 입증되지 않으면 원인으로 단정하지 않습니다.</p>
+    </article>
+  );
+}
+
 function EuphoriaPanel({ data }: { data: BitcoinReferenceResponse | null }) {
   const euphoria = data?.euphoria;
   const points = euphoria?.points ?? [];
@@ -151,6 +209,8 @@ export default function BitcoinDashboard() {
     <section className="bitcoin-live-dashboard" aria-label="비트코인 실시간 참고 지표">
       {error ? <p className="bitcoin-data-error">실시간 숫자를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</p> : null}
       <EmbeddedChart step="01 · LIVE PRICE" title="비트코인 실시간 시세 차트" source="TradingView · Binance" description="BTC/USDT 캔들, 거래량과 시간대별 가격 흐름을 실시간으로 확인합니다." src={tradingViewUrl("BTCUSDT")} externalUrl="https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT" externalLabel="TradingView에서 크게 보기 ↗" />
+      <TechnicalAnalysisPanel analysis={data?.euphoria.technical} />
+      <MarketNewsPanel news={data?.euphoria.marketNews} />
       <FearGreedPanel data={data} />
       <EmbeddedChart step="03 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalUrl="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalLabel="레인보우 차트 원문 사이트에서 보기 ↗" />
       <div className="dominance-grid">
