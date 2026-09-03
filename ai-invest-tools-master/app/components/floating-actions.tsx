@@ -13,6 +13,7 @@ export default function FloatingActions() {
   const [shareOpen, setShareOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [assistantOpen, setAssistantOpen] = useState(false);
 
   async function copy(value: string, message: string) {
     await navigator.clipboard.writeText(value);
@@ -118,7 +119,8 @@ export default function FloatingActions() {
       <div className="floating-buttons">
         <button type="button" className={downloadOpen ? "active" : ""} onClick={() => { setDownloadOpen((open) => !open); setShareOpen(false); }} aria-label="다운로드 메뉴 열기">↓</button>
         <button type="button" className={shareOpen ? "active" : ""} onClick={() => { setShareOpen((open) => !open); setDownloadOpen(false); }} aria-label="공유 메뉴 열기">↗</button>
-        <nav className="ai-shortcuts">{aiShortcuts.map((item) => <a href={item.href} target="_blank" rel="noreferrer" key={item.label} title={item.label}><span>{item.icon}</span><small>{item.label}</small></a>)}</nav>
+        {assistantOpen && <nav className="ai-shortcuts">{aiShortcuts.map((item) => <a href={item.href} target="_blank" rel="noreferrer" key={item.label} title={item.label}><span>{item.icon}</span><small>{item.label}</small></a>)}</nav>}
+        <button type="button" className="assistant-trigger" onClick={() => setAssistantOpen((open) => !open)} aria-label="AI 도우미 열기" aria-expanded={assistantOpen}>🤖</button>
       </div>
     </div>
   );

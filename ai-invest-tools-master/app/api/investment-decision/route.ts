@@ -1,4 +1,5 @@
 import { createGateway, generateText } from "ai";
+import { getVercelOidcToken } from "@vercel/oidc";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -18,10 +19,10 @@ export async function POST(request: Request) {
 연결된 Knowledge Universe:\n${context || "연결된 카드 없음"}
 
 한국어로 다음 10개 항목을 작성하라: 1) 한줄 결론 2) 현재 상황 3) 핵심 신호 4) 판단 근거 5) 반대 근거와 리스크 6) 지금 할 일 7) 하지 말아야 할 일 8) 다음 확인 트리거 9) 판단 무효화 조건 10) 사용한 지식 카드.`;
-    const token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_AI_GATEWAY_API_KEY;
+    const token = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_AI_GATEWAY_API_KEY || await getVercelOidcToken().catch(() => null);
     if (!token) return Response.json({ error: "AI Gateway 환경변수가 아직 설정되지 않았습니다." }, { status: 503 });
     const gateway = createGateway({ apiKey: token });
-    const result = await generateText({ model: gateway("openai/gpt-5.6-luna"), prompt });
+    const result = await generateText({ model: gateway("openai/gpt-5.4"), prompt });
     return Response.json({ answer: result.text, engine: "ai-gateway" });
   } catch (error) {
     console.error("investment decision failed", error);
