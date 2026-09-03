@@ -82,7 +82,10 @@ async function fetchEuphoriaReference() {
   const technical = buildTechnicalAnalysis(prices, volumes);
   const previousPrice = prices.at(-2) ?? latestPrice ?? 0;
   const change24h = latestPrice && previousPrice ? ((latestPrice / previousPrice) - 1) * 100 : null;
-  const marketNews = await fetchBitcoinMarketNews(change24h).catch(() => unavailableNews(change24h));
+  const marketNews = await fetchBitcoinMarketNews(change24h).catch((error) => {
+    console.error("Bitcoin market news verification failed", error);
+    return unavailableNews(change24h);
+  });
 
   return {
     latestPrice,
@@ -141,6 +144,8 @@ async function fetchBitcoinMarketNews(change24h: number | null) {
         searchRecencyFilter: "week",
       }),
     },
+    stopWhen: stepCountIs(3),
+    prepareStep: ({ stepNumber }) => ({ toolChoice: stepNumber === 0 ? "required" : "none" }),
     prompt: `반드시 제공된 검색 도구를 먼저 사용하라. 현재 비트코인의 최근 24시간 가격 변화는 ${change24h.toFixed(2)}%로 ${direction}이다. 오늘 기준 최근 72시간의 신뢰할 수 있는 시장 뉴스를 검색해 왜 움직였는지 검증하라.
 
 검증 규칙:
@@ -288,5 +293,5 @@ export async function GET() {
     { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600" } },
   );
 }
-import { createGateway, generateText } from "ai";
+import { createGateway, generateText, stepCountIs } from "ai";
 import { getVercelOidcToken } from "@vercel/oidc";
