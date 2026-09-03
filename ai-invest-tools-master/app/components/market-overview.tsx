@@ -183,10 +183,13 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
       {rateFalling ? <div className="market-rate-falling-badge">★ 금리 하락 중 · 긍정 신호</div> : null}
       {quote ? <div className="market-api-quote">
         <MarketTrendGraphic quote={quote} positiveDown={isInterestRate} />
+        <div className={`market-movement-label ${rateFalling ? "positive" : direction}`}>
+          {direction === "up" ? "↗" : direction === "down" ? "↘" : "→"} {isInterestRate ? "금리 " : ""}{direction === "up" ? "상승 중" : direction === "down" ? "하락 중" : "보합"}
+        </div>
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
         <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
-      </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</div>}
+      </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}><span>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</span>{isInterestRate && !instrument.statusNote ? <b>금리 방향 확인 중</b> : null}</div>}
       <div className="market-detail-link-row">
         <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>{quote?.source ?? (cardIsLinked ? "네이버 금융" : "원본 사이트")}에서 상세 보기 ↗</a>
       </div>

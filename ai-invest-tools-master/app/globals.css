@@ -835,6 +835,10 @@ header {
 .market-api-quote .market-trend-graphic.up > b { background: #d7453d; }
 .market-api-quote .market-trend-graphic.down > b { background: #2479bd; }
 .market-api-quote .market-trend-graphic.positive-down > b { background: #0f8a60; }
+.market-api-quote .market-movement-label { display: block; padding: 5px 7px; border-radius: 8px; background: #eef2f0; color: #657871; font-size: 10px; font-weight: 900; text-align: center; }
+.market-api-quote .market-movement-label.up { background: #fff0ee; color: #c93c34; }
+.market-api-quote .market-movement-label.down { background: #edf5fb; color: #2479bd; }
+.market-api-quote .market-movement-label.positive { background: #e7f7ef; color: #0f7552; }
 .market-api-quote > strong { font-size: 18px; letter-spacing: -.04em; }
 .market-api-quote > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
 .market-api-quote em,
@@ -843,7 +847,8 @@ header {
 .market-api-quote > div.down { color: #2479bd; }
 .market-api-quote > div.flat { color: #6f807a; }
 .market-api-quote small { color: #70847d; font-size: 8px; font-weight: 700; }
-.market-api-state { display: grid; min-height: 84px; margin-top: 5px; place-items: center; color: #83938e; font-size: 9px; text-align: center; }
+.market-api-state { display: grid; min-height: 84px; margin-top: 5px; place-content: center; gap: 7px; color: #83938e; font-size: 9px; text-align: center; }
+.market-api-state b { color: #547168; font-size: 10px; }
 .market-api-state.loading { background: linear-gradient(90deg, #f3f5f4, #e7ece9, #f3f5f4); background-size: 200% 100%; animation: market-pulse 1.4s linear infinite; }
 .market-api-state.unavailable { color: #a07062; }
 .market-detail-link-row {
