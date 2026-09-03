@@ -809,7 +809,7 @@ header {
 .market-link-card {
   display: flex;
   min-width: 0;
-  min-height: 188px;
+  min-height: 272px;
   padding: 16px;
   background: #fff;
   color: #1d2730;
@@ -821,6 +821,20 @@ header {
 .market-link-card > strong { margin-top: 9px; overflow-wrap: anywhere; font-size: 16px; line-height: 1.25; letter-spacing: -.03em; }
 .market-link-card > small { margin-top: 4px; color: #83938e; font: 9px "DM Mono", monospace; }
 .market-api-quote { display: grid; min-height: 84px; align-content: center; gap: 5px; margin-top: 5px; }
+.market-trend-graphic { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px; width: 100%; margin: 5px 0 3px; color: #6f807a; }
+.market-trend-graphic svg { grid-column: 1 / -1; width: 100%; height: 42px; overflow: visible; }
+.market-trend-graphic .trend-guide { stroke: #dce7e2; stroke-width: 1; stroke-dasharray: 3 4; }
+.market-trend-graphic .trend-line { fill: none; stroke: currentColor; stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 3px 3px rgba(20,45,38,.14)); }
+.market-trend-graphic .trend-area { fill: currentColor; opacity: .1; }
+.market-trend-graphic circle { fill: #fff; stroke: currentColor; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.market-trend-graphic > span { color: #899993; font: 700 8px "DM Mono", monospace; }
+.market-api-quote .market-trend-graphic > b { padding: 3px 7px; border-radius: 999px; background: #6f807a; color: #fff; font-size: 9px; font-weight: 900; }
+.market-trend-graphic.up { color: #d7453d; }
+.market-trend-graphic.down { color: #2479bd; }
+.market-trend-graphic.positive-down { color: #0f8a60; }
+.market-api-quote .market-trend-graphic.up > b { background: #d7453d; }
+.market-api-quote .market-trend-graphic.down > b { background: #2479bd; }
+.market-api-quote .market-trend-graphic.positive-down > b { background: #0f8a60; }
 .market-api-quote > strong { font-size: 18px; letter-spacing: -.04em; }
 .market-api-quote > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
 .market-api-quote em,
@@ -2153,7 +2167,7 @@ footer b {
   .investing-official-chart header { align-items: flex-start; flex-direction: column; }
   .investing-official-chart iframe { height: 440px; }
   .market-quote-board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; padding: 6px; }
-  .market-link-card { min-height: 178px; padding: 13px; }
+  .market-link-card { min-height: 252px; padding: 13px; }
   .market-link-card > strong { font-size: 14px; }
   .market-api-quote > strong { font-size: 16px; }
   .market-api-quote em,

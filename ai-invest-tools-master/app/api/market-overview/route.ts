@@ -24,6 +24,7 @@ type QuoteItem = {
   session: "정규장" | "시간외" | "24시간" | "해외시장";
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
+  sparkline?: number[];
 };
 
 type NaverRealtimeItem = {
@@ -64,6 +65,7 @@ type YahooChartApi = {
         regularMarketPreviousClose?: number;
         chartPreviousClose?: number;
       };
+      indicators?: { quote?: Array<{ close?: Array<number | null> }> };
     }>;
   };
 };
@@ -298,8 +300,45 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
   return quotes.filter((quote): quote is QuoteItem => quote !== null);
 }
 
+async function fetchMarketSparklines() {
+  const definitions: Array<{ id: QuoteId; ticker: string }> = [
+    { id: "sk-hynix", ticker: "000660.KS" },
+    { id: "samsung", ticker: "005930.KS" },
+    { id: "kospi", ticker: "^KS11" },
+    { id: "kosdaq", ticker: "^KQ11" },
+    { id: "sp500", ticker: "^GSPC" },
+    { id: "nasdaq", ticker: "^IXIC" },
+    { id: "gold", ticker: "GC=F" },
+    { id: "us10y", ticker: "^TNX" },
+    { id: "us30y", ticker: "^TYX" },
+    { id: "oil", ticker: "CL=F" },
+    { id: "usd-krw", ticker: "KRW=X" },
+    { id: "btc", ticker: "BTC-USD" },
+    { id: "xrp", ticker: "XRP-USD" },
+  ];
+
+  const series = await Promise.all(definitions.map(async ({ id, ticker }): Promise<[QuoteId, number[]]> => {
+    try {
+      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=30m&range=1d`, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(8_000),
+      });
+      if (!response.ok) return [id, []];
+      const payload = (await response.json()) as YahooChartApi;
+      const closes = payload.chart?.result?.[0]?.indicators?.quote?.[0]?.close
+        ?.filter((value): value is number => typeof value === "number" && Number.isFinite(value)) ?? [];
+      return [id, closes.slice(-24)];
+    } catch {
+      return [id, []];
+    }
+  }));
+
+  return new Map<QuoteId, number[]>(series);
+}
+
 export async function GET() {
-  const [stockSentiments, cryptoSentiment, cryptoQuotes, naverQuotes, yahooQuotes] = await Promise.all([
+  const [stockSentiments, cryptoSentiment, cryptoQuotes, naverQuotes, yahooQuotes, sparklines] = await Promise.all([
     fetchStockSentiments().catch(() => [
       unavailableSentiment({ id: "us", market: "미국 주식", detail: "S&P 500 · NASDAQ", source: "CNN Fear & Greed", sourceUrl: "https://www.cnn.com/markets/fear-and-greed", note: "CNN의 7개 미국 시장 지표" }),
       unavailableSentiment({ id: "kr", market: "한국 주식", detail: "KOSPI · KOSDAQ", source: "Fear & Greed Index Korea", sourceUrl: "https://feargreed.co.kr/", note: "한국 시장 6개 지표로 별도 산출" }),
@@ -308,9 +347,11 @@ export async function GET() {
     fetchCryptoQuotes().catch(() => []),
     fetchNaverQuotes(),
     fetchYahooQuotes(),
+    fetchMarketSparklines(),
   ]);
+  const quotes = [...naverQuotes, ...yahooQuotes, ...cryptoQuotes].map((quote) => ({ ...quote, sparkline: sparklines.get(quote.id) }));
   return Response.json(
-    { sentiment: [...stockSentiments, cryptoSentiment], quotes: [...naverQuotes, ...yahooQuotes, ...cryptoQuotes], asOf: new Date().toISOString(), refreshSeconds: 60, delayedNotice: "제공처와 시장 운영시간에 따라 일부 시세가 지연되거나 일시 중단될 수 있습니다." },
+    { sentiment: [...stockSentiments, cryptoSentiment], quotes, asOf: new Date().toISOString(), refreshSeconds: 60, delayedNotice: "제공처와 시장 운영시간에 따라 일부 시세가 지연되거나 일시 중단될 수 있습니다." },
     { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } },
   );
 }

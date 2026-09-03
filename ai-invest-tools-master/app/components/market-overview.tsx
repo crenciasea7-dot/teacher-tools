@@ -33,6 +33,7 @@ type QuoteItem = {
   session: "정규장" | "시간외" | "24시간" | "해외시장";
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
+  sparkline?: number[];
 };
 
 type InvestingInstrument = {
@@ -133,6 +134,35 @@ function SentimentCard({ item }: { item: SentimentItem }) {
   );
 }
 
+function MarketTrendGraphic({ quote, positiveDown = false }: { quote: QuoteItem; positiveDown?: boolean }) {
+  const direction = quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat";
+  const previousValue = quote.price - quote.change;
+  const values = quote.sparkline && quote.sparkline.length > 1 ? quote.sparkline : [previousValue, quote.price];
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const spread = max - min || Math.max(Math.abs(max) * .002, 1);
+  const points = values.map((value, index) => {
+    const x = 4 + index / Math.max(values.length - 1, 1) * 152;
+    const y = 40 - (value - min) / spread * 34;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  const lastPoint = points.split(" ").at(-1) ?? "156,23";
+  const lastX = lastPoint.split(",")[0];
+  const tone = positiveDown && direction === "down" ? "positive-down" : direction;
+  const label = direction === "up" ? "상승" : direction === "down" ? "하락" : "보합";
+
+  return (
+    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`최근 장중 흐름 ${label}, 전일 대비 ${quote.changePercent.toFixed(2)}퍼센트`}>
+      <svg viewBox="0 0 160 46" preserveAspectRatio="none" aria-hidden="true">
+        <line className="trend-guide" x1="4" y1="42" x2="156" y2="42" />
+        <polygon className="trend-area" points={`${points} ${lastX},42 4,42`} />
+        <polyline className="trend-line" points={points} />
+      </svg>
+      <span>최근 장중 흐름</span><b>{direction === "up" ? "↗" : direction === "down" ? "↘" : "→"} {label}</b>
+    </div>
+  );
+}
+
 function MarketLinkCard({ instrument, group, quote, loading }: { instrument: InvestingInstrument; group: string; quote?: QuoteItem; loading: boolean }) {
   const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
   const alertRule = ALERT_RULES[instrument.id];
@@ -152,6 +182,7 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
       {alert ? <div className="market-alert-badge">🔴 위험 기준 {alertRule.label}</div> : null}
       {rateFalling ? <div className="market-rate-falling-badge">★ 금리 하락 중 · 긍정 신호</div> : null}
       {quote ? <div className="market-api-quote">
+        <MarketTrendGraphic quote={quote} positiveDown={isInterestRate} />
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
         <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
