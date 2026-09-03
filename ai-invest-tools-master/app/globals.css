@@ -1679,22 +1679,23 @@ footer b {
 .technical-zone-grid section,.technical-reading-grid section { padding: 15px; border-radius: 13px; background: #eef2ef; }
 .technical-zone-grid section.support { background: #e7f5ed; color: #12674d; }
 .technical-zone-grid section.resistance { background: #fff0ec; color: #a24435; }
-.technical-zone-grid span,.technical-reading-grid span { display: block; margin-bottom: 7px; font-size: 9px; font-weight: 800; }
-.technical-zone-grid strong { font: 700 18px "DM Mono",monospace; }
-.technical-reading-grid strong { font-size: 15px; }
-.technical-zone-grid p,.technical-reading-grid p { margin: 7px 0 0; color: #687a74; font-size: 9px; line-height: 1.55; }
+.technical-zone-grid span,.technical-reading-grid span { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 800; }
+.technical-zone-grid strong { display: block; font: 700 20px "DM Mono",monospace; }
+.technical-zone-grid em { display: block; margin-top: 6px; font-size: 15px; font-style: normal; font-weight: 800; }
+.technical-reading-grid strong { font-size: 18px; }
+.technical-zone-grid p,.technical-reading-grid p { margin: 8px 0 0; color: #526660; font-size: 14px; line-height: 1.65; }
 .technical-probabilities { display: grid; gap: 8px; padding: 15px; border-radius: 13px; background: #17242b; color: #fff; }
-.technical-probabilities > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; }
-.technical-probabilities small { color: #9fb0b5; font-size: 8px; }
+.technical-probabilities > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.technical-probabilities small { color: #b9c6ca; font-size: 12px; }
 .technical-probability { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; }
-.technical-probability b { font-size: 9px; }
+.technical-probability b { font-size: 13px; }
 .technical-probability i { height: 7px; overflow: hidden; border-radius: 99px; background: #34434a; }
 .technical-probability i span { display: block; height: 100%; border-radius: inherit; background: #6ec8ad; }
 .technical-probability.range i span { background: #f4b740; }
 .technical-probability.bearish i span { background: #ef7c6a; }
-.technical-outlook { margin: 0; padding: 14px; border-left: 4px solid #b17b17; border-radius: 0 11px 11px 0; background: #fff8e8; color: #4f5e59; font-size: 10px; line-height: 1.65; }
+.technical-outlook { margin: 0; padding: 16px; border-left: 4px solid #b17b17; border-radius: 0 11px 11px 0; background: #fff8e8; color: #40534c; font-size: 15px; line-height: 1.7; }
 .technical-outlook b { display: block; margin-bottom: 4px; color: #8b6114; }
-.technical-caution { margin: 0; color: #7d8985; font-size: 8px; line-height: 1.55; }
+.technical-caution { margin: 0; color: #687772; font-size: 12px; line-height: 1.65; }
 .bitcoin-technical-panel.loading { color: #6f807a; }
 .bitcoin-news-panel { display: grid; gap: 14px; padding: 22px; border: 1px solid #d7dfdc; border-radius: 18px; background: #fff; box-shadow: 0 14px 38px rgba(27,55,46,.07); }
 .bitcoin-news-panel > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
@@ -1702,24 +1703,24 @@ footer b {
 .bitcoin-news-panel > header h2 { margin: 5px 0 0; font-size: 21px; letter-spacing: -.04em; }
 .bitcoin-news-panel > header > strong { flex: none; padding: 8px 10px; border-radius: 10px; background: #17242b; color: #fff; font: 700 11px "DM Mono",monospace; }
 .news-verification-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.news-verification-row span { padding: 6px 8px; border-radius: 99px; font-size: 8px; font-weight: 800; }
+.news-verification-row span { padding: 7px 10px; border-radius: 99px; font-size: 12px; font-weight: 800; }
 .news-verification-row .passed { background: #e3f4eb; color: #14684e; }
 .news-verification-row .failed { background: #fff0d9; color: #94620c; }
 .news-summary { padding: 15px; border-left: 4px solid #397e9d; border-radius: 0 12px 12px 0; background: #edf6fa; }
 .bitcoin-news-panel.unknown .news-summary { border-left-color: #c98924; background: #fff7e8; }
-.news-summary b { color: #245f79; font-size: 10px; }
+.news-summary b { color: #245f79; font-size: 14px; }
 .bitcoin-news-panel.unknown .news-summary b { color: #8b5c10; }
-.news-summary p,.news-factor-grid p { margin: 6px 0 0; color: #536660; font-size: 10px; line-height: 1.65; }
+.news-summary p,.news-factor-grid p { margin: 7px 0 0; color: #40564e; font-size: 15px; line-height: 1.7; }
 .news-factor-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
 .news-factor-grid section { padding: 14px; border-radius: 12px; background: #f3f5f3; }
-.news-factor-grid b { font-size: 11px; }
+.news-factor-grid b { font-size: 15px; }
 .news-sources { display: grid; gap: 8px; }
-.news-sources > b { font-size: 10px; }
+.news-sources > b { font-size: 14px; }
 .news-sources > div { display: flex; flex-wrap: wrap; gap: 6px; }
-.news-sources a { padding: 7px 9px; border: 1px solid #d8dfdc; border-radius: 9px; color: #34574a; font-size: 9px; font-weight: 700; text-decoration: none; }
+.news-sources a { padding: 9px 11px; border: 1px solid #d8dfdc; border-radius: 9px; color: #34574a; font-size: 13px; font-weight: 700; text-decoration: none; }
 .news-sources a:hover { border-color: #397e9d; color: #245f79; }
 .news-sources small { color: #7b8985; font-weight: 500; }
-.news-honesty-note { margin: 0; color: #7d8985; font-size: 8px; line-height: 1.55; }
+.news-honesty-note { margin: 0; color: #687772; font-size: 12px; line-height: 1.65; }
 .bitcoin-news-panel.loading { color: #6f807a; }
 .dominance-grid {
   display: grid;

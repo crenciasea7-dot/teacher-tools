@@ -9,7 +9,7 @@ type CoinGeckoChartResponse = {
 
 type CoinGeckoMarketResponse = {
   market_data?: {
-    current_price?: { usd?: number };
+    current_price?: { usd?: number; krw?: number };
     ath?: { usd?: number };
     ath_date?: { usd?: string };
   };
@@ -67,6 +67,8 @@ async function fetchEuphoriaReference() {
   const chartPayload = (await chartResponse.json()) as CoinGeckoChartResponse;
   const marketPayload = (await marketResponse.json()) as CoinGeckoMarketResponse;
   const latestPrice = marketPayload.market_data?.current_price?.usd ?? null;
+  const latestPriceKrw = marketPayload.market_data?.current_price?.krw ?? null;
+  const usdKrw = latestPrice && latestPriceKrw ? latestPriceKrw / latestPrice : null;
   const allTimeHigh = marketPayload.market_data?.ath?.usd ?? null;
   const allTimeHighDate = marketPayload.market_data?.ath_date?.usd ?? null;
   const points = (chartPayload.prices ?? []).flatMap(([timestamp, value]) => {
@@ -84,6 +86,8 @@ async function fetchEuphoriaReference() {
 
   return {
     latestPrice,
+    latestPriceKrw,
+    usdKrw,
     allTimeHigh,
     allTimeHighDate,
     newHighWithin30Days: allTimeHighDate ? new Date(allTimeHighDate).getTime() >= thirtyDaysAgo : false,
@@ -128,8 +132,16 @@ async function fetchBitcoinMarketNews(change24h: number | null) {
   const direction = change24h > 0.15 ? "상승" : change24h < -0.15 ? "하락" : "보합";
   const gateway = createGateway({ apiKey: token });
   const result = await generateText({
-    model: gateway("perplexity/sonar"),
-    prompt: `현재 비트코인의 최근 24시간 가격 변화는 ${change24h.toFixed(2)}%로 ${direction}이다. 오늘 기준 최근 72시간의 신뢰할 수 있는 시장 뉴스를 검색해 왜 움직였는지 검증하라.
+    model: gateway("openai/gpt-5.4-mini"),
+    tools: {
+      perplexity_search: gateway.tools.perplexitySearch({
+        maxResults: 10,
+        maxTokensPerPage: 1024,
+        searchLanguageFilter: ["ko", "en"],
+        searchRecencyFilter: "week",
+      }),
+    },
+    prompt: `반드시 제공된 검색 도구를 먼저 사용하라. 현재 비트코인의 최근 24시간 가격 변화는 ${change24h.toFixed(2)}%로 ${direction}이다. 오늘 기준 최근 72시간의 신뢰할 수 있는 시장 뉴스를 검색해 왜 움직였는지 검증하라.
 
 검증 규칙:
 1. 가격 방향과 뉴스 발생 시각이 맞는지 확인한다.
@@ -143,10 +155,20 @@ async function fetchBitcoinMarketNews(change24h: number | null) {
   });
   const parsed = parseJson(result.text);
   const uniqueSources = new Map<string, { title: string; url: string; domain: string }>();
+  const candidates: Array<{ title?: string; url?: string }> = [];
   for (const source of result.sources) {
-    if (source.sourceType !== "url") continue;
+    if (source.sourceType === "url") candidates.push({ title: source.title, url: source.url });
+  }
+  for (const toolResult of result.toolResults) {
+    const output = toolResult.output as { results?: Array<{ title?: string; url?: string }> } | undefined;
+    if (Array.isArray(output?.results)) candidates.push(...output.results);
+  }
+  const excludedDomains = ["youtube.com", "youtu.be", "x.com", "twitter.com", "reddit.com", "facebook.com", "instagram.com"];
+  for (const source of candidates) {
+    if (!source.url) continue;
     try {
       const domain = new URL(source.url).hostname.replace(/^www\./, "");
+      if (excludedDomains.some((blocked) => domain === blocked || domain.endsWith(`.${blocked}`))) continue;
       if (!uniqueSources.has(domain)) uniqueSources.set(domain, { title: source.title || domain, url: source.url, domain });
     } catch { /* invalid provider source URL */ }
   }
@@ -258,7 +280,7 @@ function buildTechnicalAnalysis(prices: number[], volumes: Array<[number, number
 export async function GET() {
   const [fearGreed, euphoria] = await Promise.all([
     fetchFearGreed().catch(() => ({ current: null, history: [] })),
-    fetchEuphoriaReference().catch(() => ({ latestPrice: null, allTimeHigh: null, allTimeHighDate: null, newHighWithin30Days: false, points: [], technical: null, marketNews: unavailableNews(null) })),
+    fetchEuphoriaReference().catch(() => ({ latestPrice: null, latestPriceKrw: null, usdKrw: null, allTimeHigh: null, allTimeHighDate: null, newHighWithin30Days: false, points: [], technical: null, marketNews: unavailableNews(null) })),
   ]);
 
   return Response.json(

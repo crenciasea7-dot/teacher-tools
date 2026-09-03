@@ -20,6 +20,8 @@ type BitcoinReferenceResponse = {
   fearGreed: { current: FearGreedPoint | null; history: FearGreedPoint[] };
   euphoria: {
     latestPrice: number | null;
+    latestPriceKrw: number | null;
+    usdKrw: number | null;
     allTimeHigh: number | null;
     allTimeHighDate: string | null;
     newHighWithin30Days: boolean;
@@ -115,8 +117,13 @@ function EmbeddedChart({ step, title, source, description, src, externalUrl, ext
   );
 }
 
-function TechnicalAnalysisPanel({ analysis }: { analysis: TechnicalAnalysis | null | undefined }) {
+function formatWon(value: number | null) {
+  return value === null ? "환산 중" : `약 ${new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 }).format(value)}원`;
+}
+
+function TechnicalAnalysisPanel({ analysis, usdKrw }: { analysis: TechnicalAnalysis | null | undefined; usdKrw: number | null | undefined }) {
   const money = (value: number) => `$${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value)}`;
+  const won = (value: number) => formatWon(usdKrw ? value * usdKrw : null);
   if (!analysis) return <article className="bitcoin-technical-panel loading"><b>기술적 분석 계산 중…</b><p>최근 가격과 거래량 데이터를 불러오고 있습니다.</p></article>;
   const probabilityItems = [
     { label: "상승", value: analysis.probabilities.bullish, tone: "bullish" },
@@ -127,8 +134,8 @@ function TechnicalAnalysisPanel({ analysis }: { analysis: TechnicalAnalysis | nu
     <article className="bitcoin-technical-panel">
       <header><div><span>AUTO TECHNICAL READ</span><h2>차트 기술적 분석</h2></div><small>최근 180일 가격·거래량 기준</small></header>
       <div className="technical-zone-grid">
-        <section className="support"><span>핵심 지지 매물대</span><strong>{money(analysis.support.low)} – {money(analysis.support.high)}</strong><p>이 구간을 지키면 반등 시나리오가 유지됩니다.</p></section>
-        <section className="resistance"><span>핵심 저항 매물대</span><strong>{money(analysis.resistance.low)} – {money(analysis.resistance.high)}</strong><p>거래량을 동반해 넘겨야 추가 상승이 유리합니다.</p></section>
+        <section className="support"><span>핵심 지지 매물대</span><strong>{money(analysis.support.low)} – {money(analysis.support.high)}</strong><em>{won(analysis.support.low)} – {won(analysis.support.high)}</em><p>이 구간을 지키면 반등 시나리오가 유지됩니다.</p></section>
+        <section className="resistance"><span>핵심 저항 매물대</span><strong>{money(analysis.resistance.low)} – {money(analysis.resistance.high)}</strong><em>{won(analysis.resistance.low)} – {won(analysis.resistance.high)}</em><p>거래량을 동반해 넘겨야 추가 상승이 유리합니다.</p></section>
       </div>
       <div className="technical-reading-grid">
         <section><span>현재 추세</span><strong>{analysis.trend}</strong><p>20일선 {money(analysis.sma20)} · 50일선 {money(analysis.sma50)} · RSI {analysis.rsi14.toFixed(1)}</p></section>
@@ -171,8 +178,8 @@ function EuphoriaPanel({ data }: { data: BitcoinReferenceResponse | null }) {
         <small>Glassnode 기준 · Yahoo Finance 시세</small>
       </div>
       <div className="euphoria-summary">
-        <div><span>현재 BTC</span><strong>{formatDollars(euphoria?.latestPrice ?? null)}</strong></div>
-        <div><span>역대 최고가</span><strong>{formatDollars(euphoria?.allTimeHigh ?? null)}</strong></div>
+        <div><span>현재 BTC</span><strong>{formatDollars(euphoria?.latestPrice ?? null)}</strong><small>{formatWon(euphoria?.latestPriceKrw ?? null)}</small></div>
+        <div><span>역대 최고가</span><strong>{formatDollars(euphoria?.allTimeHigh ?? null)}</strong><small>{formatWon(euphoria?.allTimeHigh && euphoria?.usdKrw ? euphoria.allTimeHigh * euphoria.usdKrw : null)}</small></div>
         <div className={isEuphoria ? "active" : "calm"}><span>현재 국면</span><strong>{euphoria ? (isEuphoria ? "EUPHORIA" : "관찰 구간") : "계산 중"}</strong></div>
       </div>
       <div className="euphoria-chart">
@@ -209,7 +216,7 @@ export default function BitcoinDashboard() {
     <section className="bitcoin-live-dashboard" aria-label="비트코인 실시간 참고 지표">
       {error ? <p className="bitcoin-data-error">실시간 숫자를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</p> : null}
       <EmbeddedChart step="01 · LIVE PRICE" title="비트코인 실시간 시세 차트" source="TradingView · Binance" description="BTC/USDT 캔들, 거래량과 시간대별 가격 흐름을 실시간으로 확인합니다." src={tradingViewUrl("BTCUSDT")} externalUrl="https://www.tradingview.com/chart/?symbol=BINANCE%3ABTCUSDT" externalLabel="TradingView에서 크게 보기 ↗" />
-      <TechnicalAnalysisPanel analysis={data?.euphoria.technical} />
+      <TechnicalAnalysisPanel analysis={data?.euphoria.technical} usdKrw={data?.euphoria.usdKrw} />
       <MarketNewsPanel news={data?.euphoria.marketNews} />
       <FearGreedPanel data={data} />
       <EmbeddedChart step="03 · LONG-TERM POSITION" title="비트코인 레인보우 차트" source="BlockchainCenter" description="장기 가격 위치와 과열·침체 밴드를 페이지 안에서 직접 확인합니다." src="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalUrl="https://www.blockchaincenter.net/bitcoin-rainbow-chart/" externalLabel="레인보우 차트 원문 사이트에서 보기 ↗" />
