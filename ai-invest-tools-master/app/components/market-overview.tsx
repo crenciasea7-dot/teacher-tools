@@ -137,17 +137,20 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
   const direction = quote ? (quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat") : "flat";
   const alertRule = ALERT_RULES[instrument.id];
   const alert = Boolean(quote && alertRule && quote.price >= alertRule.threshold);
+  const isInterestRate = instrument.id === "us10y" || instrument.id === "us30y";
+  const rateFalling = Boolean(quote && isInterestRate && quote.change < 0);
   const quoteTime = quote
     ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(quote.measuredAt))
     : null;
   const cardIsLinked = instrument.id === "kospi-night";
   const openCardLink = () => { if (cardIsLinked) window.open(instrument.url, "_blank", "noopener,noreferrer"); };
   return (
-    <article className={`market-link-card ${alert ? "market-alert" : ""} ${cardIsLinked ? "market-card-clickable" : ""}`} aria-label={`${instrument.name} 현재가와 등락률`} role={cardIsLinked ? "link" : undefined} tabIndex={cardIsLinked ? 0 : undefined} onClick={openCardLink} onKeyDown={(event) => { if (cardIsLinked && (event.key === "Enter" || event.key === " ")) openCardLink(); }}>
+    <article className={`market-link-card ${alert ? "market-alert" : ""} ${rateFalling ? "market-rate-falling" : ""} ${cardIsLinked ? "market-card-clickable" : ""}`} aria-label={`${instrument.name} 현재가와 등락률${rateFalling ? ", 금리 하락 중 긍정 신호" : ""}`} role={cardIsLinked ? "link" : undefined} tabIndex={cardIsLinked ? 0 : undefined} onClick={openCardLink} onKeyDown={(event) => { if (cardIsLinked && (event.key === "Enter" || event.key === " ")) openCardLink(); }}>
       <span>{group.replace(/^\d+\.\s*/, "")}</span>
       <strong>{instrument.name}</strong>
       <small>{instrument.symbol}</small>
       {alert ? <div className="market-alert-badge">🔴 위험 기준 {alertRule.label}</div> : null}
+      {rateFalling ? <div className="market-rate-falling-badge">★ 금리 하락 중 · 긍정 신호</div> : null}
       {quote ? <div className="market-api-quote">
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
