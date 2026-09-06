@@ -47,6 +47,8 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
   { name: "1. 주식", instruments: [
     { id: "sk-hynix", name: "SK하이닉스", symbol: "000660", url: "https://finance.naver.com/item/main.naver?code=000660" },
     { id: "samsung", name: "삼성전자", symbol: "005930", url: "https://finance.naver.com/item/main.naver?code=005930" },
+    { id: "micron", name: "마이크론", symbol: "MU", url: "https://finance.yahoo.com/quote/MU" },
+    { id: "sandisk", name: "샌디스크", symbol: "WDC", url: "https://finance.yahoo.com/quote/WDC" },
   ] },
   { name: "2. 국내 지수", instruments: [
     { id: "kospi", name: "코스피", symbol: "KOSPI", url: "https://finance.naver.com/sise/sise_index.naver?code=KOSPI" },
