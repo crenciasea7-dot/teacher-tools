@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import MarketOverview from "./components/market-overview";
 
 type Tool = {
   icon: string;
@@ -20,69 +19,91 @@ const tools: Tool[] = [
   { icon: "↗", name: "아파트 매도 분석", description: "내 호가와 최근 거래·시장 반응을 비교해 매도 전략을 점검", url: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing", group: "자산 관리", accent: "orange" },
   { icon: "⌁", name: "집 잔금 계산기", description: "입주 잔금과 대출 가능 범위를 로그인 없이 계산", url: "/jip-jangeum-calculator", group: "매수 판단", accent: "blue" },
   { icon: "◉", name: "투자거울", description: "투자 판단의 근거·리스크를 비춰보기", group: "매수 판단", accent: "blue" },
-  { icon: "⌕", name: "집중 아파트 비교 리서치", description: "후보 아파트를 로그인 없이 비교하고 핵심을 정리", url: "/apartment-research", group: "매수 판단", accent: "blue" },
+  { icon: "⌕", name: "집중 아파트 비교 리서치", description: "후보 아파트를 비교하고 핵심을 정리", url: "/apartment-research", group: "매수 판단", accent: "blue" },
   { icon: "▤", name: "등기부 등본 분석", description: "등기부등본의 위험 항목·법적 이슈·권리관계를 AI로 점검", url: "https://realpickai.kr/ai-registry", group: "매수 판단", accent: "blue", externalVendor: true },
   { icon: "₩", name: "구매력 계산기", description: "내 소득과 가진 돈으로 갈 수 있는 곳", url: "https://purchasing-power-calculator.vercel.app/", group: "매수 판단", accent: "blue" },
   { icon: "Σ", name: "토탈 비용 시뮬레이션", description: "현금·대출·부대비용·월 상환액을 한 번에 계산", url: "/property-purchase-simulation", group: "매수 판단", accent: "blue" },
+  { icon: "路", name: "임장동선", description: "후보 단지의 방문 순서와 이동 동선을 한 번에 정리", group: "매수 판단", accent: "blue" },
   { icon: "↔", name: "국장이냐 미장이냐", description: "세금을 고려해 국내주식과 미국주식의 투자비용을 비교", url: "https://simplewoody.com/ko/investment/investment-tax-cost.html", cta: "자세히 보기 ↗", group: "포트폴리오 리벨런싱", accent: "purple", externalVendor: true },
   { icon: "⌂", name: "주식이냐 부동산이냐", description: "주식과 부동산의 자산배분 판단 도구를 준비하고 있습니다", group: "포트폴리오 리벨런싱", accent: "purple" },
   { icon: "+", name: "기타", description: "추가 리벨런싱 도구를 위한 공간", group: "포트폴리오 리벨런싱", accent: "purple" },
   { icon: "⌖", name: "재개발 매물 분석", description: "정비사업 매물의 단계·권리·리스크 점검", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
+  { icon: "₩", name: "재개발투자금", description: "재개발 매물의 필요 투자금과 권리·위험을 함께 확인", url: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/", group: "정비사업", accent: "green" },
   { icon: "R", name: "inga-radar", description: "서울 재개발·재건축 인허가 신호 추적", group: "정비사업", accent: "green" },
-  { icon: "R", name: "주간 아파트 가격동향", description: "공식 주간 통계와 6단계 AI 시장 국면 분석", url: "/weekly-apartment-analysis", group: "AI 투자 루틴", accent: "purple" },
+  { icon: "R", name: "주간 아파트 가격동향", description: "공식 데이터와 6단계 AI 시장 국면 분석", url: "/weekly-apartment-analysis", group: "AI 투자 루틴", accent: "purple" },
+  { icon: "✦", name: "자료 정리 & 인사이트", description: "복잡한 보고서와 정책 자료를 요약하고 나에게 미치는 영향까지 축적", url: "/research-insights", cta: "자료 넣고 분석하기 →", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
+  { icon: "₿", name: "비트코인 참고 지표", description: "공포탐욕·레인보우·도미넌스·온체인 지표를 한곳에서 확인", url: "/bitcoin-indicators", cta: "판단 보드 열기 →", group: "암호화폐 판단", accent: "purple" },
 ];
 
 const groups = ["전체", ...Array.from(new Set(tools.map((tool) => tool.group)))];
 
-const toolMenuSections = [
-  { label: "📈 세금", items: ["보유세 계산기", "양도세 (준비중)"] },
-  { label: "🏗️ 재개발", items: ["재개발 투자금", "재개발 매물 분석"] },
-  { label: "💳 금융투자", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
-  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
-  { label: "👤 자산관리", items: ["moyo 자산 대시보드", "금 추적 (준비중)"] },
-  { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
-  { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
-];
-
 export default function Page() {
   const [active, setActive] = useState("전체");
-  const [showToolMenu, setShowToolMenu] = useState(false);
   const shown = active === "전체" ? tools : tools.filter((tool) => tool.group === active);
 
   return (
     <main>
-      <div className="beta"><span>PUBLIC BETA</span><b>AI 투자 도구 MASTER</b><p>작동 중인 도구를 계속 보완하고 있습니다.</p></div>
-      <header><div className="brand"><i>AI</i><div><b>AI 투자 도구 MASTER</b><small>MY PERSONAL INVESTMENT TOOLKIT</small></div></div><div className="count"><strong>{tools.length}</strong><span>개의 도구</span></div></header>
-      <section className="ai-shortcuts" aria-label="외부 AI 바로가기">
-        <div><span>AI SHORTCUTS</span><b>외부 AI 바로가기</b></div>
-        <a href="https://gemini.google.com/" target="_blank" rel="noreferrer"><strong>Gemini</strong><small>외부 업체 ↗</small></a>
-        <a href="https://chatgpt.com/" target="_blank" rel="noreferrer"><strong>ChatGPT</strong><small>외부 업체 ↗</small></a>
-        <a href="https://claude.ai/" target="_blank" rel="noreferrer"><strong>Claude</strong><small>외부 업체 ↗</small></a>
+      <div className="beta">
+        <span>PUBLIC BETA</span>
+        <b>AI 투자 도구 MASTER</b>
+        <p>작동 중인 도구를 계속 보완하고 있습니다.</p>
+      </div>
+      <header>
+        <div className="brand">
+          <i>AI</i>
+          <div>
+            <b>AI 투자 도구 MASTER</b>
+            <small>MY PERSONAL INVESTMENT TOOLKIT</small>
+          </div>
+        </div>
+        <div className="count">
+          <strong>{tools.length}</strong>
+          <span>개의 도구</span>
+        </div>
+      </header>
+      <section className="hero">
+        <p>ONE PLACE, BETTER DECISIONS</p>
+        <h1>생각은 여기서,<br /><em>판단은 도구로.</em></h1>
+        <span>자산 관리부터 매수·정비사업·AI 투자 루틴까지.<br />내가 만든 도구를 한 곳에서 바로 실행하세요.</span>
       </section>
-      <section className="hero slogan-hero">
-        <p>AI INVESTMENT TOOLKIT</p>
-        <h1>AI × 투자 <strong>A to Z</strong></h1>
-        <h2>몸은 편하게. 부는 똑똑하게.</h2>
-        <span>Let AI Work. &nbsp;Live Rich.</span>
-      </section>
-      <a className="os-banner" href="/investment-os">
-        <span>NEW NAVIGATION</span>
-        <strong>투자 판단 OS</strong>
-        <small>부자의 뇌를 훔치는 알고리즘 · 준비중</small>
-        <b>열기 ↗</b>
-      </a>
-      <MarketOverview />
-      <nav aria-label="도구 필터"><a className="os-nav-link" href="/investment-os">🧠 투자 판단 OS</a><button type="button" className={showToolMenu ? "on tool-menu-toggle" : "tool-menu-toggle"} aria-expanded={showToolMenu} onClick={() => setShowToolMenu((value) => !value)}>🛠️ 도구 모음 <span>{showToolMenu ? "닫기" : "펼치기"}</span></button>{groups.map((group) => <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>{group}</button>)}</nav>
-      {showToolMenu && <section className="tool-menu" aria-label="도구 모음 카테고리">{toolMenuSections.map((section) => <div className="tool-menu-section" key={section.label}><h2>{section.label}</h2><div>{section.items.map((name) => { const cleanName = name.replace(/ \(준비중\)$/, ""); const tool = tools.find((entry) => entry.name === cleanName); const href = tool?.url; return href ? <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined} key={name}><strong>{cleanName}</strong><small>{tool?.externalVendor ? "외부 업체" : "바로가기 ↗"}</small></a> : <span className="tool-menu-soon" key={name}><strong>{cleanName}</strong><small>준비중</small></span>; })}</div></div>)}</section>}
+      <nav>
+        {groups.map((group) => (
+          <button type="button" onClick={() => setActive(group)} className={group === active ? "on" : ""} key={group}>
+            {group}
+          </button>
+        ))}
+      </nav>
       <section className="tools">
         {shown.map((tool) => {
           const external = tool.url?.startsWith("http");
-          return <a className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`} href={tool.url ?? "#"} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined} key={tool.name} onClick={(event) => { if (!tool.url) event.preventDefault(); }}><i>{tool.icon}</i><div><span>{tool.group}</span><h2>{tool.name}{tool.externalVendor && <small className="vendor-badge">외부 업체</small>}</h2><p>{tool.description}</p></div><b>{tool.url ? (tool.cta ?? "바로가기 ↗") : "준비 중"}</b></a>;
+          return (
+            <a
+              className={`card ${tool.accent} ${!tool.url ? "soon" : ""}`}
+              href={tool.url ?? "#"}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noreferrer" : undefined}
+              key={tool.name}
+              onClick={(event) => {
+                if (!tool.url) event.preventDefault();
+              }}
+            >
+              <i>{tool.icon}</i>
+              <div>
+                <span>{tool.group}</span>
+                <h2>{tool.name}{tool.externalVendor && <small className="vendor-badge">외부 업체</small>}</h2>
+                <p>{tool.description}</p>
+              </div>
+              <b>{tool.url ? (tool.cta ?? "바로가기 ↗") : "준비 중"}</b>
+            </a>
+          );
         })}
       </section>
-      <footer><b>AI INVESTMENT MASTER</b><span>도구는 늘어나고, 판단은 더 선명해집니다.</span></footer>
+      <footer>
+        <b>AI INVESTMENT MASTER</b>
+        <span>도구는 늘어나고, 판단은 더 선명해집니다.</span>
+      </footer>
     </main>
   );
 }
