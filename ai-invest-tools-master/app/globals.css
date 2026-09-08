@@ -831,6 +831,7 @@ header {
 .market-session-status.delayed { color: #966000; }
 .market-session-status.closed { color: #6b7772; }
 .market-trend-graphic circle { fill: #fff; stroke: currentColor; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.market-trend-graphic .trend-last-point { fill: currentColor; stroke: #fff; stroke-width: 1; }
 .market-trend-graphic > span { color: #899993; font: 700 8px "DM Mono", monospace; }
 .market-api-quote .market-trend-graphic > b { padding: 3px 7px; border-radius: 999px; background: #6f807a; color: #fff; font-size: 9px; font-weight: 900; }
 .market-trend-graphic.up { color: #d7453d; }

@@ -34,6 +34,8 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
+  sparklineTimes?: number[];
+  chartSession?: { start: number; end: number };
   marketStatus?: "장중" | "장중 · 시세 지연" | "장마감" | "시간외 거래 중" | "시간외 거래 중 · 시세 지연" | "24시간 거래" | "24시간 거래 · 시세 지연" | "장 상태 확인 중";
 };
 
@@ -141,30 +143,36 @@ function MarketTrendGraphic({ quote, positiveDown = false }: { quote: QuoteItem;
   const gradientId = useId();
   const direction = quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat";
   const previousValue = quote.price - quote.change;
-  const values = quote.sparkline?.filter(Number.isFinite) ?? [];
-  if (values.length < 2) return <div className="market-chart-unavailable">장중 그래프 확인 중</div>;
+  const values = quote.sparkline ?? [];
+  const times = quote.sparklineTimes ?? [];
+  const session = quote.chartSession;
+  if (values.length < 2 || times.length !== values.length || !session || session.end <= session.start) return <div className="market-chart-unavailable">장중 그래프 확인 중</div>;
   const min = Math.min(previousValue, ...values);
   const max = Math.max(previousValue, ...values);
   const spread = max - min || Math.max(Math.abs(max) * .002, 1);
   const yFor = (value: number) => 42 - (value - min) / spread * 36;
   const baselineY = yFor(previousValue);
   const points = values.map((value, index) => {
-    const x = 4 + index / Math.max(values.length - 1, 1) * 152;
+    const progress = Math.max(0, Math.min(1, (times[index] - session.start) / (session.end - session.start)));
+    const x = 4 + progress * 152;
     const y = yFor(value);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
   const lastPoint = points.split(" ").at(-1) ?? "156,23";
   const lastX = lastPoint.split(",")[0];
+  const lastY = lastPoint.split(",")[1];
+  const firstX = points.split(" ")[0].split(",")[0];
   const tone = positiveDown && direction === "down" ? "positive-down" : direction;
   const label = direction === "up" ? "상승" : direction === "down" ? "하락" : "보합";
 
   return (
-    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`1분 간격 장중 흐름, 점선은 전일 종가, 전일 대비 ${label} ${quote.changePercent.toFixed(2)}퍼센트`}>
+    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`개장부터 마감까지 고정된 시간축, 마지막 시세까지 표시한 1분 간격 흐름, 점선은 전일 종가, 전일 대비 ${label} ${quote.changePercent.toFixed(2)}퍼센트`}>
       <svg viewBox="0 0 160 48" preserveAspectRatio="none" aria-hidden="true">
         <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity=".22" /><stop offset="100%" stopColor="currentColor" stopOpacity="0" /></linearGradient></defs>
-        <polygon className="trend-area" fill={`url(#${gradientId})`} points={`${points} ${lastX},46 4,46`} />
+        <polygon className="trend-area" fill={`url(#${gradientId})`} points={`${points} ${lastX},46 ${firstX},46`} />
         <line className="trend-guide" x1="4" y1={baselineY} x2="156" y2={baselineY} />
         <polyline className="trend-line" points={points} />
+        <circle className="trend-last-point" cx={lastX} cy={lastY} r="2" />
       </svg>
     </div>
   );

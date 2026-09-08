@@ -25,6 +25,8 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
+  sparklineTimes?: number[];
+  chartSession?: { start: number; end: number };
   marketStatus?: "장중" | "장중 · 시세 지연" | "장마감" | "시간외 거래 중" | "시간외 거래 중 · 시세 지연" | "24시간 거래" | "24시간 거래 · 시세 지연" | "장 상태 확인 중";
 };
 
@@ -67,7 +69,9 @@ type YahooChartApi = {
         regularMarketPreviousClose?: number;
         chartPreviousClose?: number;
         currentTradingPeriod?: { regular?: { start?: number; end?: number } };
+        tradingPeriods?: Array<Array<{ start: number; end: number }>>;
       };
+      timestamp?: number[];
       indicators?: { quote?: Array<{ close?: Array<number | null> }> };
     }>;
   };
@@ -340,24 +344,36 @@ async function fetchMarketSparklines() {
     { id: "xrp", ticker: "XRP-USD" },
   ];
 
-  const series = await Promise.all(definitions.map(async ({ id, ticker }): Promise<[QuoteId, number[]]> => {
+  type ChartData = Pick<QuoteItem, "sparkline" | "sparklineTimes" | "chartSession">;
+  const series = await Promise.all(definitions.map(async ({ id, ticker }): Promise<[QuoteId, ChartData]> => {
     try {
       const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1m&range=1d`, {
         headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
         next: { revalidate: 15 },
         signal: AbortSignal.timeout(8_000),
       });
-      if (!response.ok) return [id, []];
+      if (!response.ok) return [id, {}];
       const payload = (await response.json()) as YahooChartApi;
-      const closes = payload.chart?.result?.[0]?.indicators?.quote?.[0]?.close
-        ?.filter((value): value is number => typeof value === "number" && Number.isFinite(value)) ?? [];
-      return [id, closes];
+      const chart = payload.chart?.result?.[0];
+      const closes = chart?.indicators?.quote?.[0]?.close ?? [];
+      const points = (chart?.timestamp ?? []).flatMap((time, index) => {
+        const value = closes[index];
+        return Number.isFinite(time) && typeof value === "number" && Number.isFinite(value) ? [{ time, value }] : [];
+      });
+      const lastTime = points.at(-1)?.time;
+      const periods = chart?.meta?.tradingPeriods?.flat() ?? [];
+      const current = chart?.meta?.currentTradingPeriod?.regular;
+      if (typeof current?.start === "number" && typeof current?.end === "number") periods.push({ start: current.start, end: current.end });
+      const chartSession = periods.find((period) => Number.isFinite(period.start) && Number.isFinite(period.end) && period.end > period.start && lastTime !== undefined && lastTime >= period.start && lastTime <= period.end);
+      if (!chartSession) return [id, {}];
+      const sessionPoints = points.filter(({ time }) => time >= chartSession.start && time <= chartSession.end);
+      return [id, { sparkline: sessionPoints.map(({ value }) => value), sparklineTimes: sessionPoints.map(({ time }) => time), chartSession }];
     } catch {
-      return [id, []];
+      return [id, {}];
     }
   }));
 
-  return new Map<QuoteId, number[]>(series);
+  return new Map<QuoteId, ChartData>(series);
 }
 
 export async function GET() {
@@ -372,7 +388,7 @@ export async function GET() {
     fetchYahooQuotes(),
     fetchMarketSparklines(),
   ]);
-  const quotes = [...naverQuotes, ...yahooQuotes, ...cryptoQuotes].map((quote) => ({ ...quote, sparkline: sparklines.get(quote.id) }));
+  const quotes = [...naverQuotes, ...yahooQuotes, ...cryptoQuotes].map((quote) => ({ ...quote, ...sparklines.get(quote.id) }));
   return Response.json(
     { sentiment: [...stockSentiments, cryptoSentiment], quotes, asOf: new Date().toISOString(), refreshSeconds: 15, delayedNotice: "15초마다 확인하며, 제공처에 따라 시세가 지연될 수 있습니다. 미국 주식은 정규장 시세를 표시합니다." },
     { headers: { "Cache-Control": "no-store" } },
