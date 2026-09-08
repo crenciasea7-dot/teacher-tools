@@ -34,6 +34,7 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
+  marketStatus?: "장중" | "장중 · 시세 지연" | "정규장 종료";
 };
 
 type InvestingInstrument = {
@@ -158,7 +159,7 @@ function MarketTrendGraphic({ quote, positiveDown = false }: { quote: QuoteItem;
   const label = direction === "up" ? "상승" : direction === "down" ? "하락" : "보합";
 
   return (
-    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`5분 간격 장중 흐름, 점선은 전일 종가, 전일 대비 ${label} ${quote.changePercent.toFixed(2)}퍼센트`}>
+    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`1분 간격 장중 흐름, 점선은 전일 종가, 전일 대비 ${label} ${quote.changePercent.toFixed(2)}퍼센트`}>
       <svg viewBox="0 0 160 48" preserveAspectRatio="none" aria-hidden="true">
         <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity=".22" /><stop offset="100%" stopColor="currentColor" stopOpacity="0" /></linearGradient></defs>
         <polygon className="trend-area" fill={`url(#${gradientId})`} points={`${points} ${lastX},46 4,46`} />
@@ -176,7 +177,7 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
   const isInterestRate = instrument.id === "us10y" || instrument.id === "us30y";
   const rateFalling = Boolean(quote && isInterestRate && quote.change < 0);
   const quoteTime = quote
-    ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(quote.measuredAt))
+    ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(quote.measuredAt))
     : null;
   const cardIsLinked = instrument.id === "kospi-night";
   const openCardLink = () => { if (cardIsLinked) window.open(instrument.url, "_blank", "noopener,noreferrer"); };
@@ -194,7 +195,8 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
         </div>
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
-        <small>{quote.source} · {quote.session} {quoteTime} · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
+        {quote.marketStatus ? <span className="market-session-status">{quote.marketStatus === "장중" ? "● " : ""}{quote.marketStatus}</span> : null}
+        <small>{quote.source} · {quote.marketStatus ?? quote.session} · 시세 {quoteTime} KST · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
       </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}><span>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</span>{isInterestRate && !instrument.statusNote ? <b>금리 방향 확인 중</b> : null}</div>}
       <div className="market-detail-link-row">
         <a href={quote?.sourceUrl ?? instrument.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>{quote?.source ?? (cardIsLinked ? "네이버 금융" : "원본 사이트")}에서 상세 보기 ↗</a>
@@ -222,12 +224,12 @@ export default function MarketOverview() {
       }
     }
     void load();
-    const timer = window.setInterval(load, 60_000);
+    const timer = window.setInterval(load, 15_000);
     return () => { active = false; controller.abort(); window.clearInterval(timer); };
   }, [refreshKey]);
 
   const updatedAt = data?.asOf
-    ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit" }).format(new Date(data.asOf))
+    ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(data.asOf))
     : null;
 
   return (
@@ -241,7 +243,7 @@ export default function MarketOverview() {
 
       <div className="market-heading">
         <div><span>PUBLIC MARKET DATA</span><h2 id="market-overview-title">Market Overview</h2><p>네이버 금융·Yahoo Finance·CoinGecko 시세를 서버에서 받아 현재가와 전일 대비 변화를 표시합니다.</p></div>
-        <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 심리 데이터 새로고침">↻ {updatedAt ? `공탐 ${updatedAt} 기준` : "공탐 불러오는 중"}</button>
+        <button type="button" onClick={() => setRefreshKey((key) => key + 1)} aria-label="시장 시세 새로고침">↻ 15초 자동 갱신 · {updatedAt ? `${updatedAt} 확인` : "불러오는 중"}</button>
       </div>
       {error ? <p className="market-error">공포·탐욕지수를 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다.</p> : null}
 
@@ -255,7 +257,7 @@ export default function MarketOverview() {
         <a className="market-source-link" href="https://finance.yahoo.com/markets/" target="_blank" rel="noreferrer">Yahoo Finance ↗</a>
         <a className="market-source-link" href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko ↗</a>
       </div>
-      <p className="market-note">키 없이 제공되는 공개 시세 응답을 사용합니다. 제공처 정책과 시장 운영시간에 따라 일부 값이 지연되거나 일시적으로 표시되지 않을 수 있으며, 원본 링크는 계속 사용할 수 있습니다.</p>
+      <p className="market-note">15초마다 시세를 확인합니다. 미국 주식은 정규장 시세이며, 장전·장후에는 마지막 정규장 가격을 표시합니다. 그래프는 1분 간격이고, 제공처에 따라 시세가 지연될 수 있습니다. 각 카드의 시세 시각은 한국 시간입니다.</p>
     </section>
   );
 }

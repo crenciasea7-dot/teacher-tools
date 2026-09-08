@@ -25,6 +25,7 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
+  marketStatus?: "장중" | "장중 · 시세 지연" | "정규장 종료";
 };
 
 type NaverRealtimeItem = {
@@ -64,6 +65,7 @@ type YahooChartApi = {
         previousClose?: number;
         regularMarketPreviousClose?: number;
         chartPreviousClose?: number;
+        currentTradingPeriod?: { regular?: { start?: number; end?: number } };
       };
       indicators?: { quote?: Array<{ close?: Array<number | null> }> };
     }>;
@@ -259,16 +261,16 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
   const quotes = await Promise.all(definitions.map(async (definition): Promise<QuoteItem | null> => {
     try {
       const ticker = encodeURIComponent(definition.ticker);
-      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`, {
+      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1m&range=1d`, {
         headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
-        next: { revalidate: 60 },
+        next: { revalidate: 15 },
         signal: AbortSignal.timeout(8_000),
       });
       if (!response.ok) throw new Error(`Yahoo quote request failed: ${response.status}`);
       const payload = (await response.json()) as YahooChartApi;
       const meta = payload.chart?.result?.[0]?.meta;
       let price = meta?.regularMarketPrice;
-      let previousClose = meta?.regularMarketPreviousClose ?? meta?.previousClose ?? meta?.chartPreviousClose;
+      let previousClose = meta?.previousClose ?? meta?.chartPreviousClose ?? meta?.regularMarketPreviousClose;
       if (typeof price !== "number" || typeof previousClose !== "number" || !Number.isFinite(price) || !Number.isFinite(previousClose) || previousClose === 0) return null;
 
       if (definition.format === "percent" && price > 20) {
@@ -276,6 +278,11 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
         previousClose /= 10;
       }
       const change = price - previousClose;
+      const now = Math.floor(Date.now() / 1_000);
+      const period = meta?.currentTradingPeriod?.regular;
+      const isOpen = typeof period?.start === "number" && typeof period?.end === "number" && now >= period.start && now < period.end;
+      const isUsStock = definition.id === "micron" || definition.id === "sandisk";
+      const marketStatus = isUsStock && period ? (isOpen ? (now - (meta?.regularMarketTime ?? 0) > 120 ? "장중 · 시세 지연" : "장중") : "정규장 종료") : undefined;
 
       return {
         id: definition.id,
@@ -287,6 +294,7 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
         measuredAt: new Date((meta?.regularMarketTime ?? Math.floor(Date.now() / 1_000)) * 1_000).toISOString(),
         session: "해외시장",
         source: "Yahoo Finance",
+        marketStatus,
         sourceUrl: `https://finance.yahoo.com/quote/${ticker}/`,
       };
     } catch (error) {
@@ -323,9 +331,9 @@ async function fetchMarketSparklines() {
 
   const series = await Promise.all(definitions.map(async ({ id, ticker }): Promise<[QuoteId, number[]]> => {
     try {
-      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=5m&range=1d`, {
+      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1m&range=1d`, {
         headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
-        next: { revalidate: 300 },
+        next: { revalidate: 15 },
         signal: AbortSignal.timeout(8_000),
       });
       if (!response.ok) return [id, []];
@@ -355,7 +363,7 @@ export async function GET() {
   ]);
   const quotes = [...naverQuotes, ...yahooQuotes, ...cryptoQuotes].map((quote) => ({ ...quote, sparkline: sparklines.get(quote.id) }));
   return Response.json(
-    { sentiment: [...stockSentiments, cryptoSentiment], quotes, asOf: new Date().toISOString(), refreshSeconds: 60, delayedNotice: "제공처와 시장 운영시간에 따라 일부 시세가 지연되거나 일시 중단될 수 있습니다." },
-    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } },
+    { sentiment: [...stockSentiments, cryptoSentiment], quotes, asOf: new Date().toISOString(), refreshSeconds: 15, delayedNotice: "15초마다 확인하며, 제공처에 따라 시세가 지연될 수 있습니다. 미국 주식은 정규장 시세를 표시합니다." },
+    { headers: { "Cache-Control": "no-store" } },
   );
 }
