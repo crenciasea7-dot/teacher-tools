@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 type SentimentItem = {
   id: "us" | "kr" | "crypto";
@@ -137,15 +137,19 @@ function SentimentCard({ item }: { item: SentimentItem }) {
 }
 
 function MarketTrendGraphic({ quote, positiveDown = false }: { quote: QuoteItem; positiveDown?: boolean }) {
+  const gradientId = useId();
   const direction = quote.changePercent > 0 ? "up" : quote.changePercent < 0 ? "down" : "flat";
   const previousValue = quote.price - quote.change;
-  const values = quote.sparkline && quote.sparkline.length > 1 ? quote.sparkline : [previousValue, quote.price];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const values = quote.sparkline?.filter(Number.isFinite) ?? [];
+  if (values.length < 2) return <div className="market-chart-unavailable">장중 그래프 확인 중</div>;
+  const min = Math.min(previousValue, ...values);
+  const max = Math.max(previousValue, ...values);
   const spread = max - min || Math.max(Math.abs(max) * .002, 1);
+  const yFor = (value: number) => 42 - (value - min) / spread * 36;
+  const baselineY = yFor(previousValue);
   const points = values.map((value, index) => {
     const x = 4 + index / Math.max(values.length - 1, 1) * 152;
-    const y = 40 - (value - min) / spread * 34;
+    const y = yFor(value);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
   const lastPoint = points.split(" ").at(-1) ?? "156,23";
@@ -154,13 +158,13 @@ function MarketTrendGraphic({ quote, positiveDown = false }: { quote: QuoteItem;
   const label = direction === "up" ? "상승" : direction === "down" ? "하락" : "보합";
 
   return (
-    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`최근 장중 흐름 ${label}, 전일 대비 ${quote.changePercent.toFixed(2)}퍼센트`}>
-      <svg viewBox="0 0 160 46" preserveAspectRatio="none" aria-hidden="true">
-        <line className="trend-guide" x1="4" y1="42" x2="156" y2="42" />
-        <polygon className="trend-area" points={`${points} ${lastX},42 4,42`} />
+    <div className={`market-trend-graphic ${tone}`} role="img" aria-label={`5분 간격 장중 흐름, 점선은 전일 종가, 전일 대비 ${label} ${quote.changePercent.toFixed(2)}퍼센트`}>
+      <svg viewBox="0 0 160 48" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="currentColor" stopOpacity=".22" /><stop offset="100%" stopColor="currentColor" stopOpacity="0" /></linearGradient></defs>
+        <polygon className="trend-area" fill={`url(#${gradientId})`} points={`${points} ${lastX},46 4,46`} />
+        <line className="trend-guide" x1="4" y1={baselineY} x2="156" y2={baselineY} />
         <polyline className="trend-line" points={points} />
       </svg>
-      <span>최근 장중 흐름</span><b>{direction === "up" ? "↗" : direction === "down" ? "↘" : "→"} {label}</b>
     </div>
   );
 }

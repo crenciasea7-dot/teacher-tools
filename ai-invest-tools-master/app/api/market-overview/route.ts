@@ -323,7 +323,7 @@ async function fetchMarketSparklines() {
 
   const series = await Promise.all(definitions.map(async ({ id, ticker }): Promise<[QuoteId, number[]]> => {
     try {
-      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=30m&range=1d`, {
+      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=5m&range=1d`, {
         headers: { "User-Agent": "Mozilla/5.0 (compatible; AI-Invest-Tools/1.0)", Accept: "application/json" },
         next: { revalidate: 300 },
         signal: AbortSignal.timeout(8_000),
@@ -332,7 +332,7 @@ async function fetchMarketSparklines() {
       const payload = (await response.json()) as YahooChartApi;
       const closes = payload.chart?.result?.[0]?.indicators?.quote?.[0]?.close
         ?.filter((value): value is number => typeof value === "number" && Number.isFinite(value)) ?? [];
-      return [id, closes.slice(-24)];
+      return [id, closes];
     } catch {
       return [id, []];
     }

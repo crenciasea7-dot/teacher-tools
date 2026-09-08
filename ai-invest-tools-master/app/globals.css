@@ -822,10 +822,10 @@ header {
 .market-link-card > small { margin-top: 4px; color: #83938e; font: 9px "DM Mono", monospace; }
 .market-api-quote { display: grid; min-height: 84px; align-content: center; gap: 5px; margin-top: 5px; }
 .market-trend-graphic { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px; width: 100%; margin: 5px 0 3px; color: #6f807a; }
-.market-trend-graphic svg { grid-column: 1 / -1; width: 100%; height: 42px; overflow: visible; }
-.market-trend-graphic .trend-guide { stroke: #dce7e2; stroke-width: 1; stroke-dasharray: 3 4; }
-.market-trend-graphic .trend-line { fill: none; stroke: currentColor; stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 3px 3px rgba(20,45,38,.14)); }
-.market-trend-graphic .trend-area { fill: currentColor; opacity: .1; }
+.market-trend-graphic svg { grid-column: 1 / -1; width: 100%; height: 48px; overflow: visible; }
+.market-trend-graphic .trend-guide { stroke: currentColor; stroke-width: 1; stroke-dasharray: 4 5; opacity: .65; vector-effect: non-scaling-stroke; }
+.market-trend-graphic .trend-line { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.market-chart-unavailable { min-height: 48px; align-content: center; color: #83938e; font-size: 10px; }
 .market-trend-graphic circle { fill: #fff; stroke: currentColor; stroke-width: 3; vector-effect: non-scaling-stroke; }
 .market-trend-graphic > span { color: #899993; font: 700 8px "DM Mono", monospace; }
 .market-api-quote .market-trend-graphic > b { padding: 3px 7px; border-radius: 999px; background: #6f807a; color: #fff; font-size: 9px; font-weight: 900; }
