@@ -34,7 +34,7 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
-  marketStatus?: "장중" | "장중 · 시세 지연" | "정규장 종료";
+  marketStatus?: "장중" | "장중 · 시세 지연" | "장마감" | "시간외 거래 중" | "시간외 거래 중 · 시세 지연" | "24시간 거래" | "24시간 거래 · 시세 지연" | "장 상태 확인 중";
 };
 
 type InvestingInstrument = {
@@ -195,7 +195,7 @@ function MarketLinkCard({ instrument, group, quote, loading }: { instrument: Inv
         </div>
         <strong>{formatQuoteValue(quote.price, quote)}</strong>
         <div className={direction}><em>{formatQuoteValue(quote.change, quote, true)}</em><b>{quote.changePercent > 0 ? "+" : ""}{quote.changePercent.toFixed(2)}%</b></div>
-        {quote.marketStatus ? <span className="market-session-status">{quote.marketStatus === "장중" ? "● " : ""}{quote.marketStatus}</span> : null}
+        {quote.marketStatus ? <span className={`market-session-status ${quote.marketStatus.includes("지연") ? "delayed" : quote.marketStatus === "장마감" || quote.marketStatus === "장 상태 확인 중" ? "closed" : "open"}`}>{quote.marketStatus !== "장마감" && quote.marketStatus !== "장 상태 확인 중" ? "● " : ""}{quote.marketStatus}</span> : null}
         <small>{quote.source} · {quote.marketStatus ?? quote.session} · 시세 {quoteTime} KST · {quote.session === "24시간" ? "24시간 등락" : "전일 대비"}</small>
       </div> : <div className={`market-api-state ${loading && !instrument.statusNote ? "loading" : "unavailable"}`}><span>{instrument.statusNote ?? (loading ? "시세 불러오는 중…" : "시세 일시 확인 불가")}</span>{isInterestRate && !instrument.statusNote ? <b>금리 방향 확인 중</b> : null}</div>}
       <div className="market-detail-link-row">
@@ -257,7 +257,7 @@ export default function MarketOverview() {
         <a className="market-source-link" href="https://finance.yahoo.com/markets/" target="_blank" rel="noreferrer">Yahoo Finance ↗</a>
         <a className="market-source-link" href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko ↗</a>
       </div>
-      <p className="market-note">15초마다 시세를 확인합니다. 미국 주식은 정규장 시세이며, 장전·장후에는 마지막 정규장 가격을 표시합니다. 그래프는 1분 간격이고, 제공처에 따라 시세가 지연될 수 있습니다. 각 카드의 시세 시각은 한국 시간입니다.</p>
+      <p className="market-note">15초마다 시세를 확인합니다. 시장별 거래 시간과 제공처의 장 상태를 표시하며, 열린 시장에서도 시세가 2분 이상 오래되면 지연으로 표시합니다. 미국 주식은 정규장 시세, 암호화폐는 24시간 시세입니다. 그래프는 1분 간격이고 시세 시각은 한국 시간입니다. 코스피 야간선물은 원본에서 확인하세요.</p>
     </section>
   );
 }

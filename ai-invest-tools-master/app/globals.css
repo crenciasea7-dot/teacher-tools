@@ -826,6 +826,10 @@ header {
 .market-trend-graphic .trend-guide { stroke: currentColor; stroke-width: 1; stroke-dasharray: 4 5; opacity: .65; vector-effect: non-scaling-stroke; }
 .market-trend-graphic .trend-line { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .market-chart-unavailable { min-height: 48px; align-content: center; color: #83938e; font-size: 10px; }
+.market-session-status { font-size: 10px; font-weight: 700; }
+.market-session-status.open { color: #147858; }
+.market-session-status.delayed { color: #966000; }
+.market-session-status.closed { color: #6b7772; }
 .market-trend-graphic circle { fill: #fff; stroke: currentColor; stroke-width: 3; vector-effect: non-scaling-stroke; }
 .market-trend-graphic > span { color: #899993; font: 700 8px "DM Mono", monospace; }
 .market-api-quote .market-trend-graphic > b { padding: 3px 7px; border-radius: 999px; background: #6f807a; color: #fff; font-size: 9px; font-weight: 900; }

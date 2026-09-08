@@ -25,10 +25,11 @@ type QuoteItem = {
   source: "CoinGecko" | "네이버 금융" | "Yahoo Finance";
   sourceUrl: string;
   sparkline?: number[];
-  marketStatus?: "장중" | "장중 · 시세 지연" | "정규장 종료";
+  marketStatus?: "장중" | "장중 · 시세 지연" | "장마감" | "시간외 거래 중" | "시간외 거래 중 · 시세 지연" | "24시간 거래" | "24시간 거래 · 시세 지연" | "장 상태 확인 중";
 };
 
 type NaverRealtimeItem = {
+  marketStatus?: string;
   nv?: string | number;
   cv?: string | number;
   cr?: string | number;
@@ -158,10 +159,14 @@ function signedMarketNumber(value: number, direction: string | undefined) {
   return value;
 }
 
+function tradingStatus(kind: "장중" | "시간외 거래 중" | "24시간 거래", measuredAt: number): QuoteItem["marketStatus"] {
+  return !Number.isFinite(measuredAt) || Date.now() - measuredAt > 120_000 ? `${kind} · 시세 지연` : kind;
+}
+
 async function fetchCryptoQuotes(): Promise<QuoteItem[]> {
   const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cripple&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true", {
     headers: { "User-Agent": "AI-Invest-Tools/1.0" },
-    next: { revalidate: 60 },
+    next: { revalidate: 15 },
     signal: AbortSignal.timeout(8_000),
   });
   if (!response.ok) throw new Error(`CoinGecko quote request failed: ${response.status}`);
@@ -183,6 +188,7 @@ async function fetchCryptoQuotes(): Promise<QuoteItem[]> {
       precision: item.usd < 10 ? 4 : 0,
       measuredAt: new Date((item.last_updated_at ?? Math.floor(Date.now() / 1_000)) * 1_000).toISOString(),
       session: "24시간" as const,
+      marketStatus: tradingStatus("24시간 거래", (item.last_updated_at ?? 0) * 1_000),
       source: "CoinGecko" as const,
       sourceUrl: definition.sourceUrl,
     }];
@@ -205,7 +211,7 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
           Accept: "application/json",
         },
-        next: { revalidate: 30 },
+        next: { revalidate: 15 },
         signal: AbortSignal.timeout(8_000),
       });
       if (!response.ok) throw new Error(`Naver quote request failed: ${response.status}`);
@@ -219,6 +225,10 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
       const rawChangePercent = parseMarketNumber(afterMarket?.fluctuationsRatio ?? item.fluctuationsRatioRaw ?? item.fluctuationsRatio ?? item.cr);
       const direction = afterMarket?.compareToPreviousPrice?.code ?? afterMarket?.compareToPreviousPrice?.name ?? item.compareToPreviousPrice?.code ?? item.compareToPreviousPrice?.name ?? item.rf;
       if (price === null || rawChange === null || rawChangePercent === null) return null;
+      const measuredAt = new Date(afterMarket?.localTradedAt ?? item.localTradedAt ?? 0).getTime();
+      const marketStatus = afterMarket ? tradingStatus("시간외 거래 중", measuredAt)
+        : item.marketStatus === "OPEN" ? tradingStatus("장중", measuredAt)
+        : item.marketStatus === "CLOSE" ? "장마감" : "장 상태 확인 중";
 
       return {
         id: definition.id,
@@ -229,6 +239,7 @@ async function fetchNaverQuotes(): Promise<QuoteItem[]> {
         precision: definition.precision,
         measuredAt: new Date(afterMarket?.localTradedAt ?? item.localTradedAt ?? Date.now()).toISOString(),
         session: afterMarket ? "시간외" : "정규장",
+        marketStatus,
         source: "네이버 금융",
         sourceUrl: definition.sourceUrl,
       };
@@ -280,9 +291,9 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
       const change = price - previousClose;
       const now = Math.floor(Date.now() / 1_000);
       const period = meta?.currentTradingPeriod?.regular;
-      const isOpen = typeof period?.start === "number" && typeof period?.end === "number" && now >= period.start && now < period.end;
-      const isUsStock = definition.id === "micron" || definition.id === "sandisk";
-      const marketStatus = isUsStock && period ? (isOpen ? (now - (meta?.regularMarketTime ?? 0) > 120 ? "장중 · 시세 지연" : "장중") : "정규장 종료") : undefined;
+      const hasPeriod = typeof period?.start === "number" && typeof period?.end === "number" && period.end > period.start;
+      const isOpen = hasPeriod && now >= period.start! && now < period.end!;
+      const marketStatus = !hasPeriod ? "장 상태 확인 중" : isOpen ? tradingStatus("장중", (meta?.regularMarketTime ?? 0) * 1_000) : "장마감";
 
       return {
         id: definition.id,
