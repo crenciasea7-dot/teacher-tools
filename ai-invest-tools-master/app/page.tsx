@@ -35,6 +35,7 @@ const tools: Tool[] = [
   { icon: "R", name: "주간 아파트 가격동향 그래프", description: "한국부동산원 공식 주간 통계를 지역별 그래프로 확인", url: "https://rone-weekly-capital-dashboard.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "주간 아파트 가격동향 분석", description: "공식 통계를 6단계로 해석해 시장 국면과 결론을 확인", url: "/weekly-apartment-analysis", group: "AI 투자 루틴", accent: "purple" },
   { icon: "✦", name: "자료 정리 & 인사이트", description: "복잡한 보고서와 정책 자료를 요약하고 나에게 미치는 영향까지 축적", url: "/research-insights", cta: "자료 넣고 분석하기 →", group: "AI 투자 루틴", accent: "purple" },
+  { icon: "▶", name: "유튜브 영상 요약", description: "유튜브 링크를 넣어 머니 유튜브 요약 Gem에서 핵심 내용을 정리", url: "https://gemini.google.com/gem/1CnqDVo6erNyg68H2WflVo1KHjg5Lw1HN?usp=sharing", cta: "Gemini에서 열기 ↗", group: "AI 투자 루틴", accent: "purple" },
   { icon: "AI", name: "AI 투자 프롬프트 스튜디오", description: "매수 전부터 계약까지 질문으로 따라가기", url: "https://ai-invest-prompt-studio.vercel.app/", group: "AI 투자 루틴", accent: "purple" },
   { icon: "+", name: "알바비 관리", description: "근무시간을 입력해 기본급·주휴·연장·야간수당 계산", url: "https://alba-payroll-kr.crenciasea7.chatgpt.site/", group: "생활 관리", accent: "pink" },
   { icon: "₿", name: "비트코인 참고 지표", description: "공포탐욕·레인보우·도미넌스·온체인 지표를 한곳에서 확인", url: "/bitcoin-indicators", cta: "판단 보드 열기 →", group: "암호화폐 판단", accent: "purple" },
@@ -46,7 +47,7 @@ const toolMenuSections = [
   { label: "📈 세금", items: ["보유세 계산기", "양도세 (준비중)"] },
   { label: "🏗️ 재개발", items: ["재개발투자금", "재개발 매물 분석"] },
   { label: "💳 금융투자", items: ["금 추적", "구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
-  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향 그래프", "주간 아파트 가격동향 분석", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)"] },
+  { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향 그래프", "주간 아파트 가격동향 분석", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)", "유튜브 영상 요약"] },
   { label: "👤 자산관리", items: ["moyo 자산 대시보드"] },
   { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
   { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
@@ -59,7 +60,7 @@ const categoryMap = [
   { icon: "⌂", name: "재개발", count: "3개", description: "정비사업 특유의 단계·권리·투자금을 점검합니다.", items: ["재개발 매물 분석", "재개발투자금", "inga-radar"], href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" },
   { icon: "↔", name: "금융투자", count: "5개", description: "부동산 밖 자산까지 비교해 배분을 판단합니다.", items: ["금 추적", "포트폴리오 리밸런싱", "국장이냐 미장이냐"], href: "/rebalancing" },
   { icon: "％", name: "세금·대출", count: "4개", description: "보유부터 잔금과 총비용까지 숫자로 확인합니다.", items: ["보유세 계산기", "집 잔금 계산기", "토탈 비용"], href: "/property-tax" },
-  { icon: "▤", name: "정책·자료 분석", count: "4개", description: "가격보다 먼저 정책과 시장 방향을 읽습니다.", items: ["주간 아파트 가격동향 그래프", "주간 아파트 가격동향 분석", "정부정책 분석", "자료 정리"], href: "/research-insights" },
+  { icon: "▤", name: "정책·자료 분석", count: "5개", description: "가격보다 먼저 정책과 시장 방향을 읽습니다.", items: ["주간 아파트 가격동향 그래프", "주간 아파트 가격동향 분석", "정부정책 분석", "자료 정리", "유튜브 영상 요약"], href: "/research-insights" },
 ];
 
 export default function Page() {
