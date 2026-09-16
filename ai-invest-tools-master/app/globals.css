@@ -863,6 +863,32 @@ header {
   border-top: 1px solid #e4e9e6;
 }
 .market-detail-link-row a { color: #176c5d; font-size: 9px; font-weight: 700; line-height: 1.35; text-decoration: none; }
+.macro-insights {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid #ffffff1f;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #143d34, #0d2f29);
+}
+.macro-insights-heading span,
+.macro-insights-grid article > span {
+  color: #7fc7b3;
+  font: 700 9px "DM Mono", monospace;
+  letter-spacing: .12em;
+}
+.macro-insights-heading h3 { margin: 7px 0 16px; color: #f5fbf8; font-size: 21px; letter-spacing: -.03em; }
+.macro-insights-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.macro-insights-grid article { min-width: 0; padding: 17px; border: 1px solid #ffffff17; border-radius: 12px; background: #ffffff0b; }
+.macro-insights-grid h4 { margin: 7px 0 10px; color: #fff; font-size: 15px; }
+.macro-insights-grid p,
+.macro-insights-grid ul { margin: 0; color: #c8ddd6; font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; word-break: keep-all; }
+.macro-insights-grid ul { display: grid; gap: 6px; padding-left: 17px; }
+.macro-insights-grid b { color: #fff; }
+@media (max-width: 760px) {
+  .macro-insights { padding: 16px; }
+  .macro-insights-heading h3 { font-size: 19px; }
+  .macro-insights-grid { grid-template-columns: 1fr; }
+}
 .market-board-links {
   display: flex;
   justify-content: flex-end;

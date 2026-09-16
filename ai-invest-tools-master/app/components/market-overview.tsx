@@ -62,19 +62,23 @@ const INVESTING_GROUPS: Array<{ name: string; instruments: InvestingInstrument[]
     { id: "sp500", name: "S&P 500", symbol: "^GSPC", url: "https://finance.yahoo.com/quote/%5EGSPC/" },
     { id: "nasdaq", name: "NASDAQ", symbol: "^IXIC", url: "https://finance.yahoo.com/quote/%5EIXIC/" },
   ] },
-  { name: "4. 금 & 야간시장", instruments: [
+  { name: "4. 반도체 지수 & ADR", instruments: [
+    { id: "sox", name: "필라델피아 반도체", symbol: "^SOX", url: "https://finance.yahoo.com/quote/%5ESOX/" },
+    { id: "skhy", name: "SK하이닉스 ADR", symbol: "SKHY", url: "https://finance.yahoo.com/quote/SKHY/" },
+  ] },
+  { name: "5. 금 & 야간시장", instruments: [
     { id: "gold", name: "금", symbol: "GC=F", url: "https://finance.yahoo.com/quote/GC%3DF/" },
     { id: "kospi-night", name: "코스피 야간선물", symbol: "KOSPI 200 FUTURES", url: "https://finance.naver.com/", statusNote: "네이버 금융에서 실시간 확인" },
   ] },
-  { name: "5. 채권 & 금리", instruments: [
+  { name: "6. 채권 & 금리", instruments: [
     { id: "us10y", name: "미국 10년물", symbol: "^TNX", url: "https://finance.yahoo.com/quote/%5ETNX/" },
     { id: "us30y", name: "미국 30년물", symbol: "^TYX", url: "https://finance.yahoo.com/quote/%5ETYX/" },
   ] },
-  { name: "6. 상품 & 환율", instruments: [
+  { name: "7. 상품 & 환율", instruments: [
     { id: "oil", name: "WTI 유가", symbol: "CL=F", url: "https://finance.yahoo.com/quote/CL%3DF/" },
     { id: "usd-krw", name: "원/달러", symbol: "USD/KRW", url: "https://finance.yahoo.com/quote/KRW%3DX/" },
   ] },
-  { name: "7. 암호화폐", instruments: [
+  { name: "8. 암호화폐", instruments: [
     { id: "btc", name: "비트코인", symbol: "BTC/USD", url: "https://www.coingecko.com/en/coins/bitcoin" },
     { id: "xrp", name: "리플", symbol: "XRP/USD", url: "https://www.coingecko.com/en/coins/xrp" },
   ] },
@@ -260,6 +264,33 @@ export default function MarketOverview() {
           <MarketLinkCard instrument={instrument} group={group.name} quote={data?.quotes?.find((quote) => quote.id === instrument.id)} loading={!data} key={instrument.id} />
         )))}
       </div>
+      <section className="macro-insights" aria-labelledby="macro-insights-title">
+        <div className="macro-insights-heading">
+          <span>MACRO SIGNALS</span>
+          <h3 id="macro-insights-title">현재 거시 지표 조합 인사이트</h3>
+        </div>
+        <div className="macro-insights-grid">
+          <article>
+            <span>WTI</span>
+            <h4>유가 판단선</h4>
+            <ul>
+              <li><b>100달러 아래</b> — 첫 안도</li>
+              <li><b>95달러 아래 + 운송로 정상화</b> — 추세 변화 가능성</li>
+              <li><b>110달러 위 안착</b> — 인플레이션 충격 한 단계 강화</li>
+            </ul>
+          </article>
+          <article>
+            <span>USD/KRW</span>
+            <h4>한국 물가 스트레스</h4>
+            <p>1,380원 접근이 첫 경고이며, 1,400원 이상이면 유가 충격과 환율 충격이 동시에 한국 물가로 들어오는 스트레스 구간입니다.</p>
+          </article>
+          <article>
+            <span>US 10Y</span>
+            <h4>이제는 체류 여부</h4>
+            <p>5% 돌파 자체는 이미 일어났습니다. 이제 질문은 5% 위에 머무느냐입니다. 첫 안도선은 여전히 4.85% 아래 복귀입니다.</p>
+          </article>
+        </div>
+      </section>
       <div className="market-board-links">
         <a className="market-source-link" href="https://finance.naver.com/" target="_blank" rel="noreferrer">네이버 금융 ↗</a>
         <a className="market-source-link" href="https://finance.yahoo.com/markets/" target="_blank" rel="noreferrer">Yahoo Finance ↗</a>

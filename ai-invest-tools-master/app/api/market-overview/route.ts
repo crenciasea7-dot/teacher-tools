@@ -10,7 +10,7 @@ type CryptoFearGreedApi = {
 
 type CoinGeckoPriceApi = Record<string, { usd?: number; usd_24h_change?: number; last_updated_at?: number }>;
 
-type QuoteId = "sk-hynix" | "samsung" | "micron" | "sandisk" | "sp500" | "nasdaq" | "kospi" | "kosdaq" | "btc" | "xrp" | "gold" | "oil" | "us10y" | "us30y" | "usd-krw";
+type QuoteId = "sk-hynix" | "samsung" | "micron" | "sandisk" | "sp500" | "nasdaq" | "sox" | "skhy" | "kospi" | "kosdaq" | "btc" | "xrp" | "gold" | "oil" | "us10y" | "us30y" | "usd-krw";
 type QuoteFormat = "krw" | "usd" | "number" | "percent";
 
 type QuoteItem = {
@@ -266,6 +266,8 @@ async function fetchYahooQuotes(): Promise<QuoteItem[]> {
     { id: "sandisk" as const, ticker: "SNDK", format: "usd" as const, precision: 2 },
     { id: "sp500" as const, ticker: "^GSPC", format: "number" as const, precision: 2 },
     { id: "nasdaq" as const, ticker: "^IXIC", format: "number" as const, precision: 2 },
+    { id: "sox" as const, ticker: "^SOX", format: "number" as const, precision: 2 },
+    { id: "skhy" as const, ticker: "SKHY", format: "usd" as const, precision: 2 },
     { id: "gold" as const, ticker: "GC=F", format: "usd" as const, precision: 2 },
     { id: "oil" as const, ticker: "CL=F", format: "usd" as const, precision: 2 },
     { id: "us10y" as const, ticker: "^TNX", format: "percent" as const, precision: 3 },
@@ -335,6 +337,8 @@ async function fetchMarketSparklines() {
     { id: "kosdaq", ticker: "^KQ11" },
     { id: "sp500", ticker: "^GSPC" },
     { id: "nasdaq", ticker: "^IXIC" },
+    { id: "sox", ticker: "^SOX" },
+    { id: "skhy", ticker: "SKHY" },
     { id: "gold", ticker: "GC=F" },
     { id: "us10y", ticker: "^TNX" },
     { id: "us30y", ticker: "^TYX" },
