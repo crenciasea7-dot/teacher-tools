@@ -17,6 +17,7 @@ type Tool = {
 const tools: Tool[] = [
   { icon: "◈", name: "moyo 자산 대시보드", description: "로그인한 계정에서 부동산·금융자산·현금을 안전하게 관리", url: "https://moyo-private-asset-dashboard.crenciasea7.chatgpt.site/", group: "자산 관리", accent: "orange" },
   { icon: "▣", name: "보유세 계산기", description: "세무통과 다른 보유세 계산기를 로그인 없이 한곳에서 열기", url: "/property-tax", group: "자산 관리", accent: "orange" },
+  { icon: "⌂", name: "아파트 사전점검(하자점검)", description: "사전점검 체크리스트·하자 기록·접수 문구를 한곳에서 관리", url: "https://claude.ai/artifact/V7C7yYw5y4458qybFszikQ", group: "자산 관리", accent: "orange" },
   { icon: "↗", name: "아파트 매도 분석", description: "내 호가와 최근 거래·시장 반응을 비교해 매도 전략을 점검", url: "https://gemini.google.com/gem/14MRd9ZNuQOWNFzkElSMIQs3Hbjy6yaj3?usp=sharing", group: "자산 관리", accent: "orange" },
   { icon: "⌁", name: "집 잔금 계산기", description: "입주 잔금과 대출 가능 범위를 로그인 없이 계산", url: "/jip-jangeum-calculator", group: "매수 판단", accent: "blue" },
   { icon: "◉", name: "투자거울", description: "투자 판단의 근거·리스크를 비춰보기", group: "매수 판단", accent: "blue" },
@@ -49,13 +50,13 @@ const toolMenuSections = [
   { label: "🏗️ 재개발", items: ["재개발투자금", "재개발 매물 분석"] },
   { label: "💳 금융투자", items: ["금 추적", "구매력 계산기", "토탈 비용 시뮬레이션", "집 잔금 계산기", "포트폴리오 리벨런싱"] },
   { label: "📋 정책·자료 분석", items: ["주간 아파트 가격동향 그래프", "주간 아파트 가격동향 분석", "정부정책 분석 (준비중)", "자료 정리 & 인사이트 (준비중)", "유튜브 요약 · Gemini Gems", "유튜브 요약 · ChatGPT"] },
-  { label: "👤 자산관리", items: ["moyo 자산 대시보드"] },
+  { label: "👤 자산관리", items: ["moyo 자산 대시보드", "아파트 사전점검(하자점검)"] },
   { label: "💰 매수매도", items: ["임장동선 (준비중)", "집 잔금 계산기", "집중 아파트 비교 리서치", "등기부 등본 분석", "아파트 매도 분석"] },
   { label: "🪙 비트코인", items: ["Fear & Greed Index (준비중)", "비트코인 레인보우 차트 (준비중)", "비트코인 도미넌스 (준비중)", "테더 도미넌스 (준비중)", "Glassnode 분석 (준비중)"] },
 ];
 
 const categoryMap = [
-  { icon: "◈", name: "자산관리", count: "1개", description: "지금 가진 자산을 한눈에 파악하고 기록합니다.", items: ["moyo 자산 대시보드"], href: "/asset-tracking" },
+  { icon: "◈", name: "자산관리", count: "2개", description: "지금 가진 자산을 한눈에 파악하고 기록합니다.", items: ["moyo 자산 대시보드", "아파트 사전점검(하자점검)"], href: "/asset-tracking" },
   { icon: "↗", name: "매수매도", count: "7개", description: "살 수 있는지부터 비교·계약·매도까지 이어갑니다.", items: ["구매력 계산기", "토탈 비용 시뮬레이션", "집중 아파트 비교"], href: "/should-i-buy" },
   { icon: "₿", name: "비트코인", count: "5개 지표", description: "공포탐욕과 사이클 지표를 같은 화면에서 봅니다.", items: ["공포탐욕", "레인보우 차트", "도미넌스"], href: "/bitcoin-indicators" },
   { icon: "⌂", name: "재개발", count: "3개", description: "정비사업 특유의 단계·권리·투자금을 점검합니다.", items: ["재개발 매물 분석", "재개발투자금", "inga-radar"], href: "https://redevelopment-deal-analyzer.crenciasea7.chatgpt.site/" },
