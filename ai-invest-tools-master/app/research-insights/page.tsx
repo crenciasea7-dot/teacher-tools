@@ -6,7 +6,7 @@ export const metadata = {
   description: "자료를 올리고, Claude가 정리한 주장·근거·연결고리에 내 생각을 쌓는 개인 리서치 보드",
 };
 
-const INSIGHT_NOTE_URL = "https://incredible-cannoli-f92cd7.netlify.app/";
+const INSIGHT_NOTE_URL = "/insight-note/index.html";
 
 export default function ResearchInsightsPage() {
   return (

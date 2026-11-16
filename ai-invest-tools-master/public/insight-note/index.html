@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인사이트 노트 · 시비 거는 투자 공부</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#f5f4ef; --card:#ffffff; --ink:#1c2b26; --sub:#5d6b66; --line:#e3e1d8;
+  --green:#1d6b57; --green-soft:#e6f1ec; --orange:#e5703d; --orange-soft:#fdf0e8;
+  --blue-soft:#eaf1f8; --yellow-soft:#fff7dc; --r:20px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--green)}
+header{position:sticky;top:0;z-index:10;background:rgba(245,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.5px;text-decoration:none;color:var(--ink)}
+.logo span{color:var(--orange)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{padding:7px 13px;border-radius:999px;text-decoration:none;color:var(--sub);font-weight:600;font-size:14.5px}
+nav a.on{background:var(--green);color:#fff}
+main{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+.eyebrow{font-size:12px;letter-spacing:2px;color:var(--green);font-weight:700;text-transform:uppercase}
+h1{font-size:34px;letter-spacing:-1px;margin:6px 0 6px;line-height:1.25}
+h1 em{font-style:normal;color:var(--orange)}
+h2{font-size:21px;margin:0 0 12px;letter-spacing:-.4px}
+.lead{color:var(--sub);margin:0 0 26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.stat{display:block;text-decoration:none;color:inherit}
+.stat .n{font-size:40px;font-weight:800;color:var(--green);line-height:1.1}
+.stat .t{color:var(--sub);font-size:14.5px}
+.stat.hot .n{color:var(--orange)}
+.btn{display:inline-block;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--green);color:#fff;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+.btn.small{padding:7px 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--green-soft);color:var(--green)}
+.pill.o{background:var(--orange-soft);color:var(--orange)}
+.pill.g{background:#eee;color:#666}
+input[type=text],input[type=url],input[type=password],textarea,select{width:100%;font:inherit;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+textarea{min-height:76px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green)}
+label.f{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
+.hint{font-size:13.5px;color:var(--orange);margin:-2px 0 6px}
+.ro{background:var(--blue-soft);border-radius:12px;padding:10px 13px;margin-bottom:8px}
+.ro b{display:block;font-size:12.5px;color:var(--sub);font-weight:700}
+.me{background:var(--yellow-soft);border-radius:14px;padding:4px 14px 14px;margin-top:12px}
+.drop{border:2px dashed #b9c9c1;border-radius:var(--r);padding:36px 20px;text-align:center;background:#fafaf6;cursor:pointer}
+.drop.on{border-color:var(--green);background:var(--green-soft)}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.seg button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer;color:var(--sub)}
+.seg button.on{border-color:var(--green);background:var(--green);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--sub);font-size:13px}
+.scroll{overflow-x:auto}
+.muted{color:var(--sub)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;display:none;z-index:50}
+pre{background:#1c2b26;color:#e8efe9;padding:16px;border-radius:14px;overflow:auto;max-height:280px;font-size:12.5px}
+ol.steps li{margin-bottom:10px}
+.cardhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+.cardhead h3{margin:0;font-size:17px}
+.empty{text-align:center;color:var(--sub);padding:30px}
+@media(max-width:640px){h1{font-size:27px}.bar{gap:10px}nav a{padding:6px 10px;font-size:13.5px}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo" href="#home">인사이트 <span>노트</span></a>
+  <nav id="nav">
+    <a href="#home">홈</a><a href="#upload">자료 올리기</a><a href="#think">생각하기</a>
+    <a href="#judge">판단기록</a><a href="#gauge">계기판</a><a href="#guide">읽는 법</a><a href="#setup">연결</a>
+  </nav>
+</div></header>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const LINKS = {
+  drive: 'https://drive.google.com/drive/folders/1qRQJVPHhF7ksfTcx1Ed4DnFrfW-DWV_K',
+  sheet: 'https://docs.google.com/spreadsheets/d/1gn9-XlqgbYfy6mraG1k7S-s_RQThm1Qd6BjsJh6YeDA/edit',
+  dashboard: 'https://ai-invest-tools.vercel.app/'
+};
+const S = { report:'1_리포트분석', compare:'2_같은데이터다른결론', blank:'3_빈칸과2차효과', judge:'4_판단기록', gauge:'5_계기판', upload:'6_업로드기록' };
+const CATS = ['흥부강의','트루카피','톡방','유료리포트','기타'];
+const HINTS = {
+  '반증 조건':'이 전망이 틀렸다는 걸 어떤 숫자나 장면으로 알 수 있을까? 이걸 못 쓰면 검증할 수 없는 말이야.',
+  '내 생각':'동의, 반대, 보류 중 하나.',
+  '이유':'왜 그렇게 생각해? 근거 하나만.',
+  '끄덕인':'읽다가 "맞아 맞아" 한 곳은? 원래 믿던 거라 그냥 넘어간 건 아닌지.',
+  '거슬린':'괜히 걸리던 부분은? 내 생각의 빈틈일 수 있어.',
+  '배운 점':'이번에 새로 알게 된 것, 다음에 다르게 볼 것.',
+  '갈린 전제':'같은 데이터인데 결론이 다르다면, 각자 뭘 당연하게 깔고 있었을까?',
+  '안 보는':'이 사람들이 놓치고 있는 각도는? 다른 지역, 다른 자산, 다른 나라, 다른 사람들.',
+  '2차 효과':'이게 맞다면 그다음엔 누가, 어디가 영향받을까?',
+  '닮은 과거':'지금이랑 비슷했던 때는 언제야?',
+  '다른 점':'그때랑 지금은 뭐가 달라?',
+  '아이디어':'확인해볼 지표나 떠오른 생각.',
+  '내 판단':'지금 시장을 한두 문장으로. 틀려도 돼.',
+  '근거':'왜 그렇게 봐? 근거가 된 자료나 장면.',
+  '연결고리':'근거가 왜 판단으로 이어지는지. 여기가 제일 약한 곳일 수 있어.',
+  '버릇':'이번에 맞았거나 틀렸다면, 내 판단 습관에서 뭐가 보여?'
+};
+const hintFor = h => { for (const k in HINTS) if (h.includes(k)) return HINTS[k]; return ''; };
+const isMine = h => h.startsWith('✍');
+const clean = h => h.replace(/^✍\s*/,'');
+
+/* ---------- API ---------- */
+const cfg = () => ({ url: localStorage.getItem('apiUrl') || '', token: localStorage.getItem('apiToken') || '' });
+const connected = () => cfg().url && cfg().token;
+async function apiGet(params){
+  const c = cfg(); const q = new URLSearchParams({...params, token:c.token});
+  const r = await fetch(c.url + '?' + q.toString()); const j = await r.json();
+  if (j.error) throw new Error(j.error); return j;
+}
+async function apiPost(body){
+  const c = cfg();
+  const r = await fetch(c.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({...body, token:c.token})});
+  const j = await r.json(); if (j.error) throw new Error(j.error); return j;
+}
+const cache = {};
+async function load(sheet, force){
+  if (!force && cache[sheet]) return cache[sheet];
+  cache[sheet] = await apiGet({action:'read', sheet}); return cache[sheet];
+}
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today = () => new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+function toast(m){ const t=$('#toast'); t.textContent=m; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2600); }
+function setNav(id){ document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on', a.getAttribute('href')==='#'+id)); }
+function needConnect(){
+  return `<div class="card"><h2>먼저 연결이 필요해</h2><p class="muted">한 번만 하면 돼. 3분이면 끝나.</p><a class="btn" href="#setup">연결하러 가기</a></div>`;
+}
+function hero(eyebrow, title, lead){ return `<div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p class="lead">${lead}</p>`; }
+function loading(){ $('#app').insertAdjacentHTML('beforeend','<div class="card empty" id="ld">불러오는 중…</div>'); }
+function done(){ const l=$('#ld'); if(l) l.remove(); }
+function fail(e){ done(); $('#app').insertAdjacentHTML('beforeend',`<div class="card"><b>불러오지 못했어.</b><p class="muted">${esc(e.message)}</p><a class="btn ghost small" href="#setup">연결 확인</a></div>`); }
+
+/* ---------- pages ---------- */
+const pages = {};
+
+pages.home = async () => {
+  $('#app').innerHTML = hero('RESEARCH MEMORY','읽는 사람에서 <em>시비 거는 사람</em>으로','자료를 올리면 Claude가 주장·근거·연결고리를 뽑아두고, 너는 노란 칸에 네 생각을 쓴다. 그게 쌓이면 네 계기판과 네 모델이 된다.');
+  if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
+  loading();
+  try{
+    const [rep, jd, up] = await Promise.all([load(S.report,true), load(S.judge,true), load(S.upload,true)]);
+    const waiting = rep.rows.filter(r => r['주장 (한 줄)'] && !r['✍ 내 생각']).length;
+    const t = today();
+    const limit = new Date(addDays(t,14));
+    const due = jd.rows.filter(r => { const d = new Date(String(r['확인일']).replace(/\.\s*/g,'-').replace(/-$/,'')); return !isNaN(d) && d <= limit && (r['채점']||'확인전')==='확인전'; }).length;
+    const pend = up.rows.filter(r => r['처리 상태']==='대기').length;
+    done();
+    $('#app').insertAdjacentHTML('beforeend', `
+      <div class="grid">
+        <a class="card stat ${waiting?'hot':''}" href="#think"><div class="n">${waiting}</div><div class="t">네 생각을 기다리는 리포트</div></a>
+        <a class="card stat ${due?'hot':''}" href="#judge"><div class="n">${due}</div><div class="t">2주 안에 확인할 판단</div></a>
+        <a class="card stat" href="#upload"><div class="n">${pend}</div><div class="t">올렸는데 아직 정리 전인 자료</div></a>
+      </div>
+      <div class="card"><h2>오늘 할 일</h2>
+        <ol class="steps">
+          <li>새 자료가 있으면 <a href="#upload">자료 올리기</a></li>
+          <li>Claude가 정리한 리포트에 <a href="#think">네 생각 쓰기</a> (노란 칸)</li>
+          <li>한 달에 한 번 <a href="#judge">판단기록</a>에 지금 시장 판단 한 줄</li>
+        </ol>
+        <p class="muted">정리는 Claude한테 "인사이트 노트에 올린 거 정리해줘"라고 하면 돼.</p>
+      </div>
+      <div class="card"><h2>바로가기</h2><div class="row">
+        <a class="btn ghost small" target="_blank" href="${LINKS.drive}">원본 폴더 (드라이브)</a>
+        <a class="btn ghost small" target="_blank" href="${LINKS.sheet}">원본 표 (구글 시트)</a>
+        <a class="btn ghost small" target="_blank" href="${LINKS.dashboard}">AI 투자 도구 대시보드</a>
+      </div></div>`);
+  }catch(e){ fail(e); }
+};
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x.toISOString().slice(0,10); }
+
+pages.upload = async () => {
+  $('#app').innerHTML = hero('01 · INPUT','자료 <em>올리기</em>','PDF, 카톡 txt, 전사 txt, 이미지 뭐든 그냥 넣어. 누구 자료인지, 무슨 주제인지는 정리할 때 Claude가 나눈다.');
+  if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
+  const cat = '미분류';
+  $('#app').insertAdjacentHTML('beforeend', `
+    <div class="card">
+      <div class="drop" id="drop"><b>파일을 여기에 놓거나 눌러서 고르기</b><div class="muted">여러 개 한 번에 돼. 하나당 30MB까지.</div><input type="file" id="file" multiple hidden></div>
+      <label class="f">메모 (선택)</label><input type="text" id="memo" placeholder="한 줄이면 충분해. 예: 오늘 톡방에서 받은 거 / 이거 꼭 같이 보고 싶음">
+      <div id="queue" style="margin-top:14px"></div>
+    </div>
+    <div class="card"><h2>최근 올린 자료</h2><div id="recent" class="muted">불러오는 중…</div></div>`);
+  const drop=$('#drop'), file=$('#file');
+  drop.onclick=()=>file.click();
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add('on')};
+  drop.ondragleave=()=>drop.classList.remove('on');
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('on');send([...e.dataTransfer.files])};
+  file.onchange=()=>send([...file.files]);
+  async function send(files){
+    for (const f of files){
+      const id='q'+Math.random().toString(36).slice(2);
+      $('#queue').insertAdjacentHTML('beforeend',`<div id="${id}" class="row" style="margin:6px 0"><span class="pill g">올리는 중</span> ${esc(f.name)}</div>`);
+      if (f.size > 30*1024*1024){ $('#'+id).innerHTML=`<span class="pill o">너무 큼</span> ${esc(f.name)} · 30MB 넘는 건 <a target="_blank" href="${LINKS.drive}">드라이브</a>에 직접 올려줘`; continue; }
+      try{
+        const b64 = await toB64(f);
+        const r = await apiPost({action:'upload', category:cat, name:f.name, mimeType:f.type, base64:b64, memo:$('#memo').value});
+        $('#'+id).innerHTML=`<span class="pill">완료</span> <a target="_blank" href="${r.url}">${esc(r.name)}</a>`;
+      }catch(e){ $('#'+id).innerHTML=`<span class="pill o">실패</span> ${esc(f.name)} · ${esc(e.message)}`; }
+    }
+    file.value=''; recent(true);
+  }
+  async function recent(force){
+    try{ const d = await load(S.upload, force); const rows=d.rows.slice(-15).reverse();
+      $('#recent').innerHTML = rows.length ? `<div class="scroll"><table><tr><th>날짜</th><th>분류</th><th>파일</th><th>상태</th></tr>${rows.map(r=>`<tr><td>${esc(r['올린 날짜'])}</td><td>${esc(r['분류'])}</td><td><a target="_blank" href="${esc(r['링크'])}">${esc(r['파일명'])}</a></td><td><span class="pill ${r['처리 상태']==='대기'?'o':''}">${esc(r['처리 상태'])}</span></td></tr>`).join('')}</table></div>` : '아직 없어.';
+    }catch(e){ $('#recent').textContent='불러오지 못했어: '+e.message; }
+  }
+  recent(true);
+};
+function toB64(f){ return new Promise((ok,no)=>{ const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]); r.onerror=no; r.readAsDataURL(f); }); }
+
+/* 카드형 편집 (생각하기 / 판단기록 공용) */
+function renderCards(target, sheet, data, opts={}){
+  const {titleKey, metaKeys=[], onlyMine} = opts;
+  const headers = data.headers;
+  let rows = data.rows.filter(r => headers.some(h => !isMine(h) && r[h]));
+  if (onlyMine) rows = rows.filter(r => headers.filter(isMine).some(h => !r[h]));
+  if (!rows.length){ target.innerHTML = `<div class="card empty">${onlyMine?'지금은 네 차례인 게 없어. 잘했어.':'아직 비어 있어. Claude가 채우면 여기 보여.'}</div>`; return; }
+  target.innerHTML = rows.map(r => {
+    const ro = headers.filter(h => !isMine(h) && h!==titleKey && !metaKeys.includes(h) && r[h]);
+    const mine = headers.filter(isMine);
+    return `<div class="card" data-row="${r._row}">
+      <div class="cardhead"><h3>${esc(r[titleKey]||'(제목 없음)')}</h3><div class="row">${metaKeys.filter(k=>r[k]).map(k=>`<span class="pill ${k==='채점'&&r[k]==='틀림'?'o':''}">${esc(r[k])}</span>`).join('')}</div></div>
+      ${ro.map(h=>`<div class="ro"><b>${esc(h)}</b>${esc(r[h])}</div>`).join('')}
+      <div class="me">${mine.map(h=>field(h, r[h])).join('')}
+        <div class="row" style="margin-top:12px"><button class="btn small" data-save>저장</button><span class="muted" data-st></span></div>
+      </div></div>`;
+  }).join('');
+  target.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
+    const card = b.closest('.card'); const row = +card.dataset.row; const payload = {};
+    card.querySelectorAll('[data-h]').forEach(el => payload[el.dataset.h] = el.value);
+    b.disabled = true; card.querySelector('[data-st]').textContent='저장 중…';
+    try{ await apiPost({action:'update', sheet, row, data:payload}); delete cache[sheet]; card.querySelector('[data-st]').textContent='저장했어'; toast('저장했어'); }
+    catch(e){ card.querySelector('[data-st]').textContent='실패: '+e.message; }
+    b.disabled = false;
+  });
+}
+function field(h, v){
+  const hint = hintFor(h);
+  if (h.includes('내 생각')) return `<label class="f">${esc(clean(h))}</label><div class="hint">${hint}</div><select data-h="${esc(h)}">${['','동의','반대','보류'].map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
+  return `<label class="f">${esc(clean(h))}</label>${hint?`<div class="hint">${hint}</div>`:''}<textarea data-h="${esc(h)}">${esc(v||'')}</textarea>`;
+}
+
+pages.think = async () => {
+  $('#app').innerHTML = hero('02 · THINK','네 생각을 <em>쓰는 곳</em>','파란 칸은 Claude가 뽑은 주장·근거·연결고리. 노란 칸이 네 차례야. 정답은 없고, 쓰는 순간 네 생각이 된다.');
+  if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
+  let tab='report', onlyMine=true;
+  $('#app').insertAdjacentHTML('beforeend', `
+    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <div class="seg" id="tabs" style="margin:0">
+        <button data-t="report" class="on">리포트 하나씩</button><button data-t="compare">같은 데이터, 다른 결론</button><button data-t="blank">빈칸과 2차 효과</button>
+      </div>
+      <label class="muted" style="font-size:14px"><input type="checkbox" id="mineOnly" checked> 내 차례만 보기</label>
+    </div>
+    <div id="newBlank"></div><div id="list"></div>`);
+  $('#tabs').onclick=e=>{const b=e.target.closest('button'); if(!b)return; tab=b.dataset.t; document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b)); draw();};
+  $('#mineOnly').onchange=e=>{onlyMine=e.target.checked; draw();};
+  async function draw(){
+    $('#list').innerHTML='<div class="card empty">불러오는 중…</div>'; $('#newBlank').innerHTML='';
+    try{
+      if (tab==='report'){ const d=await load(S.report,true); renderCards($('#list'), S.report, d, {titleKey:'리포트·글 제목', metaKeys:['출처','날짜','채점'], onlyMine}); }
+      if (tab==='compare'){ const d=await load(S.compare,true); renderCards($('#list'), S.compare, d, {titleKey:'지표·데이터', metaKeys:['날짜'], onlyMine}); }
+      if (tab==='blank'){
+        $('#newBlank').innerHTML = `<div class="card"><h2>내가 떠올린 각도 새로 쓰기</h2>
+          <label class="f">누구의 어떤 주장에서 출발했어?</label><input type="text" id="nb_claim" placeholder="예: 트루카피 - 강남 먼저 조정">
+          ${['✍ 이 사람들이 안 보는 것','✍ 2차 효과 (그다음 누가 영향받나)','✍ 닮은 과거','✍ 다른 점','✍ 내 아이디어 · 확인할 지표'].map(h=>field(h,'')).join('')}
+          <div class="row" style="margin-top:12px"><button class="btn small" id="nb_save">추가</button></div></div>`;
+        $('#nb_save').onclick = async () => {
+          const data={'날짜':today(),'출처':'기타','그들의 주장':$('#nb_claim').value};
+          document.querySelectorAll('#newBlank [data-h]').forEach(el=>data[el.dataset.h]=el.value);
+          try{ await apiPost({action:'append', sheet:S.blank, data}); toast('추가했어'); draw(); }catch(e){ toast('실패: '+e.message); }
+        };
+        const d=await load(S.blank,true); renderCards($('#list'), S.blank, d, {titleKey:'그들의 주장', metaKeys:['출처','날짜'], onlyMine});
+      }
+    }catch(e){ $('#list').innerHTML=''; fail(e); }
+  }
+  draw();
+};
+
+pages.judge = async () => {
+  $('#app').innerHTML = hero('03 · JUDGE','내 <em>판단기록</em>','한 달에 한 번, 리포트 읽기 전에 내 판단 먼저. 확인일이 오면 맞았는지 채점하고, 내 버릇을 찾는다.');
+  if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
+  $('#app').insertAdjacentHTML('beforeend', `<div class="card" id="newJudge"><h2>새 판단 쓰기</h2>
+    ${['✍ 내 판단','✍ 근거','✍ 연결고리 (내 모델)','✍ 반증 조건'].map(h=>field(h,'')).join('')}
+    <label class="f">언제 확인할까?</label><input type="text" id="nj_date" value="${addDays(today(),90)}">
+    <div class="row" style="margin-top:12px"><button class="btn small" id="nj_save">기록</button></div></div><div id="list"><div class="card empty">불러오는 중…</div></div>`);
+  async function draw(){
+    try{ const d=await load(S.judge,true);
+      const fake = {...d, rows:d.rows.map(r=>({...r, _title:`${r['번호']||''} · ${r['날짜']||''}`}))};
+      fake.headers=['_title',...d.headers];
+      renderCards($('#list'), S.judge, fake, {titleKey:'_title', metaKeys:['번호','날짜','채점']});
+    }catch(e){ fail(e); }
+  }
+  $('#nj_save').onclick = async () => {
+    const d = await load(S.judge,true);
+    const n = d.rows.filter(r=>/^#\d+$/.test(r['번호'])).length + 1;
+    const data={'번호':'#'+n,'날짜':today(),'확인일':$('#nj_date').value,'채점':'확인전'};
+    document.querySelectorAll('#newJudge [data-h]').forEach(el=>data[el.dataset.h]=el.value);
+    try{ await apiPost({action:'append', sheet:S.judge, data}); toast('기록했어'); draw(); }catch(e){ toast('실패: '+e.message); }
+  };
+  draw();
+};
+
+pages.gauge = async () => {
+  $('#app').innerHTML = hero('04 · GAUGE','내 <em>계기판</em>','심리 → 매물 → 가격. 리포트 채점에서 실제로 먼저 움직인 지표만 "확정"이 된다. 값은 매달 Claude가 채운다.');
+  if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
+  loading();
+  try{ const d=await load(S.gauge,true); done();
+    const rows=d.rows.filter(r=>r['단계']);
+    const order=['심리','매물','가격','거시','공급'];
+    rows.sort((a,b)=>order.indexOf(a['단계'])-order.indexOf(b['단계']));
+    $('#app').insertAdjacentHTML('beforeend', `<div class="card scroll"><table><tr>${d.headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${d.headers.map(h=>`<td>${h==='상태'?`<span class="pill ${r[h]==='확정'?'':'g'}">${esc(r[h])}</span>`:esc(r[h])}</td>`).join('')}</tr>`).join('')}</table></div>
+    <p class="muted">지표 추가나 수정은 <a target="_blank" href="${LINKS.sheet}">원본 표</a>의 5_계기판 탭에서.</p>`);
+  }catch(e){ fail(e); }
+};
+
+pages.guide = async () => {
+  $('#app').innerHTML = hero('HOW TO READ','자료 <em>읽는 법</em>','누구를 믿을지가 아니라, 그들이 무엇을 보고 어떻게 연결하는지 배우고 → 내 계기판과 내 모델을 만들고 → 결국 내가 리포트를 쓰는 사람이 되는 것.') + `
+  <div class="grid">
+    ${[
+      ['1. 분해','주장 · 근거 · 연결고리로 쪼개기','이 사람은 무엇을 주장하나? 근거로 쓴 자료는 뭔가? 근거가 왜 주장으로 이어지나? 배울 것도, 틀린 곳도 대부분 연결고리에 있다.'],
+      ['2. 비판','근거를 찔러보기','왜 하필 그 기간, 그 지표인가? 같은 데이터를 반대로 해석할 수는 없나? 뭐가 보이면 이 전망이 틀린 건가?'],
+      ['3. 비교','같은 데이터, 다른 결론','결론이 갈렸다면 전제가 다른 것. 그 전제를 찾으면 시장을 보는 축이 하나 생긴다.'],
+      ['4. 창의','빈칸 · 2차 효과 · 과거와 맞대기','이 사람들이 안 보는 건? 그다음엔 누가 영향받나? 지금은 어느 과거와 닮았고 어디가 다른가?'],
+      ['5. 메타','내 반응 관찰','쉽게 끄덕여진 곳은 원래 믿던 거라 넘어간 것일 수 있다. 거슬리는 곳은 내 빈틈일 수 있다.']
+    ].map(([a,b,c])=>`<div class="card"><span class="pill">${a}</span><h2 style="margin-top:10px">${b}</h2><p class="muted" style="margin:0">${c}</p></div>`).join('')}
+  </div>
+  <div class="card"><h2>쓰는 순서</h2><ol class="steps">
+    <li>리포트 읽기 전, 판단기록에 내 판단 한 줄 먼저</li>
+    <li>자료 올리기 → Claude한테 "정리해줘"</li>
+    <li>생각하기에서 노란 칸 채우기</li>
+    <li>사람끼리 갈리면 "같은 데이터, 다른 결론"에서 갈린 전제 쓰기</li>
+    <li>확인일이 오면 Claude가 채점, 나는 배운 점과 내 버릇 쓰기</li>
+  </ol></div>`;
+};
+
+pages.setup = async () => {
+  const c = cfg();
+  $('#app').innerHTML = hero('SETUP','처음 한 번 <em>연결하기</em>','이 사이트가 네 구글 시트와 드라이브에 저장하려면 한 번만 연결이 필요해. 네 계정 안에서만 돌아가고, 다른 서버에는 저장하지 않아.') + `
+  <div class="card"><h2>1. 연결 코드 넣기</h2>
+    <label class="f">연결 코드 (Claude가 채팅으로 알려준 것)</label><input type="password" id="t" value="${esc(c.token)}" placeholder="연결 코드">
+  </div>
+  <div class="card"><h2>2. 구글 시트에 코드 붙여넣기</h2>
+    <ol class="steps">
+      <li><a target="_blank" href="${LINKS.sheet}">원본 표</a> 열기 → 위 메뉴 <b>확장 프로그램 → Apps Script</b></li>
+      <li>원래 있던 코드 다 지우고, 아래 코드 복사해서 붙여넣기 → 저장(디스크 아이콘)</li>
+      <li>위쪽 함수 선택에서 <b>setup</b> 고르고 <b>실행</b> → 권한 허용 (경고가 나오면 "고급 → 안전하지 않음으로 이동" 눌러도 돼. 네가 만든 코드라서 나오는 경고야)</li>
+      <li>오른쪽 위 <b>배포 → 새 배포</b> → 톱니바퀴에서 <b>웹 앱</b> → 실행: <b>나</b>, 액세스: <b>모든 사용자</b> → 배포</li>
+      <li>나오는 <b>웹 앱 URL</b> 복사</li>
+    </ol>
+    <div class="row"><button class="btn small" id="copy">코드 복사</button><span class="muted" id="cst"></span></div>
+    <pre id="code">불러오는 중…</pre>
+  </div>
+  <div class="card"><h2>3. 웹 앱 URL 붙여넣기</h2>
+    <label class="f">웹 앱 URL</label><input type="url" id="u" value="${esc(c.url)}" placeholder="https://script.google.com/macros/s/.../exec">
+    <div class="row" style="margin-top:14px"><button class="btn" id="save">연결하기</button><span id="st" class="muted"></span></div>
+  </div>`;
+  fetch('Code.gs').then(r=>r.text()).then(t=>{ $('#code').textContent = t.replace(/const TOKEN = '.*?';/, "const TOKEN = '여기에 연결 코드';"); });
+  $('#copy').onclick = async () => {
+    const t = $('#t').value.trim();
+    let code = $('#code').textContent;
+    if (t) code = code.replace("여기에 연결 코드", t);
+    await navigator.clipboard.writeText(code);
+    if (t) localStorage.setItem('apiToken', t);
+    $('#cst').textContent = t ? '복사했어 (연결 코드 포함)' : '1번 연결 코드 칸을 먼저 채우고 복사해줘.';
+  };
+  $('#save').onclick = async () => {
+    localStorage.setItem('apiUrl', $('#u').value.trim()); localStorage.setItem('apiToken', $('#t').value.trim());
+    $('#st').textContent='확인 중…';
+    try{ await apiGet({action:'ping'}); $('#st').textContent='연결됐어'; toast('연결됐어'); setTimeout(()=>location.hash='#home',700); }
+    catch(e){ $('#st').textContent='안 됐어: '+e.message; }
+  };
+};
+
+function route(){
+  const id = (location.hash||'#home').slice(1);
+  const p = pages[id] ? id : 'home';
+  setNav(p); pages[p](); window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', route);
+if (!connected() && !location.hash) location.hash = '#setup'; else route();
+</script>
+</body>
+</html>
