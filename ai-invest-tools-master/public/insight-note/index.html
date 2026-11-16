@@ -64,6 +64,7 @@ pre{background:#1c2b26;color:#e8efe9;padding:16px;border-radius:14px;overflow:au
 ol.steps li{margin-bottom:10px}
 .cardhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
 .cardhead h3{margin:0;font-size:17px}
+.pre{white-space:pre-line}
 .empty{text-align:center;color:var(--sub);padding:30px}
 @media(max-width:640px){h1{font-size:27px}.bar{gap:10px}nav a{padding:6px 10px;font-size:13.5px}}
 </style>
@@ -249,6 +250,51 @@ function renderCards(target, sheet, data, opts={}){
     b.disabled = false;
   });
 }
+
+/* 자료별 묶음 보기: 최신순, 자료 요점 정리 + 주장별 카드 */
+function parseDate(v){ const d=new Date(String(v||'').replace(/\.\s*/g,'-').replace(/-$/,'')); return isNaN(d)?0:d.getTime(); }
+function renderReportGroups(target, sheet, data, onlyMine){
+  const H = data.headers, mine = H.filter(isMine);
+  const rows = data.rows.filter(r => r['주장 (한 줄)'] || r['핵심 요약'] || r['담긴 내용']).filter(r => r['번호']!=='예시');
+  const groups = {};
+  rows.forEach(r => { const k = r['파일·링크'] || (r['날짜']+'|'+r['리포트·글 제목']); (groups[k] = groups[k] || []).push(r); });
+  let list = Object.values(groups).map(g => ({ rows:g, date:Math.max(...g.map(r=>parseDate(r['날짜']))) }));
+  if (onlyMine) list = list.filter(g => g.rows.some(r => mine.some(h => !r[h])));
+  list.sort((a,b) => b.date - a.date);
+  if (!list.length){ target.innerHTML = `<div class="card empty">${onlyMine?'지금은 네 차례인 게 없어.':'아직 정리된 자료가 없어. 올리면 한 시간 안에 여기 쌓여.'}</div>`; return; }
+  const pick = (g,k) => (g.rows.find(r=>r[k])||{})[k] || '';
+  target.innerHTML = list.map(g => {
+    const f = g.rows[0], link = pick(g,'파일·링크');
+    return `<div class="card">
+      <div class="cardhead"><h3>${esc(f['출처']||'')} · ${esc(f['날짜']||'')}</h3><div class="row">${link?`<a class="btn ghost small" target="_blank" href="${esc(link)}">원본 열기</a>`:''}</div></div>
+      ${pick(g,'담긴 내용')?`<div class="ro pre"><b>이 자료에 담긴 내용</b>${esc(pick(g,'담긴 내용'))}</div>`:''}
+      ${pick(g,'핵심 요약')?`<div class="ro" style="background:var(--green-soft)"><b>가장 중요한 것</b>${esc(pick(g,'핵심 요약'))}</div>`:''}
+      ${g.rows.filter(r=>r['주장 (한 줄)']).map(r => `
+        <div class="claim" data-row="${r._row}" style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px">
+          <div class="row" style="justify-content:space-between"><b>${esc(r['리포트·글 제목']||'')}</b>${r['채점']?`<span class="pill ${r['채점']==='틀림'?'o':''}">${esc(r['채점'])}</span>`:''}</div>
+          <div class="ro" style="margin-top:8px"><b>주장</b>${esc(r['주장 (한 줄)'])}</div>
+          ${r['근거 (어떤 자료)']?`<div class="ro"><b>근거</b>${esc(r['근거 (어떤 자료)'])}</div>`:''}
+          ${r['연결고리 (근거→주장이 왜 이어지나)']?`<div class="ro"><b>연결고리</b>${esc(r['연결고리 (근거→주장이 왜 이어지나)'])}</div>`:''}
+          ${r['팩트체크']?`<div class="ro pre"><b>팩트체크</b>${esc(r['팩트체크'])}</div>`:''}
+          ${r['실제 결과']?`<div class="ro"><b>실제 결과 (확인일 ${esc(r['확인일']||'')})</b>${esc(r['실제 결과'])}</div>`:''}
+          ${r['Claude가 던지는 질문']?`<div class="ro" style="background:var(--orange-soft)"><b>Claude가 던지는 질문</b>${esc(r['Claude가 던지는 질문'])}</div>`:''}
+          <details class="me" ${mine.some(h=>r[h])?'':'open'}><summary style="cursor:pointer;font-weight:700;padding-top:10px">내 생각 쓰기</summary>
+            ${mine.map(h=>field(h, r[h])).join('')}
+            <div class="row" style="margin-top:12px"><button class="btn small" data-save>저장</button><span class="muted" data-st></span></div>
+          </details>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+  target.querySelectorAll('[data-save]').forEach(b => b.onclick = async () => {
+    const box = b.closest('.claim'); const row = +box.dataset.row; const payload = {};
+    box.querySelectorAll('[data-h]').forEach(el => payload[el.dataset.h] = el.value);
+    b.disabled = true; box.querySelector('[data-st]').textContent='저장 중…';
+    try{ await apiPost({action:'update', sheet, row, data:payload}); box.querySelector('[data-st]').textContent='저장했어'; toast('저장했어'); }
+    catch(e){ box.querySelector('[data-st]').textContent='실패: '+e.message; }
+    b.disabled = false;
+  });
+}
+
 function field(h, v){
   const hint = hintFor(h);
   if (h.includes('내 생각')) return `<label class="f">${esc(clean(h))}</label><div class="hint">${hint}</div><select data-h="${esc(h)}">${['','동의','반대','보류'].map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
@@ -272,7 +318,7 @@ pages.think = async () => {
   async function draw(){
     $('#list').innerHTML='<div class="card empty">불러오는 중…</div>'; $('#newBlank').innerHTML='';
     try{
-      if (tab==='report'){ const d=await load(S.report,true); renderCards($('#list'), S.report, d, {titleKey:'리포트·글 제목', metaKeys:['출처','날짜','채점'], hide:['번호'], order:['핵심 요약','주장 (한 줄)','근거 (어떤 자료)','연결고리 (근거→주장이 왜 이어지나)','팩트체크','Claude가 던지는 질문','파일·링크'], onlyMine}); }
+      if (tab==='report'){ const d=await load(S.report,true); renderReportGroups($('#list'), S.report, d, onlyMine); }
       if (tab==='compare'){ const d=await load(S.compare,true); renderCards($('#list'), S.compare, d, {titleKey:'지표·데이터', metaKeys:['날짜'], onlyMine}); }
       if (tab==='blank'){
         $('#newBlank').innerHTML = `<div class="card"><h2>내가 떠올린 각도 새로 쓰기</h2>
