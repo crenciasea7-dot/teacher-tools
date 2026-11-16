@@ -110,7 +110,8 @@ const isMine = h => h.startsWith('✍');
 const clean = h => h.replace(/^✍\s*/,'');
 
 /* ---------- API ---------- */
-const cfg = () => ({ url: localStorage.getItem('apiUrl') || '', token: localStorage.getItem('apiToken') || '' });
+const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbwkZWgkeeM5XvGqTXBGyALu5FCvMfeX8HzMdi7NE_LgpfRYzk2RvvhX-9LsuD7BdJr2ig/exec';
+const cfg = () => ({ url: localStorage.getItem('apiUrl') || DEFAULT_URL, token: localStorage.getItem('apiToken') || '' });
 const connected = () => cfg().url && cfg().token;
 async function apiGet(params){
   const c = cfg(); const q = new URLSearchParams({...params, token:c.token});
@@ -135,9 +136,9 @@ const today = () => new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
 function toast(m){ const t=$('#toast'); t.textContent=m; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2600); }
 function setNav(id){ document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on', a.getAttribute('href')==='#'+id)); }
 function needConnect(){
-  return `<div class="card"><h2>먼저 연결이 필요해</h2><p class="muted">한 번만 하면 돼. 3분이면 끝나.</p><a class="btn" href="#setup">연결하러 가기</a></div>`;
+  return `<div class="card"><h2>연결 코드 한 번만 넣어줘</h2><div class="row"><input type="password" id="qt" placeholder="연결 코드" style="max-width:320px"><button class="btn" id="qgo">연결</button><span class="muted" id="qst"></span></div></div>`;
 }
-function hero(eyebrow, title, lead){ return `<div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p class="lead">${lead}</p>`; }
+function hero(eyebrow, title, lead){ return lead ? `<p class="lead" style="margin-bottom:18px">${lead}</p>` : ''; }
 function loading(){ $('#app').insertAdjacentHTML('beforeend','<div class="card empty" id="ld">불러오는 중…</div>'); }
 function done(){ const l=$('#ld'); if(l) l.remove(); }
 function fail(e){ done(); $('#app').insertAdjacentHTML('beforeend',`<div class="card"><b>불러오지 못했어.</b><p class="muted">${esc(e.message)}</p><a class="btn ghost small" href="#setup">연결 확인</a></div>`); }
@@ -146,7 +147,7 @@ function fail(e){ done(); $('#app').insertAdjacentHTML('beforeend',`<div class="
 const pages = {};
 
 pages.home = async () => {
-  $('#app').innerHTML = hero('RESEARCH MEMORY','읽는 사람에서 <em>시비 거는 사람</em>으로','자료를 올리면 Claude가 주장·근거·연결고리를 뽑아두고, 너는 노란 칸에 네 생각을 쓴다. 그게 쌓이면 네 계기판과 네 모델이 된다.');
+  $('#app').innerHTML = '';
   if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
   loading();
   try{
@@ -391,7 +392,15 @@ function route(){
   setNav(p); pages[p](); window.scrollTo(0,0);
 }
 window.addEventListener('hashchange', route);
-if (!connected() && !location.hash) location.hash = '#setup'; else route();
+document.addEventListener('click', async e => {
+  if (e.target.id !== 'qgo') return;
+  const t = document.getElementById('qt').value.trim(); if (!t) return;
+  localStorage.setItem('apiToken', t);
+  document.getElementById('qst').textContent = '확인 중…';
+  try { await apiGet({action:'ping'}); toast('연결됐어'); route(); }
+  catch(err){ localStorage.removeItem('apiToken'); document.getElementById('qst').textContent = '안 됐어: ' + err.message; }
+});
+route();
 </script>
 </body>
 </html>
