@@ -169,7 +169,7 @@ pages.home = async () => {
           <li>Claude가 정리한 리포트에 <a href="#think">네 생각 쓰기</a> (노란 칸)</li>
           <li>한 달에 한 번 <a href="#judge">판단기록</a>에 지금 시장 판단 한 줄</li>
         </ol>
-        <p class="muted">정리는 Claude한테 "인사이트 노트에 올린 거 정리해줘"라고 하면 돼.</p>
+        <p class="muted">올리기만 하면 돼. Claude가 한 시간마다 돌면서 새 자료를 요약하고 팩트체크해서 '생각하기'에 카드로 올려둬. 너는 카드 보고 노란 칸에 네 생각만 쓰면 돼.</p>
       </div>
       <div class="card"><h2>바로가기</h2><div class="row">
         <a class="btn ghost small" target="_blank" href="${LINKS.drive}">원본 폴더 (드라이브)</a>
@@ -181,7 +181,7 @@ pages.home = async () => {
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x.toISOString().slice(0,10); }
 
 pages.upload = async () => {
-  $('#app').innerHTML = hero('01 · INPUT','자료 <em>올리기</em>','PDF, 카톡 txt, 전사 txt, 이미지 뭐든 그냥 넣어. 누구 자료인지, 무슨 주제인지는 정리할 때 Claude가 나눈다.');
+  $('#app').innerHTML = hero('01 · INPUT','자료 <em>올리기</em>','PDF, 카톡 txt, 전사 txt, 이미지 뭐든 그냥 넣어. 누구 자료인지, 무슨 주제인지는 Claude가 나눈다. 한 시간 안에 분석돼서 생각하기에 카드로 올라와.');
   if (!connected()) { $('#app').insertAdjacentHTML('beforeend', needConnect()); return; }
   const cat = '미분류';
   $('#app').insertAdjacentHTML('beforeend', `
@@ -227,11 +227,14 @@ function renderCards(target, sheet, data, opts={}){
   if (onlyMine) rows = rows.filter(r => headers.filter(isMine).some(h => !r[h]));
   if (!rows.length){ target.innerHTML = `<div class="card empty">${onlyMine?'지금은 네 차례인 게 없어. 잘했어.':'아직 비어 있어. Claude가 채우면 여기 보여.'}</div>`; return; }
   target.innerHTML = rows.map(r => {
-    const ro = headers.filter(h => !isMine(h) && h!==titleKey && !metaKeys.includes(h) && r[h]);
+    const hide = opts.hide || [];
+    let ro = headers.filter(h => !isMine(h) && h!==titleKey && !metaKeys.includes(h) && !hide.includes(h) && r[h]);
+    if (opts.order) ro = [...opts.order.filter(h=>ro.includes(h)), ...ro.filter(h=>!opts.order.includes(h))];
     const mine = headers.filter(isMine);
     return `<div class="card" data-row="${r._row}">
       <div class="cardhead"><h3>${esc(r[titleKey]||'(제목 없음)')}</h3><div class="row">${metaKeys.filter(k=>r[k]).map(k=>`<span class="pill ${k==='채점'&&r[k]==='틀림'?'o':''}">${esc(r[k])}</span>`).join('')}</div></div>
-      ${ro.map(h=>`<div class="ro"><b>${esc(h)}</b>${esc(r[h])}</div>`).join('')}
+      ${ro.map(h=>{ const v=r[h]; const isQ=h.includes('질문'); const body=/^https?:\/\//.test(v)?`<a target="_blank" href="${esc(v)}">원본 열기</a>`:esc(v);
+        return `<div class="ro" ${isQ?'style="background:var(--orange-soft)"':''}><b>${esc(h)}</b>${body}</div>`; }).join('')}
       <div class="me">${mine.map(h=>field(h, r[h])).join('')}
         <div class="row" style="margin-top:12px"><button class="btn small" data-save>저장</button><span class="muted" data-st></span></div>
       </div></div>`;
@@ -258,7 +261,7 @@ pages.think = async () => {
   $('#app').insertAdjacentHTML('beforeend', `
     <div class="row" style="justify-content:space-between;margin-bottom:14px">
       <div class="seg" id="tabs" style="margin:0">
-        <button data-t="report" class="on">리포트 하나씩</button><button data-t="compare">같은 데이터, 다른 결론</button><button data-t="blank">빈칸과 2차 효과</button>
+        <button data-t="report" class="on">자료별 분석</button><button data-t="compare">같은 데이터, 다른 결론</button><button data-t="blank">빈칸과 2차 효과</button>
       </div>
       <label class="muted" style="font-size:14px"><input type="checkbox" id="mineOnly" checked> 내 차례만 보기</label>
     </div>
@@ -268,7 +271,7 @@ pages.think = async () => {
   async function draw(){
     $('#list').innerHTML='<div class="card empty">불러오는 중…</div>'; $('#newBlank').innerHTML='';
     try{
-      if (tab==='report'){ const d=await load(S.report,true); renderCards($('#list'), S.report, d, {titleKey:'리포트·글 제목', metaKeys:['출처','날짜','채점'], onlyMine}); }
+      if (tab==='report'){ const d=await load(S.report,true); renderCards($('#list'), S.report, d, {titleKey:'리포트·글 제목', metaKeys:['출처','날짜','채점'], hide:['번호'], order:['핵심 요약','주장 (한 줄)','근거 (어떤 자료)','연결고리 (근거→주장이 왜 이어지나)','팩트체크','Claude가 던지는 질문','파일·링크'], onlyMine}); }
       if (tab==='compare'){ const d=await load(S.compare,true); renderCards($('#list'), S.compare, d, {titleKey:'지표·데이터', metaKeys:['날짜'], onlyMine}); }
       if (tab==='blank'){
         $('#newBlank').innerHTML = `<div class="card"><h2>내가 떠올린 각도 새로 쓰기</h2>
